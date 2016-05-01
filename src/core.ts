@@ -7,3 +7,14 @@ export class ConstraintDefinitionError extends Error {
         super(message);
     }
 }
+//
+//export function getOrCreateSchema(target : Object, propertyKey : string) : any {
+//    let metadata = Reflect.getMetadata(SCHEMA_KEY, target, propertyKey);
+//    if (metadata) {
+//
+//    }
+//}
+//
+//export function setSchema(target : Object, propertyKey : string, schema : any) : void {
+//
+//}

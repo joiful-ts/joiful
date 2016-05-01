@@ -1,10 +1,7 @@
 import 'reflect-metadata';
 import * as Joi from "joi";
-import {SCHEMA_KEY, ConstraintDefinitionError} from "../core";
+import {SCHEMA_KEY, ConstraintDefinitionError} from "../../core";
 
-export class StringConstraint {
-
-}
 
 export function StringSchema() : PropertyDecorator {
     return function (target: Object, propertyKey: string | symbol) : void {
