@@ -1,0 +1,9 @@
+{
+  "ambientDependencies": {
+    "joi": "registry:dt/joi#6.5.0+20160324101820"
+  },
+  "ambientDevDependencies": {
+    "chai": "registry:dt/chai#3.4.0+20160317120654",
+    "mocha": "registry:dt/mocha#2.2.5+20160317120654"
+  }
+}
