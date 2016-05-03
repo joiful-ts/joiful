@@ -6,6 +6,7 @@ import AssertStatic = Chai.AssertStatic;
 import * as Joi from "joi";
 import {ConstraintDefinitionError} from "../../../src/core";
 import {Length} from "../../../src/constraints/common/Length";
+import {Validator} from "../../../src/Validator";
 
 describe("StringSchema", function () {
     class MyClass {
@@ -16,12 +17,16 @@ describe("StringSchema", function () {
         myOtherProperty : String;
     }
 
-    it("should annotate the class property", function() {
-        var metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype, "myProperty");
-        assert.deepEqual(metadata, Joi.string());
+    it("should annotate the class property", function () {
+        var metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype);
+        var expected = {
+            myProperty: Joi.string(),
+            myOtherProperty: Joi.string()
+        };
+        assert.deepEqual(metadata, expected);
     });
 
-    it("should error when applied to a non-string property", function() {
+    it("should error when applied to a non-string property", function () {
         assert.throws(function () {
             class MyBadClass {
                 @StringSchema()
@@ -32,15 +37,83 @@ describe("StringSchema", function () {
 });
 
 describe("Length", function () {
-    class MyClass {
-        @Length(5)
-        @StringSchema()
-        myProperty : string;
-    }
+    it("should annotate the class property", function () {
+        class MyClass {
+            @Length(5)
+            @StringSchema()
+            myProperty : string;
+        }
 
-    it("should annotate the class property", function() {
-        var metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype, "myProperty");
-        var expected : any = Joi.string().length(5);
+        var metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype);
+        var expected : any = {
+            myProperty: Joi.string().length(5)
+        };
         assert.equal(JSON.stringify(metadata), JSON.stringify(expected));
+    });
+
+    it("should validate successful candidates", function () {
+        class MyClass {
+            @Length(5)
+            @StringSchema()
+            myProperty : string;
+        }
+
+        var object = new MyClass();
+        object.myProperty = "abcde";
+        var validator = new Validator();
+        var result = validator.validate(object);
+        console.log(result);
+        assert.property(result, "error");
+        assert.isNull(result.error);
+    });
+
+    it("should validate failing candidates", function () {
+        class MyClass {
+            @Length(5)
+            @StringSchema()
+            myProperty : string;
+        }
+
+        var object = new MyClass();
+        object.myProperty = "abc";
+        var validator = new Validator();
+        var result = validator.validate(object);
+        console.log(result);
+        assert.property(result, "error");
+        assert.isNotNull(result.error);
+    });
+
+    it("should validate successful candidate created from object literal", function () {
+        class MyClass {
+            @Length(5)
+            @StringSchema()
+            myProperty : string;
+        }
+
+        var object = {
+            myProperty: "abcde"
+        };
+        var validator = new Validator();
+        var result = validator.validateAsClass(object, MyClass);
+        console.log(result);
+        assert.property(result, "error");
+        assert.isNull(result.error);
+    });
+
+    it("should validate failing candidate created from object literal", function () {
+        class MyClass {
+            @Length(5)
+            @StringSchema()
+            myProperty : string;
+        }
+
+        var object = {
+            myProperty: "abc"
+        };
+        var validator = new Validator();
+        var result = validator.validateAsClass(object, MyClass);
+        console.log(result);
+        assert.property(result, "error");
+        assert.isNotNull(result.error);
     });
 });
