@@ -28,6 +28,16 @@ export function updateSchema(target : Object, propertyKey : string|symbol, schem
     classSchema[propertyKey] = schema;
 }
 
+export function getAndUpdateSchema(target : Object, propertyKey : string|symbol, updateFunction : (schema : any) => any) {
+    let schema = getPropertySchema(target, propertyKey);
+    if (!schema) {
+        throw new ConstraintDefinitionError(`No validation schema exists for property: ${propertyKey}, please specify a type schema first.`);
+    } else {
+        schema = updateFunction(schema);
+        updateSchema(target, propertyKey, schema);
+    }
+}
+
 export function allowTypes(target : any, propertyKey : string|symbol, types : Function[]) {
     let propertyType = Reflect.getMetadata("design:type", target, propertyKey);
     if (types.indexOf(propertyType) == -1) {

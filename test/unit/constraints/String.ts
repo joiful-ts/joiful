@@ -7,6 +7,20 @@ import * as Joi from "joi";
 import {ConstraintDefinitionError} from "../../../src/core";
 import {Length} from "../../../src/constraints/common/Length";
 import {Validator} from "../../../src/Validator";
+import {Alphanum} from "../../../src/constraints/string/Alphanum";
+import {Min} from "../../../src/constraints/common/Min";
+
+function isValid(validator : Validator, object : any) {
+    var result = validator.validate(object);
+    assert.property(result, "error");
+    assert.isNull(result.error);
+}
+
+function isInvalid(validator : Validator, object : any) {
+    var result = validator.validate(object);
+    assert.property(result, "error");
+    assert.isNotNull(result.error);
+}
 
 describe("StringSchema", function () {
     class MyClass {
@@ -36,7 +50,7 @@ describe("StringSchema", function () {
     });
 });
 
-describe("Length", function () {
+describe("Length, and core functionality", function () {
     it("should annotate the class property", function () {
         class MyClass {
             @Length(5)
@@ -62,7 +76,7 @@ describe("Length", function () {
         object.myProperty = "abcde";
         var validator = new Validator();
         var result = validator.validate(object);
-        console.log(result);
+        //console.log(result);
         assert.property(result, "error");
         assert.isNull(result.error);
     });
@@ -78,7 +92,7 @@ describe("Length", function () {
         object.myProperty = "abc";
         var validator = new Validator();
         var result = validator.validate(object);
-        console.log(result);
+        //console.log(result);
         assert.property(result, "error");
         assert.isNotNull(result.error);
     });
@@ -95,7 +109,7 @@ describe("Length", function () {
         };
         var validator = new Validator();
         var result = validator.validateAsClass(object, MyClass);
-        console.log(result);
+        //console.log(result);
         assert.property(result, "error");
         assert.isNull(result.error);
     });
@@ -112,8 +126,58 @@ describe("Length", function () {
         };
         var validator = new Validator();
         var result = validator.validateAsClass(object, MyClass);
-        console.log(result);
+        //console.log(result);
         assert.property(result, "error");
         assert.isNotNull(result.error);
+    });
+});
+
+describe("Alphanum", function () {
+    class MyClass {
+        @Alphanum()
+        @StringSchema()
+        myProperty : string;
+
+        constructor(myProperty : string) {
+            this.myProperty = myProperty;
+        }
+    }
+    const validator = new Validator();
+
+    it("should validate successful candidates", function () {
+        isValid(validator,
+            new MyClass("abcdEFG12390")
+        );
+    });
+
+    it("should validate failing candidates", function () {
+        isInvalid(validator,
+            new MyClass("!@#$")
+        );
+    });
+});
+
+describe("Min", function () {
+    class MyClass {
+        @Min(5)
+        @StringSchema()
+        myProperty : string;
+
+        constructor(myProperty : string) {
+            this.myProperty = myProperty;
+        }
+    }
+    const validator = new Validator();
+
+    it("should validate successful candidates", function () {
+        isValid(validator,
+            new MyClass("abcdEFG12390")
+        );
+    });
+
+    it("should validate failing candidates", function () {
+        isInvalid(validator,
+            new MyClass("!@#$")
+        );
     });
 });
