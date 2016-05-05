@@ -5,10 +5,10 @@ import {StringSchema} from "../../../src/constraints/string/StringSchema";
 import AssertStatic = Chai.AssertStatic;
 import * as Joi from "joi";
 import {ConstraintDefinitionError} from "../../../src/core";
-import {Length} from "../../../src/constraints/common/Length";
+import {Length} from "../../../src/constraints/string/Length";
 import {Validator} from "../../../src/Validator";
 import {Alphanum} from "../../../src/constraints/string/Alphanum";
-import {Min} from "../../../src/constraints/common/Min";
+import {Min} from "../../../src/constraints/string/Min";
 
 function isValid(validator : Validator, object : any) {
     var result = validator.validate(object);
