@@ -1,6 +1,7 @@
 {
   "name": "tsdv-joi",
   "version": "0.0.1",
+  "private": true,
   "description": "TypeScript Declarative Validation - Joi",
   "license": "MIT",
   "author": {
