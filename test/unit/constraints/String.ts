@@ -13,13 +13,13 @@ import {Min} from "../../../src/constraints/string/Min";
 function isValid(validator : Validator, object : any) {
     var result = validator.validate(object);
     assert.property(result, "error");
-    assert.isNull(result.error);
+    assert.isNull(result.error, "Validation should pass");
 }
 
 function isInvalid(validator : Validator, object : any) {
     var result = validator.validate(object);
     assert.property(result, "error");
-    assert.isNotNull(result.error);
+    assert.isNotNull(result.error, "Validation should fail");
 }
 
 describe("StringSchema", function () {
@@ -75,10 +75,7 @@ describe("Length, and core functionality", function () {
         var object = new MyClass();
         object.myProperty = "abcde";
         var validator = new Validator();
-        var result = validator.validate(object);
-        //console.log(result);
-        assert.property(result, "error");
-        assert.isNull(result.error);
+        isValid(validator, object);
     });
 
     it("should validate failing candidates", function () {
@@ -91,10 +88,7 @@ describe("Length, and core functionality", function () {
         var object = new MyClass();
         object.myProperty = "abc";
         var validator = new Validator();
-        var result = validator.validate(object);
-        //console.log(result);
-        assert.property(result, "error");
-        assert.isNotNull(result.error);
+        isInvalid(validator, object);
     });
 
     it("should validate successful candidate created from object literal", function () {
@@ -130,12 +124,23 @@ describe("Length, and core functionality", function () {
         assert.property(result, "error");
         assert.isNotNull(result.error);
     });
+
+    it("should create schema derived from property type, if no Joi type schema specified", function () {
+        class MyClass {
+            @Length(5)
+            myProperty : string;
+        }
+
+        let object = new MyClass();
+        object.myProperty = "abcde";
+        const validator = new Validator();
+        isValid(validator, object);
+    });
 });
 
 describe("Alphanum", function () {
     class MyClass {
         @Alphanum()
-        @StringSchema()
         myProperty : string;
 
         constructor(myProperty : string) {
@@ -160,7 +165,6 @@ describe("Alphanum", function () {
 describe("Min", function () {
     class MyClass {
         @Min(5)
-        @StringSchema()
         myProperty : string;
 
         constructor(myProperty : string) {

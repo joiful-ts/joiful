@@ -1,5 +1,7 @@
 import 'reflect-metadata';
 export const SCHEMA_KEY = "tsdv:schema";
+import Joi = require('joi');
+import {Schema} from "joi";
 
 export class ConstraintDefinitionError extends Error {
     name = "ConstraintDefinitionError";
@@ -31,11 +33,44 @@ export function updateSchema(target : Object, propertyKey : string|symbol, schem
 export function getAndUpdateSchema(target : Object, propertyKey : string|symbol, updateFunction : (schema : any) => any) {
     let schema = getPropertySchema(target, propertyKey);
     if (!schema) {
-        throw new ConstraintDefinitionError(`No validation schema exists for property: ${propertyKey}, please specify a type schema first.`);
-    } else {
-        schema = updateFunction(schema);
-        updateSchema(target, propertyKey, schema);
+        schema = guessTypeSchema(target, propertyKey);
     }
+    schema = updateFunction(schema);
+    updateSchema(target, propertyKey, schema);
+}
+
+function guessTypeSchema(target : Object, propertyKey : string|symbol) {
+    let propertyType = Reflect.getMetadata("design:type", target, propertyKey);
+    let schema : Schema = null;
+    switch (propertyType) {
+        case Array:
+            schema = Joi.array();
+            break;
+        case Boolean:
+            schema = Joi.boolean();
+            break;
+        case Date:
+            schema = Joi.date();
+            break;
+        case Function:
+            schema = Joi.func();
+            break;
+        case Number:
+            schema = Joi.number();
+            break;
+        case Object:
+            schema = Joi.object();
+            break;
+        case String:
+            schema = Joi.string();
+            break;
+        default:
+            break;
+    }
+    if (schema === null) {
+        throw new ConstraintDefinitionError(`No validation schema exists, nor could it be derived, for property "${propertyKey}". Please decorate the property with a type schema.`);
+    }
+    return schema;
 }
 
 export function allowTypes(target : any, propertyKey : string|symbol, types : Function[]) {
