@@ -16,7 +16,7 @@ export function Validate(validator : Validator) : MethodDecorator {
                 let argType = types[i];
                 let schema = Reflect.getMetadata(SCHEMA_KEY, argType.prototype);
                 if (schema) {
-                    let result = validator.validate(arg);
+                    let result = validator.validateAsClass(arg, argType);
                     if (result.error != null) {
                         failures.push(result.error);
                     }
