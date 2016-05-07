@@ -125,7 +125,7 @@ describe("Length, and core functionality", function () {
         assert.isNotNull(result.error);
     });
 
-    it("should create schema derived from property type, if no Joi type schema specified", function () {
+    it("should create Joi type schema derived from property type, if no type schema specified", function () {
         class MyClass {
             @Length(5)
             myProperty : string;
