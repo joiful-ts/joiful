@@ -8,6 +8,10 @@ Calling `Validator.validateAsClass()` allows you to validate any object as if it
 Be careful, methods could be missing from the resulting object, unless you specifically add function constraints to each
 method.
 
+## Installation
+
+You must enable experimental decorators and metadata in your TypeScript configuration.
+
 ## Usage
 
 ```
@@ -25,8 +29,6 @@ const validator = new Validator();
 var result = validator.validate(instance);
 console.log(result); // outputs the Joi returned value
 ```
-
-
 
 ## TODO:
 
