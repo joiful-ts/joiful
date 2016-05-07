@@ -44,3 +44,26 @@ export function allowTypes(target : any, propertyKey : string|symbol, types : Fu
         throw new ConstraintDefinitionError(`Constraint is not supported on property's type: ${propertyKey}`);
     }
 }
+
+export function verifyPeers(target : Object, peers : string[]) {
+    // Verify that the properties actually exist on the class.
+    let notFound : string[] = [];
+    for (let peer of peers) {
+        let type = Reflect.getMetadata("design:type", target, peer);
+        console.log(type);
+        if (type === undefined) {
+            notFound.push(peer);
+
+        }
+    }
+    if (notFound.length > 0) {
+        let peersString = notFound.map((v : string) => `"${ v }"`).join(', ');
+        let msg : string;
+        if (notFound.length == 1) {
+            msg = `Peer/property ${ peersString } does not exist.`;
+        } else {
+            msg = `Peers/properties ${ peersString } do not exist.`;
+        }
+        throw new ConstraintDefinitionError(msg);
+    }
+}

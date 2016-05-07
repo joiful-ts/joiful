@@ -2,8 +2,21 @@ import 'reflect-metadata';
 import {SCHEMA_KEY} from "./core";
 import * as Joi from "joi";
 import {ObjectSchema} from "joi";
+import {ValidationOptions} from "joi";
+
+// TODO: support using an instance of Joi supplied by the consuming app.
+// (To support extensions)
+// TODO: set default validation options
 
 export class Validator {
+    private defaultOptions : ValidationOptions;
+
+    constructor(
+        defaultOptions : ValidationOptions = null
+    ) {
+       this.defaultOptions = defaultOptions;
+    }
+
     protected getClassSchema(clz : Function) : ObjectSchema {
         var classSchema : any = Reflect.getMetadata(SCHEMA_KEY, clz.prototype);
         if (!classSchema['isJoi']) {
@@ -13,21 +26,27 @@ export class Validator {
         return <ObjectSchema> classSchema;
     }
 
-    validate(target : any) {
+    validate(target : any, options? : ValidationOptions) {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
 
         var classSchema : ObjectSchema = this.getClassSchema(target.constructor);
-        return Joi.validate(target, classSchema);
+        if (!options) {
+            options = this.defaultOptions;
+        }
+        return Joi.validate(target, classSchema, options);
     }
 
-    validateAsClass(target : any, clz : Function) {
+    validateAsClass(target : any, clz : Function, options? : ValidationOptions) {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
 
         var classSchema : ObjectSchema = this.getClassSchema(clz);
-        return Joi.validate(target, classSchema);
+        if (!options) {
+            options = this.defaultOptions;
+        }
+        return Joi.validate(target, classSchema, options);
     }
 }
