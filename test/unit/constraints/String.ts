@@ -9,18 +9,8 @@ import {Length} from "../../../src/constraints/string/Length";
 import {Validator} from "../../../src/Validator";
 import {Alphanum} from "../../../src/constraints/string/Alphanum";
 import {Min} from "../../../src/constraints/string/Min";
-
-function isValid(validator : Validator, object : any) {
-    var result = validator.validate(object);
-    assert.property(result, "error");
-    assert.isNull(result.error, "Validation should pass");
-}
-
-function isInvalid(validator : Validator, object : any) {
-    var result = validator.validate(object);
-    assert.property(result, "error");
-    assert.isNotNull(result.error, "Validation should fail");
-}
+import {isValid} from "../testUtil";
+import {isInvalid} from "../testUtil";
 
 describe("StringSchema", function () {
     class MyClass {

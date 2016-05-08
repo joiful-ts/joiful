@@ -6,18 +6,6 @@ import * as Joi from "joi";
 import {ConstraintDefinitionError} from "../../../src/core";
 import {Validator} from "../../../src/Validator";
 
-function isValid(validator : Validator, object : any) {
-    var result = validator.validate(object);
-    assert.property(result, "error");
-    assert.isNull(result.error);
-}
-
-function isInvalid(validator : Validator, object : any) {
-    var result = validator.validate(object);
-    assert.property(result, "error");
-    assert.isNotNull(result.error);
-}
-
 describe("And", function () {
     // TODO
     //class MyClass {
