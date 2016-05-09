@@ -2,13 +2,13 @@ import * as chai from "chai";
 import AssertStatic = Chai.AssertStatic;
 var assert : AssertStatic = chai.assert;
 import {SCHEMA_KEY} from "../../../src/core";
-import {StringSchema} from "../../../src/constraints/string/StringSchema";
+import {StringSchema} from "../../../src/constraints/string";
 import * as Joi from "joi";
 import {ConstraintDefinitionError} from "../../../src/core";
-import {Length} from "../../../src/constraints/string/Length";
+import {Length} from "../../../src/constraints/string";
 import {Validator} from "../../../src/Validator";
-import {Alphanum} from "../../../src/constraints/string/Alphanum";
-import {Min} from "../../../src/constraints/string/Min";
+import {Alphanum} from "../../../src/constraints/string";
+import {Min} from "../../../src/constraints/string";
 import {isValid} from "../testUtil";
 import {isInvalid} from "../testUtil";
 

@@ -2,7 +2,7 @@ import * as chai from "chai";
 import AssertStatic = Chai.AssertStatic;
 var assert : AssertStatic = chai.assert;
 import {Validator} from "../../src/Validator";
-import {Length} from "../../src/constraints/string/Length";
+import {Length} from "../../src/constraints/string";
 import {isValid} from "./testUtil";
 import {isInvalid} from "./testUtil";
 
