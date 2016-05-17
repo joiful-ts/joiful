@@ -39,6 +39,35 @@ export function getAndUpdateSchema(target : Object, propertyKey : string|symbol,
     updateSchema(target, propertyKey, schema);
 }
 
+export function constraintDecorator(allowedTypes : Function[], updateFunction : (schema : any) => any) : PropertyDecorator {
+    return function (target : Object, propertyKey : string | symbol) {
+        allowTypes(target, propertyKey, allowedTypes);
+        getAndUpdateSchema(target, propertyKey, updateFunction);
+    };
+}
+
+export function constraintDecoratorWithPeers(allowedTypes : Function[], peers : string[], updateFunction : (schema : any) => any) : PropertyDecorator {
+    return function (target : Object, propertyKey : string | symbol) {
+        allowTypes(target, propertyKey, allowedTypes);
+        verifyPeers(target, peers);
+        getAndUpdateSchema(target, propertyKey, updateFunction);
+    };
+}
+
+export function typeConstraintDecorator(allowedTypes : Function[], typeSchema : (Joi : any) => Schema) {
+    return function (target: Object, propertyKey: string | symbol) : void {
+        allowTypes(target, propertyKey, allowedTypes);
+
+        let schema = getPropertySchema(target, propertyKey);
+        if (schema) {
+            throw new ConstraintDefinitionError(`A validation schema already exists for property: ${propertyKey}`);
+        } else {
+            schema = typeSchema(Joi);
+            updateSchema(target, propertyKey, schema);
+        }
+    }
+}
+
 function guessTypeSchema(target : Object, propertyKey : string|symbol) {
     let propertyType = Reflect.getMetadata("design:type", target, propertyKey);
     let schema : Schema = null;
@@ -73,10 +102,17 @@ function guessTypeSchema(target : Object, propertyKey : string|symbol) {
     return schema;
 }
 
+/**
+ * @param target
+ * @param propertyKey
+ * @param types - the constructors for allowed classes. If empty, all types are allowed.
+ */
 export function allowTypes(target : any, propertyKey : string|symbol, types : Function[]) {
-    let propertyType = Reflect.getMetadata("design:type", target, propertyKey);
-    if (types.indexOf(propertyType) == -1) {
-        throw new ConstraintDefinitionError(`Constraint is not supported on property's type: ${propertyKey}`);
+    if (types && types.length > 0) {
+        let propertyType = Reflect.getMetadata("design:type", target, propertyKey);
+        if (types.indexOf(propertyType) == -1) {
+            throw new ConstraintDefinitionError(`Constraint is not supported on property's type: ${propertyKey}`);
+        }
     }
 }
 
