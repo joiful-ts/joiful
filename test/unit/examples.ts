@@ -27,6 +27,8 @@ describe('Examples', function () {
         instance.myProperty = "abcde";
 
         isValid(validator, instance);
+
+        //instance.myMethod();
     });
 
     it('class with unvalidated properties', function () {

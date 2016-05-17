@@ -40,9 +40,9 @@ export function Min(limit : number) : PropertyDecorator {
 /**
  * List the types in sequence order for the array values..
  */
-export function Ordered(...type : Schema[]) : PropertyDecorator {
+export function Ordered(...types : Schema[]) : PropertyDecorator {
     return constraintDecorator([Array], (schema : ArraySchema) => {
-        return schema.ordered(type);
+        return schema.ordered.apply(schema, types); // hmm?
     });
 }
 
