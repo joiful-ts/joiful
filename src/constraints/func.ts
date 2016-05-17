@@ -1,31 +1,27 @@
 import {typeConstraintDecorator} from "../core";
 import {constraintDecorator} from "../core";
-
-declare type FuncSchema = any; // TODO
+import {FunctionSchema} from "joi";
 
 export function Arity(n : number) : PropertyDecorator {
-    return constraintDecorator([Function], (schema : FuncSchema) => {
-        // TODO: add arity to Joi type definitions
+    return constraintDecorator([Function], (schema : FunctionSchema) => {
         return schema.arity(n);
     });
 }
 
 export function FuncSchema() : PropertyDecorator {
-    return typeConstraintDecorator([Function], (Joi : { func : () => FuncSchema }) => {
+    return typeConstraintDecorator([Function], (Joi : { func : () => FunctionSchema }) => {
         return Joi.func();
     });
 }
 
 export function MaxArity(n : number) : PropertyDecorator {
-    return constraintDecorator([Function], (schema : FuncSchema) => {
-        // TODO: add maxArity to Joi type definitions
+    return constraintDecorator([Function], (schema : FunctionSchema) => {
         return schema.maxArity(n);
     });
 }
 
 export function MinArity(n : number) : PropertyDecorator {
-    return constraintDecorator([Function], (schema : FuncSchema) => {
-        // TODO: add minArity to Joi type definitions
+    return constraintDecorator([Function], (schema : FunctionSchema) => {
         return schema.minArity(n);
     });
 }

@@ -34,8 +34,7 @@ export function Min(limit : number|'now'|string|Date|Reference) : PropertyDecora
 }
 
 export function Timestamp(type? : 'unix'|'javascript') : PropertyDecorator {
-    return constraintDecorator([Date, String], (schema : any) => {
-        // TODO: add timestamp to Joi type defintions
+    return constraintDecorator([Date, String], (schema : DateSchema) => {
         return schema.timestamp(type);
     });
 }

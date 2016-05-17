@@ -1,7 +1,12 @@
 import 'reflect-metadata';
 export const SCHEMA_KEY = "tsdv:schema";
-import Joi = require('joi');
 import {Schema} from "joi";
+
+export var Joi : any; // TODO: proper interface
+
+export function registerJoi(joi : any) {
+    Joi = joi;
+}
 
 export class ConstraintDefinitionError extends Error {
     name = "ConstraintDefinitionError";

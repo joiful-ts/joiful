@@ -1,6 +1,6 @@
 {
   "ambientDependencies": {
-    "joi": "registry:dt/joi#6.5.0+20160324101820"
+    "joi": "registry:dt/joi#9.0.0+20160514175131"
   },
   "ambientDevDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160317120654",

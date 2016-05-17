@@ -11,6 +11,9 @@ import {Alphanum} from "../../../src/constraints/string";
 import {Min} from "../../../src/constraints/string";
 import {isValid} from "../testUtil";
 import {isInvalid} from "../testUtil";
+import {registerJoi} from "../../../src/core";
+
+registerJoi(Joi);
 
 describe("StringSchema", function () {
     class MyClass {

@@ -1,6 +1,5 @@
 import 'reflect-metadata';
-import {SCHEMA_KEY} from "./core";
-import * as Joi from "joi";
+import {SCHEMA_KEY, Joi} from "./core";
 import {ObjectSchema} from "joi";
 import {ValidationOptions} from "joi";
 

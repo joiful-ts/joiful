@@ -41,8 +41,7 @@ export function Min(limit : number) : PropertyDecorator {
  * List the types in sequence order for the array values..
  */
 export function Ordered(...type : Schema[]) : PropertyDecorator {
-    return constraintDecorator([Array], (schema : any) => {
-        // TODO: add ordered to the Joi type definitions
+    return constraintDecorator([Array], (schema : ArraySchema) => {
         return schema.ordered(type);
     });
 }

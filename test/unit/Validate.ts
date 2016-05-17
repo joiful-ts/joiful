@@ -5,6 +5,10 @@ import {Validator} from "../../src/Validator";
 import {Length} from "../../src/constraints/string";
 import {Validate} from "../../src/Validate";
 import {MultipleValidationError} from "../../src/MultipleValidationError";
+import {registerJoi} from "../../src/core";
+import * as Joi from "joi";
+
+registerJoi(Joi);
 
 describe('Validate', function () {
    it('decorates a target method', function () {

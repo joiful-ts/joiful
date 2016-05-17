@@ -5,6 +5,10 @@ import {Validator} from "../../src/Validator";
 import {Length} from "../../src/constraints/string";
 import {isValid} from "./testUtil";
 import {isInvalid} from "./testUtil";
+import {registerJoi} from "../../src/core";
+import * as Joi from "joi";
+
+registerJoi(Joi);
 
 describe('Examples', function () {
     it('class with methods', function () {
