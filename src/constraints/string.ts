@@ -40,7 +40,7 @@ export function Hostname() : PropertyDecorator {
     });
 }
 
-export function Ip(options : IpOptions) : PropertyDecorator {
+export function Ip(options? : IpOptions) : PropertyDecorator {
     return constraintDecorator([String], (schema : StringSchema) => {
         return schema.ip(options);
     });
@@ -76,9 +76,17 @@ export function Min(limit : number|Reference, encoding? : string) : PropertyDeco
     });
 }
 
-export function Replace(pattern : RegExp, name? : string) : PropertyDecorator {
+export function RegexConstraint(pattern : RegExp, name? : string) : PropertyDecorator {
     return constraintDecorator([String], (schema : StringSchema) => {
         return schema.regex(pattern, name);
+    });
+}
+
+export const Pattern = RegexConstraint;
+
+export function Replace(pattern : RegExp, replacement : string) : PropertyDecorator {
+    return constraintDecorator([String], (schema : StringSchema) => {
+        return schema.replace(pattern, replacement);
     });
 }
 
@@ -106,7 +114,8 @@ export function Uppercase() : PropertyDecorator {
     });
 }
 
-export function Uri(options : UriOptions) : PropertyDecorator {
+// TODO: update Joi UriOptions to support "allowRelative" option.
+export function Uri(options? : UriOptions) : PropertyDecorator {
     return constraintDecorator([String], (schema : StringSchema) => {
         return schema.uri(options);
     });
