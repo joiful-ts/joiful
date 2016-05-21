@@ -16,7 +16,7 @@
   ],
   "main": "main.js",
   "scripts": {
-    "pretest": "tsc",
+    "pretest": "rimraf build && tsc",
     "test": "mocha build/es5/test/**/*.js"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "chai": "^3.5.0",
     "joi": "9.0.0-1",
     "mocha": "^2.4.5",
+    "rimraf": "2.5.2",
     "typescript": "^1.8.7",
     "typings": "^0.8.1"
   }
