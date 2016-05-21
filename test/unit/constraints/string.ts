@@ -12,6 +12,8 @@ import {Min} from "../../../src/constraints/string";
 import {isValid} from "../testUtil";
 import {isInvalid} from "../testUtil";
 import {registerJoi} from "../../../src/core";
+import {testConstraint} from "../testUtil";
+import {CreditCard} from "../../../src/constraints/string";
 
 registerJoi(Joi);
 
@@ -132,49 +134,52 @@ describe("Length, and core functionality", function () {
 });
 
 describe("Alphanum", function () {
-    class MyClass {
-        @Alphanum()
-        myProperty : string;
+    testConstraint<string>(() => {
+            class MyClass {
+                @Alphanum()
+                myProperty:string;
 
-        constructor(myProperty : string) {
-            this.myProperty = myProperty;
-        }
-    }
-    const validator = new Validator();
+                constructor(myProperty:string) {
+                    this.myProperty = myProperty;
+                }
+            }
+            return MyClass;
+        },
+        ["abcdEFG12390"],
+        ["!@#$"]
+    );
+});
 
-    it("should validate successful candidates", function () {
-        isValid(validator,
-            new MyClass("abcdEFG12390")
-        );
-    });
+describe("CreditCard", function () {
+    testConstraint<string>(() => {
+            class MyClass {
+                @CreditCard()
+                myProperty : string;
 
-    it("should validate failing candidates", function () {
-        isInvalid(validator,
-            new MyClass("!@#$")
-        );
-    });
+                constructor(myProperty:string) {
+                    this.myProperty = myProperty;
+                }
+            }
+            return MyClass;
+        },
+        ["4444333322221111"],
+        ["abcd", "1234", "4444-3333-2222-1111"]
+    );
 });
 
 describe("Min", function () {
-    class MyClass {
-        @Min(5)
-        myProperty : string;
+    testConstraint<string>(() => {
+            class MyClass {
+                @Min(5)
+                myProperty : string;
 
-        constructor(myProperty : string) {
-            this.myProperty = myProperty;
-        }
-    }
-    const validator = new Validator();
-
-    it("should validate successful candidates", function () {
-        isValid(validator,
-            new MyClass("abcdEFG12390")
-        );
-    });
-
-    it("should validate failing candidates", function () {
-        isInvalid(validator,
-            new MyClass("!@#$")
-        );
-    });
+                constructor(myProperty : string) {
+                    this.myProperty = myProperty;
+                }
+            }
+            return MyClass;
+        },
+        ["abcdEFG12390"],
+        ["!@#$"]
+    );
 });
