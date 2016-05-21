@@ -537,7 +537,7 @@ describe("String constraints", function () {
             }
         }
 
-        describe("without converstion", () => {
+        describe("without conversion", () => {
             testConstraint<string>(
                 () => MyClass,
                 ["ABCD!@#"],
@@ -548,7 +548,7 @@ describe("String constraints", function () {
             );
         });
 
-        describe("with converstion", () => {
+        describe("with conversion", () => {
             testConversion<string>(
                 () => MyClass,
                 (obj : MyClass) => obj.myProperty,
