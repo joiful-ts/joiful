@@ -9,12 +9,6 @@ export function DateSchema() : PropertyDecorator {
     });
 }
 
-export function Format(format : string|string[]) : PropertyDecorator {
-    return constraintDecorator([Date, String], (schema : DateSchema) => {
-        return schema.format(<any>format);
-    });
-}
-
 export function Iso() : PropertyDecorator {
     return constraintDecorator([Date, String], (schema : DateSchema) => {
         return schema.iso();
