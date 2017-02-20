@@ -7,7 +7,7 @@ const assert : AssertStatic = chai.assert;
 export function isValid(validator : Validator, object : any) {
     const result = validator.validate(object);
     assert.property(result, "error");
-    assert.isNull(result.error, "Validation should pass");
+    assert.isNull(result.error, `Validation should pass, but got error: ${ result.error }`);
 }
 
 export function isInvalid(validator : Validator, object : any) {

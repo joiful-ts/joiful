@@ -116,9 +116,9 @@ function guessTypeSchema(target : Object, propertyKey : string|symbol) {
  */
 export function allowTypes(target : any, propertyKey : string|symbol, types : Function[]) {
     if (types && types.length > 0) {
-        let propertyType = Reflect.getMetadata("design:type", target, propertyKey);
+        const propertyType = Reflect.getMetadata("design:type", target, propertyKey);
         if (types.indexOf(propertyType) == -1) {
-            throw new ConstraintDefinitionError(`Constraint is not supported on property's type: ${propertyKey}`);
+            throw new ConstraintDefinitionError(`Constrained property "${ propertyKey }" has an unsupported type. Wanted ${ types.map((t) => '"' + (<any> t).name + '"').join(' or ') }, found "${ propertyType.name }"`);
         }
     }
 }
