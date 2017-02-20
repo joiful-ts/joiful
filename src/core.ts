@@ -11,7 +11,7 @@ export function registerJoi(joi : any) {
 export class ConstraintDefinitionError extends Error {
     name = "ConstraintDefinitionError";
 
-    constructor(public message? : string) {
+    constructor(public message : string) {
         super(message);
     }
 }
