@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsc",
     "pretest": "rimraf build && tsc",
-    "test": "mocha build/es5/test/**/*.js",
+    "test": "mocha --require source-map-support/register build/es5/test/**/*.js",
     "watch": "tsc -w"
   },
   "dependencies": {
@@ -32,11 +32,13 @@
     "@types/chai": "3.4.35",
     "@types/joi": "10.0.0",
     "@types/mocha": "2.2.39",
+    "@types/node": "6.0.63",
     "@types/rimraf": "0.0.28",
     "chai": "3.5.0",
     "joi": "10.2.2",
     "mocha": "3.2.0",
     "rimraf": "2.6.0",
+    "source-map-support": "0.4.11",
     "typescript": "2.1.6"
   }
 }

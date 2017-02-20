@@ -5,5 +5,7 @@ export class MultipleValidationError extends Error {
         private errors : ValidationError[]
     ) {
         super();
+
+        (<any> Object).setPrototypeOf(this, MultipleValidationError.prototype);
     }
 }

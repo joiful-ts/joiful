@@ -13,6 +13,8 @@ export class ConstraintDefinitionError extends Error {
 
     constructor(public message : string) {
         super(message);
+
+        (<any> Object).setPrototypeOf(this, ConstraintDefinitionError.prototype);
     }
 }
 
