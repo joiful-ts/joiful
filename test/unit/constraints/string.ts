@@ -1,6 +1,6 @@
 import * as chai from "chai";
 import AssertStatic = Chai.AssertStatic;
-var assert : AssertStatic = chai.assert;
+const assert : AssertStatic = chai.assert;
 import {SCHEMA_KEY} from "../../../src/core";
 import {StringSchema} from "../../../src/constraints/string";
 import * as Joi from "joi";
@@ -43,8 +43,8 @@ describe("String constraints", function () {
         }
 
         it("should annotate the class property", function () {
-            var metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype);
-            var expected = {
+            const metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype);
+            const expected = {
                 myProperty: Joi.string(),
                 myOtherProperty: Joi.string()
             };
@@ -69,8 +69,8 @@ describe("String constraints", function () {
                 myProperty : string;
             }
 
-            var metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype);
-            var expected : any = {
+            const metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype);
+            const expected : any = {
                 myProperty: Joi.string().length(5)
             };
             assert.equal(JSON.stringify(metadata), JSON.stringify(expected));
@@ -83,9 +83,9 @@ describe("String constraints", function () {
                 myProperty : string;
             }
 
-            var object = new MyClass();
+            const object = new MyClass();
             object.myProperty = "abcde";
-            var validator = new Validator();
+            const validator = new Validator();
             isValid(validator, object);
         });
 
@@ -96,9 +96,9 @@ describe("String constraints", function () {
                 myProperty : string;
             }
 
-            var object = new MyClass();
+            const object = new MyClass();
             object.myProperty = "abc";
-            var validator = new Validator();
+            const validator = new Validator();
             isInvalid(validator, object);
         });
 
@@ -109,11 +109,11 @@ describe("String constraints", function () {
                 myProperty : string;
             }
 
-            var object = {
+            const object = {
                 myProperty: "abcde"
             };
-            var validator = new Validator();
-            var result = validator.validateAsClass(object, MyClass);
+            const validator = new Validator();
+            const result = validator.validateAsClass(object, MyClass);
             //console.log(result);
             assert.property(result, "error");
             assert.isNull(result.error);
@@ -126,11 +126,11 @@ describe("String constraints", function () {
                 myProperty : string;
             }
 
-            var object = {
+            const object = {
                 myProperty: "abc"
             };
-            var validator = new Validator();
-            var result = validator.validateAsClass(object, MyClass);
+            const validator = new Validator();
+            const result = validator.validateAsClass(object, MyClass);
             //console.log(result);
             assert.property(result, "error");
             assert.isNotNull(result.error);

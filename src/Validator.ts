@@ -30,7 +30,7 @@ export class Validator {
             throw new Error("Can't validate null objects");
         }
 
-        var classSchema : ObjectSchema = this.getClassSchema(target.constructor);
+        const classSchema : ObjectSchema = this.getClassSchema(target.constructor);
         if (!options) {
             options = this.defaultOptions;
         }
@@ -42,7 +42,7 @@ export class Validator {
             throw new Error("Can't validate null objects");
         }
 
-        var classSchema : ObjectSchema = this.getClassSchema(clz);
+        const classSchema : ObjectSchema = this.getClassSchema(clz);
         if (!options) {
             options = this.defaultOptions;
         }

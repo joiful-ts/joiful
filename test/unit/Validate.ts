@@ -1,6 +1,6 @@
 import * as chai from "chai";
 import AssertStatic = Chai.AssertStatic;
-var assert : AssertStatic = chai.assert;
+const assert : AssertStatic = chai.assert;
 import {Validator} from "../../src/Validator";
 import {Length} from "../../src/constraints/string";
 import {Validate} from "../../src/Validate";
@@ -12,7 +12,7 @@ registerJoi(Joi);
 
 describe('Validate', function () {
    it('decorates a target method', function () {
-       var validator = new Validator();
+       const validator = new Validator();
 
        class ClassToValidate {
            @Length(5)
@@ -27,10 +27,10 @@ describe('Validate', function () {
            }
        }
 
-       var instance = new ClassToValidate();
+       const instance = new ClassToValidate();
        instance.myProperty = "abc";
 
-       var outer = new OuterClass();
+       const outer = new OuterClass();
        assert.throws(function () {
            outer.run(instance, 5);
        }, MultipleValidationError);

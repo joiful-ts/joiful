@@ -1,6 +1,6 @@
 import * as chai from "chai";
 import AssertStatic = Chai.AssertStatic;
-var assert : AssertStatic = chai.assert;
+const assert : AssertStatic = chai.assert;
 import {Validator} from "../../src/Validator";
 import {Length} from "../../src/constraints/string";
 import {isValid} from "./testUtil";
@@ -12,7 +12,7 @@ registerJoi(Joi);
 
 describe('Examples', function () {
     it('class with methods', function () {
-        var validator = new Validator();
+        const validator = new Validator();
 
         class ClassToValidate {
             @Length(5)
@@ -23,7 +23,7 @@ describe('Examples', function () {
             }
         }
 
-        var instance = new ClassToValidate();
+        const instance = new ClassToValidate();
         instance.myProperty = "abcde";
 
         isValid(validator, instance);
@@ -32,7 +32,7 @@ describe('Examples', function () {
     });
 
     it('class with unvalidated properties', function () {
-        var validator = new Validator();
+        const validator = new Validator();
 
         class ClassToValidate {
             @Length(5)
@@ -41,7 +41,7 @@ describe('Examples', function () {
             public myOtherProperty : string;
         }
 
-        var instance = new ClassToValidate();
+        const instance = new ClassToValidate();
         instance.myProperty = "abcde";
         instance.myOtherProperty = "abcde";
 
@@ -49,7 +49,7 @@ describe('Examples', function () {
     });
 
     it('class with static properties', function () {
-        var validator = new Validator();
+        const validator = new Validator();
 
         class ClassToValidate {
             static STATIC_PROPERTY = "bloop";
@@ -59,7 +59,7 @@ describe('Examples', function () {
 
         }
 
-        var instance = new ClassToValidate();
+        const instance = new ClassToValidate();
         instance.myProperty = "abcde";
 
         isValid(validator, instance);

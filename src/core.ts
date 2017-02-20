@@ -2,7 +2,7 @@ import 'reflect-metadata';
 export const SCHEMA_KEY = "tsdv:schema";
 import {Schema} from "joi";
 
-export var Joi : any; // TODO: proper interface
+export let Joi : any; // TODO: proper interface
 
 export function registerJoi(joi : any) {
     Joi = joi;
@@ -17,7 +17,7 @@ export class ConstraintDefinitionError extends Error {
 }
 
 export function getClassSchema(target : Object) : { [index : string] : any } {
-    var classSchema : { [index : string] : any } = Reflect.getMetadata(SCHEMA_KEY, target);
+    let classSchema : { [index : string] : any } = Reflect.getMetadata(SCHEMA_KEY, target);
     if (!classSchema) {
         classSchema = {};
         Reflect.defineMetadata(SCHEMA_KEY, classSchema, target);
@@ -26,12 +26,12 @@ export function getClassSchema(target : Object) : { [index : string] : any } {
 }
 
 export function getPropertySchema(target : Object, propertyKey : string|symbol) {
-    var classSchema = getClassSchema(target);
+    const classSchema = getClassSchema(target);
     return classSchema[propertyKey];
 }
 
 export function updateSchema(target : Object, propertyKey : string|symbol, schema : any) {
-    var classSchema = getClassSchema(target);
+    const classSchema = getClassSchema(target);
     classSchema[propertyKey] = schema;
 }
 

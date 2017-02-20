@@ -2,7 +2,7 @@ import * as chai from "chai";
 import AssertStatic = Chai.AssertStatic;
 import {Validator} from "../../src/Validator";
 import {ValidationOptions} from "joi";
-var assert : AssertStatic = chai.assert;
+const assert : AssertStatic = chai.assert;
 
 export function isValid(validator : Validator, object : any) {
     const result = validator.validate(object);
@@ -25,7 +25,7 @@ export function testConstraint<T>(
     const validator = new Validator(validationOptions);
 
     it("should validate successful candidates", () => {
-        var clz = classFactory();
+        const clz = classFactory();
         for (let val of valid) {
             let instance = new clz(val);
             isValid(validator, instance);
@@ -33,7 +33,7 @@ export function testConstraint<T>(
     });
 
     it("should invalidate successful candidates", () => {
-        var clz = classFactory();
+        const clz = classFactory();
         for (let val of invalid) {
             let instance = new clz(val);
             isInvalid(validator, instance);
