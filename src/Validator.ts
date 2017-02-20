@@ -8,10 +8,10 @@ import {ValidationOptions} from "joi";
 // TODO: set default validation options
 
 export class Validator {
-    private defaultOptions : ValidationOptions;
+    private defaultOptions : ValidationOptions | undefined;
 
     constructor(
-        defaultOptions : ValidationOptions = null
+        defaultOptions? : ValidationOptions
     ) {
        this.defaultOptions = defaultOptions;
     }

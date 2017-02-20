@@ -1,5 +1,5 @@
 {
-  "version": "1.8.7",
+  "version": "2.1.6",
   "compilerOptions": {
     "outDir": "build/es5",
     "target": "es5",
@@ -9,6 +9,11 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "noImplicitAny": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": false,
     "declaration": true
   },
   "exclude": [

@@ -1,5 +1,4 @@
 import * as Joi from "joi";
-import {allowTypes, getAndUpdateSchema, getPropertySchema, updateSchema, SCHEMA_KEY, ConstraintDefinitionError} from "../core";
 import {EmailOptions, IpOptions, Reference, StringSchema, UriOptions} from "joi";
 import {constraintDecorator} from "../core";
 import {typeConstraintDecorator} from "../core";

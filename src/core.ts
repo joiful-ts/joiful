@@ -75,9 +75,9 @@ export function typeConstraintDecorator(allowedTypes : Function[], typeSchema : 
     }
 }
 
-function guessTypeSchema(target : Object, propertyKey : string|symbol) {
+function guessTypeSchema(target : Object, propertyKey : string|symbol) : Schema{
     let propertyType = Reflect.getMetadata("design:type", target, propertyKey);
-    let schema : Schema = null;
+    let schema : Schema | undefined = undefined;
     switch (propertyType) {
         case Array:
             schema = Joi.array();
@@ -103,7 +103,7 @@ function guessTypeSchema(target : Object, propertyKey : string|symbol) {
         default:
             break;
     }
-    if (schema === null) {
+    if (schema === undefined) {
         throw new ConstraintDefinitionError(`No validation schema exists, nor could it be derived, for property "${propertyKey}". Please decorate the property with a type schema.`);
     }
     return schema;
