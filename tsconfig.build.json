@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.base",
+  "files": [
+    "src/main.ts"
+  ]
+}

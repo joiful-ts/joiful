@@ -18,12 +18,14 @@
     "node": "~6.9.1",
     "npm": "~3.10.10"
   },
-  "main": "main.js",
+  "main": "build/es5/src/main.js",
+  "types": "build/es5/src/main.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "pretest": "rimraf build && tsc",
+    "postinstall": "npm build",
     "test": "mocha --require source-map-support/register build/es5/test/**/*.js",
-    "watch": "tsc -w"
+    "watch": "tsc -p tsconfig.all.json -w"
   },
   "dependencies": {
     "reflect-metadata": "0.1.9"
