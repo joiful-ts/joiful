@@ -18,8 +18,8 @@
     "node": "~6.9.1",
     "npm": "~3.10.10"
   },
-  "main": "build/es5/src/main.js",
-  "types": "build/es5/src/main.d.ts",
+  "main": "build/es5/main.js",
+  "types": "build/es5/main.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "pretest": "rimraf build && tsc",
