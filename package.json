@@ -23,7 +23,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "pretest": "rimraf build && tsc",
-    "postinstall": "npm build",
+    "postinstall": "tsc -p tsconfig.build.json",
     "test": "mocha --require source-map-support/register build/es5/test/**/*.js",
     "watch": "tsc -p tsconfig.all.json -w"
   },
