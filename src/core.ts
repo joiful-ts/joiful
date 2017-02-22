@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 export const SCHEMA_KEY = "tsdv:schema";
-import {Schema} from "joi";
+import {Schema, ObjectSchema} from "joi";
 
 export let Joi : any; // TODO: proper interface
 
@@ -25,6 +25,15 @@ export function getClassSchema(target : Object) : { [index : string] : any } {
         Reflect.defineMetadata(SCHEMA_KEY, classSchema, target);
     }
     return classSchema;
+}
+
+export function getJoiSchema(clz : Function) : ObjectSchema {
+    let classSchema : any = Reflect.getMetadata(SCHEMA_KEY, clz.prototype);
+    if (!classSchema['isJoi']) {
+        classSchema = Joi.object().keys(classSchema);
+        Reflect.defineMetadata(SCHEMA_KEY, classSchema, clz.prototype);
+    }
+    return <ObjectSchema> classSchema;
 }
 
 export function getPropertySchema(target : Object, propertyKey : string|symbol) {
