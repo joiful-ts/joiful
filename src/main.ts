@@ -1,5 +1,6 @@
 import core = require('./core');
 import {MultipleValidationError} from './MultipleValidationError';
+import {Nested} from './Nested';
 import {Validate} from './Validate';
 import {Validator} from './Validator';
 
@@ -15,6 +16,7 @@ import string = require('./constraints/string');
 export = {
     core,
     MultipleValidationError,
+    Nested,
     Validate,
     Validator,
 

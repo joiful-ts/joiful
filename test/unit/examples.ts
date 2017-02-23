@@ -2,11 +2,12 @@ import * as chai from "chai";
 import AssertStatic = Chai.AssertStatic;
 const assert : AssertStatic = chai.assert;
 import {Validator} from "../../src/Validator";
-import {Length} from "../../src/constraints/string";
+import {Length, StringSchema} from "../../src/constraints/string";
 import {isValid} from "./testUtil";
 import {isInvalid} from "./testUtil";
 import {registerJoi} from "../../src/core";
 import * as Joi from "joi";
+import {Nested} from "../../src/Nested";
 
 registerJoi(Joi);
 
@@ -63,5 +64,29 @@ describe('Examples', function () {
         instance.myProperty = "abcde";
 
         isValid(validator, instance);
+    });
+
+    it('nested class', function () {
+        const validator = new Validator();
+
+        class InnerClass {
+            @StringSchema()
+            public innerProperty : string;
+        }
+
+        class ClassToValidate {
+            @Nested()
+            public myProperty : InnerClass;
+        }
+
+        const instance = new ClassToValidate();
+        instance.myProperty = {
+            innerProperty: "abcde"
+        };
+
+        isValid(validator, instance);
+
+        instance.myProperty.innerProperty = <any> 1234;
+        isInvalid(validator, instance);
     });
 });
