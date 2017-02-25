@@ -1,8 +1,5 @@
-import {ArraySchema} from "joi";
-import {Reference} from "joi";
-import {Schema} from "joi";
-import {typeConstraintDecorator} from "../core";
-import {constraintDecorator} from "../core";
+import {ArraySchema, Schema} from "joi";
+import {typeConstraintDecorator, constraintDecorator} from "../core";
 
 export function ArraySchema() : PropertyDecorator {
     return typeConstraintDecorator([Array], (Joi : { array : () => ArraySchema }) => {

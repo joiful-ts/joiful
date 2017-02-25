@@ -1,5 +1,4 @@
-import {typeConstraintDecorator} from "../core";
-import {constraintDecorator} from "../core";
+import {typeConstraintDecorator, constraintDecorator} from "../core";
 import {FunctionSchema} from "joi";
 
 export function Arity(n : number) : PropertyDecorator {

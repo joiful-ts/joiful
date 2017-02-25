@@ -1,7 +1,5 @@
 import {ObjectSchema, Reference, RenameOptions, Schema, SchemaMap} from "joi";
-import {constraintDecorator} from "../core";
-import {constraintDecoratorWithPeers} from "../core";
-import {typeConstraintDecorator} from "../core";
+import {constraintDecorator, constraintDecoratorWithPeers, typeConstraintDecorator} from "../core";
 
 // NOTE: peers should really also accept a string type.
 export function And(...peers : string[]) : PropertyDecorator {

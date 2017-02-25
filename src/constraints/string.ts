@@ -1,7 +1,5 @@
-import * as Joi from "joi";
 import {EmailOptions, IpOptions, Reference, StringSchema, UriOptions} from "joi";
-import {constraintDecorator} from "../core";
-import {typeConstraintDecorator} from "../core";
+import {constraintDecorator, typeConstraintDecorator} from "../core";
 
 export function Alphanum() : PropertyDecorator {
     return constraintDecorator([String], (schema : StringSchema) => {

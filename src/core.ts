@@ -1,8 +1,9 @@
-import 'reflect-metadata';
-export const SCHEMA_KEY = "tsdv:schema";
+import "reflect-metadata";
 import {Schema, ObjectSchema} from "joi";
+import JoiType = require("joi");
 
-export let Joi : any; // TODO: proper interface
+export const SCHEMA_KEY = "tsdv:schema";
+export let Joi : typeof JoiType; // TODO: proper interface
 
 export function registerJoi(joi : any) {
     Joi = joi;

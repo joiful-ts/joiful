@@ -1,7 +1,6 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 import {Joi, getJoiSchema} from "./core";
-import {ObjectSchema} from "joi";
-import {ValidationOptions} from "joi";
+import {ObjectSchema, ValidationOptions, ValidationResult} from "joi";
 
 export class Validator {
     constructor(
@@ -9,19 +8,14 @@ export class Validator {
     ) {
     }
 
-    validate(target : any, options? : ValidationOptions) {
+    validate<T>(target : T, options? : ValidationOptions) : ValidationResult<T> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
-
-        const classSchema : ObjectSchema = getJoiSchema(target.constructor);
-        if (!options) {
-            options = this.defaultOptions;
-        }
-        return Joi.validate(target, classSchema, options);
+        return this.validateAsClass(target, target.constructor, options);
     }
 
-    validateAsClass(target : any, clz : Function, options? : ValidationOptions) {
+    validateAsClass<T>(target : T, clz : Function, options? : ValidationOptions) : ValidationResult<T> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
@@ -30,6 +24,10 @@ export class Validator {
         if (!options) {
             options = this.defaultOptions;
         }
-        return Joi.validate(target, classSchema, options);
+        if (options !== undefined) { // avoid strict null check issue in TypeScript
+            return Joi.validate(target, classSchema, options);
+        } else {
+            return Joi.validate(target, classSchema);
+        }
     }
 }

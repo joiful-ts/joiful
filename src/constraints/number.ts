@@ -1,7 +1,5 @@
-import {Reference} from "joi";
-import {NumberSchema} from "joi";
-import {constraintDecorator} from "../core";
-import {typeConstraintDecorator} from "../core";
+import {Reference, NumberSchema} from "joi";
+import {constraintDecorator, typeConstraintDecorator} from "../core";
 
 export function Greater(limit : number|Reference) : PropertyDecorator {
     return constraintDecorator([Number], (schema : NumberSchema) => {

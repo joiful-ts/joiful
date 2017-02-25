@@ -1,7 +1,4 @@
-import {
-    getJoiSchema,
-    updateSchema
-} from "./core";
+import {getJoiSchema, updateSchema} from "./core";
 
 export function Nested() : PropertyDecorator {
     return function (target : Object, propertyKey : string | symbol) {

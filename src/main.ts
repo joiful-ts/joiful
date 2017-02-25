@@ -1,8 +1,8 @@
 import core = require('./core');
-import {MultipleValidationError} from './MultipleValidationError';
-import {Nested} from './Nested';
-import {Validate} from './Validate';
-import {Validator} from './Validator';
+import {MultipleValidationError} from "./MultipleValidationError";
+import {Nested} from "./Nested";
+import {Validate} from "./Validate";
+import {Validator} from "./Validator";
 
 import any = require('./constraints/any');
 import array = require('./constraints/array');

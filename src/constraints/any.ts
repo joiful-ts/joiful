@@ -1,9 +1,5 @@
-import {Reference} from "joi";
-import {Schema} from "joi";
-import {ValidationOptions} from "joi";
-import {WhenOptions} from "joi";
-import {constraintDecorator} from "../core";
-import {typeConstraintDecorator} from "../core";
+import {Reference, Schema, ValidationOptions, WhenOptions} from "joi";
+import {constraintDecorator, typeConstraintDecorator} from "../core";
 
 export function Allow(...values : any[]) : PropertyDecorator {
     return constraintDecorator([], (schema : Schema) => {
