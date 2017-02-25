@@ -193,7 +193,7 @@ export namespace AnyConstraints {
     /**
      * Converts the type into an alternatives type where the conditions are merged into the type definition.
      */
-    export function When<T>(ref : string|Reference, options : WhenOptions<T>) : PropertyDecorator {
+    export function When<T>(ref : string | Reference, options : WhenOptions<T>) : PropertyDecorator {
         return constraintDecorator([], (schema : Schema) => {
             return schema.when<T>(<any>ref, options);
         });

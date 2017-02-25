@@ -2,7 +2,7 @@ import {Reference, NumberSchema} from "joi";
 import {constraintDecorator, typeConstraintDecorator} from "../core";
 
 export namespace NumberConstraints {
-    export function Greater(limit : number|Reference) : PropertyDecorator {
+    export function Greater(limit : number | Reference) : PropertyDecorator {
         return constraintDecorator([Number], (schema : NumberSchema) => {
             return schema.greater(<any>limit);
         });
@@ -14,19 +14,19 @@ export namespace NumberConstraints {
         });
     }
 
-    export function Less(limit : number|Reference) : PropertyDecorator {
+    export function Less(limit : number | Reference) : PropertyDecorator {
         return constraintDecorator([Number], (schema : NumberSchema) => {
             return schema.less(<any>limit);
         });
     }
 
-    export function Max(limit : number|Reference) : PropertyDecorator {
+    export function Max(limit : number | Reference) : PropertyDecorator {
         return constraintDecorator([Number], (schema : NumberSchema) => {
             return schema.max(<any>limit);
         });
     }
 
-    export function Min(limit : number|Reference) : PropertyDecorator {
+    export function Min(limit : number | Reference) : PropertyDecorator {
         return constraintDecorator([Number], (schema : NumberSchema) => {
             return schema.min(<any>limit);
         });

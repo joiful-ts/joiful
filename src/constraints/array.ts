@@ -48,7 +48,7 @@ export namespace ArrayConstraints {
      * Allow single values to be checked against rules as if it were provided as an array.
      * enabled can be used with a falsy value to go back to the default behavior.
      */
-    export function Single(enabled? : boolean|any) : PropertyDecorator {
+    export function Single(enabled? : boolean | any) : PropertyDecorator {
         return constraintDecorator([Array], (schema : ArraySchema) => {
             return schema.single(enabled);
         });
@@ -57,7 +57,7 @@ export namespace ArrayConstraints {
     /**
      * Allow this array to be sparse. enabled can be used with a falsy value to go back to the default behavior.
      */
-    export function Sparse(enabled? : boolean|any) : PropertyDecorator {
+    export function Sparse(enabled? : boolean | any) : PropertyDecorator {
         return constraintDecorator([Array], (schema : ArraySchema) => {
             return schema.sparse(enabled);
         });

@@ -9,7 +9,7 @@ export namespace ObjectConstraints {
         });
     }
 
-    export function Assert(ref : string|Reference, schema : Schema, message? : string) : PropertyDecorator {
+    export function Assert(ref : string | Reference, schema : Schema, message? : string) : PropertyDecorator {
         return constraintDecorator([Object], (schemaToUpdate : ObjectSchema) => {
             return schemaToUpdate.assert(<any>ref, schema, message);
         });

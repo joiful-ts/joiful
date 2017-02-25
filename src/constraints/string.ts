@@ -50,7 +50,7 @@ export namespace StringConstraints {
         });
     }
 
-    export function Length(limit : number|Reference, encoding? : string) : PropertyDecorator {
+    export function Length(limit : number | Reference, encoding? : string) : PropertyDecorator {
         return constraintDecorator([String], (schema : StringSchema) => {
             return schema.length(<any>limit, encoding);
         });
@@ -62,13 +62,13 @@ export namespace StringConstraints {
         });
     }
 
-    export function Max(limit : number|Reference, encoding? : string) : PropertyDecorator {
+    export function Max(limit : number | Reference, encoding? : string) : PropertyDecorator {
         return constraintDecorator([String], (schema : StringSchema) => {
             return schema.max(<any>limit, encoding);
         });
     }
 
-    export function Min(limit : number|Reference, encoding? : string) : PropertyDecorator {
+    export function Min(limit : number | Reference, encoding? : string) : PropertyDecorator {
         return constraintDecorator([String], (schema : StringSchema) => {
             return schema.min(<any>limit, encoding);
         });
