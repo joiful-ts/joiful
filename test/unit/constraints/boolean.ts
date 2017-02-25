@@ -1,12 +1,14 @@
 import * as chai from "chai";
+import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi} from "../../../src/core";
+import * as Joi from "joi";
+import {testConstraint} from "../testUtil";
+import {BooleanConstraints} from "../../../src/constraints/boolean";
 import AssertStatic = Chai.AssertStatic;
 const assert : AssertStatic = chai.assert;
-import {SCHEMA_KEY} from "../../../src/core";
-import * as Joi from "joi";
-import {ConstraintDefinitionError} from "../../../src/core";
-import {registerJoi} from "../../../src/core";
-import {testConstraint} from "../testUtil";
-import {BooleanSchema, Truthy, Falsy, Insensitive} from "../../../src/constraints/boolean";
+import BooleanSchema = BooleanConstraints.BooleanSchema;
+import Truthy = BooleanConstraints.Truthy;
+import Falsy = BooleanConstraints.Falsy;
+import Insensitive = BooleanConstraints.Insensitive;
 
 registerJoi(Joi);
 

@@ -1,12 +1,13 @@
 import * as chai from "chai";
-import AssertStatic = Chai.AssertStatic;
-const assert : AssertStatic = chai.assert;
 import {Validator} from "../../src/Validator";
-import {Length} from "../../src/constraints/string";
 import {Validate} from "../../src/Validate";
 import {MultipleValidationError} from "../../src/MultipleValidationError";
 import {registerJoi} from "../../src/core";
 import * as Joi from "joi";
+import {StringConstraints} from "../../src/constraints/string";
+import AssertStatic = Chai.AssertStatic;
+const assert : AssertStatic = chai.assert;
+import Length = StringConstraints.Length;
 
 registerJoi(Joi);
 

@@ -1,34 +1,30 @@
 import * as chai from "chai";
-import AssertStatic = Chai.AssertStatic;
-const assert : AssertStatic = chai.assert;
-import {SCHEMA_KEY} from "../../../src/core";
-import {StringSchema} from "../../../src/constraints/string";
+import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi} from "../../../src/core";
+import {StringConstraints} from "../../../src/constraints/string";
 import * as Joi from "joi";
-import {ConstraintDefinitionError} from "../../../src/core";
-import {Length} from "../../../src/constraints/string";
 import {Validator} from "../../../src/Validator";
-import {Alphanum} from "../../../src/constraints/string";
-import {Min} from "../../../src/constraints/string";
-import {isValid} from "../testUtil";
-import {isInvalid} from "../testUtil";
-import {registerJoi} from "../../../src/core";
-import {testConstraint} from "../testUtil";
-import {CreditCard} from "../../../src/constraints/string";
-import {Email} from "../../../src/constraints/string";
-import {Guid} from "../../../src/constraints/string";
-import {Hex} from "../../../src/constraints/string";
-import {Hostname} from "../../../src/constraints/string";
-import {Ip} from "../../../src/constraints/string";
-import {IsoDate} from "../../../src/constraints/string";
-import {Lowercase} from "../../../src/constraints/string";
-import {Max} from "../../../src/constraints/string";
-import {Replace} from "../../../src/constraints/string";
-import {RegexConstraint} from "../../../src/constraints/string";
-import {Token} from "../../../src/constraints/string";
-import {Trim} from "../../../src/constraints/string";
-import {testConversion} from "../testUtil";
-import {Uppercase} from "../../../src/constraints/string";
-import {Uri} from "../../../src/constraints/string";
+import {isValid, isInvalid, testConstraint, testConversion} from "../testUtil";
+import AssertStatic = Chai.AssertStatic;
+import StringSchema = StringConstraints.StringSchema;
+import Length = StringConstraints.Length;
+import Alphanum = StringConstraints.Alphanum;
+import CreditCard = StringConstraints.CreditCard;
+import Email = StringConstraints.Email;
+import Guid = StringConstraints.Guid;
+import Hex = StringConstraints.Hex;
+import Hostname = StringConstraints.Hostname;
+import Ip = StringConstraints.Ip;
+import IsoDate = StringConstraints.IsoDate;
+import Lowercase = StringConstraints.Lowercase;
+import Max = StringConstraints.Max;
+import Min = StringConstraints.Min;
+import Regex = StringConstraints.Regex;
+import Replace = StringConstraints.Replace;
+import Token = StringConstraints.Token;
+import Trim = StringConstraints.Trim;
+import Uppercase = StringConstraints.Uppercase;
+import Uri = StringConstraints.Uri;
+const assert : AssertStatic = chai.assert;
 
 registerJoi(Joi);
 
@@ -414,7 +410,7 @@ describe("String constraints", function () {
     describe("Regex", function () {
         testConstraint<string>(() => {
                 class MyClass {
-                    @RegexConstraint(/test/g)
+                    @Regex(/test/g)
                     myProperty : string;
 
                     constructor(myProperty : string) {

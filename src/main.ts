@@ -4,14 +4,14 @@ import {Nested} from "./Nested";
 import {Validate} from "./Validate";
 import {Validator} from "./Validator";
 
-import any = require('./constraints/any');
-import array = require('./constraints/array');
-import booleanConstraints = require('./constraints/boolean');
-import date = require('./constraints/date');
-import func = require('./constraints/func');
-import number = require('./constraints/number');
-import object = require('./constraints/object');
-import string = require('./constraints/string');
+import {AnyConstraints} from "./constraints/any";
+import {ArrayConstraints} from "./constraints/array";
+import {BooleanConstraints} from "./constraints/boolean";
+import {DateConstraints} from "./constraints/date";
+import {FunctionConstraints} from "./constraints/func";
+import {NumberConstraints} from "./constraints/number";
+import {ObjectConstraints} from "./constraints/object";
+import {StringConstraints} from "./constraints/string";
 
 export = {
     core,
@@ -20,14 +20,12 @@ export = {
     Validate,
     Validator,
 
-    constraints: {
-        any,
-        array,
-        boolean: booleanConstraints,
-        date,
-        func,
-        number,
-        object,
-        string
-    }
+    AnyConstraints,
+    ArrayConstraints,
+    BooleanConstraints,
+    DateConstraints,
+    FunctionConstraints,
+    NumberConstraints,
+    ObjectConstraints,
+    StringConstraints
 };
