@@ -18,13 +18,13 @@
     "node": "~6.9.1",
     "npm": "~3.10.10"
   },
-  "main": "build/es5/main.js",
-  "types": "build/es5/main.d.ts",
+  "main": "build/main.js",
+  "types": "build/main.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "pretest": "rimraf build && tsc",
     "postinstall": "tsc -p tsconfig.build.json",
-    "test": "mocha --require source-map-support/register build/es5/test/**/*.js",
+    "test": "mocha --require source-map-support/register build/test/**/*.js",
     "watch": "tsc -p tsconfig.all.json -w"
   },
   "dependencies": {
