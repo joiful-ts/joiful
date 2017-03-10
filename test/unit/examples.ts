@@ -1,3 +1,4 @@
+import "./metadataShim";
 import {Validator} from "../../src/Validator";
 import {isValid, isInvalid} from "./testUtil";
 import {registerJoi} from "../../src/core";

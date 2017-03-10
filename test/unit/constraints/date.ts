@@ -1,3 +1,4 @@
+import "../metadataShim";
 import * as chai from "chai";
 import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi} from "../../../src/core";
 import * as Joi from "joi";

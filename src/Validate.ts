@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {Validator} from "./Validator";
 import {SCHEMA_KEY} from "./core";
 import {MultipleValidationError} from "./MultipleValidationError";

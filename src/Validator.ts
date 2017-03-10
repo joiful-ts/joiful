@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {Joi, getJoiSchema} from "./core";
 import {ObjectSchema, ValidationOptions, ValidationResult} from "joi";
 

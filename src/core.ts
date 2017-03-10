@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {Schema, ObjectSchema} from "joi";
 import JoiModule = require("joi");
 

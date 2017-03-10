@@ -1,3 +1,4 @@
+import "./metadataShim";
 import * as chai from "chai";
 import {Validator} from "../../src/Validator";
 import {Validate} from "../../src/Validate";
