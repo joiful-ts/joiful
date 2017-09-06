@@ -1,31 +1,15 @@
-import core = require('./core');
-import {MultipleValidationError} from "./MultipleValidationError";
-import {Nested} from "./Nested";
-import {Validate} from "./Validate";
-import {Validator} from "./Validator";
+import coreModule = require('./core');
+export const core = coreModule;
+export {MultipleValidationError} from "./MultipleValidationError";
+export {Nested, NestedArray} from "./Nested";
+export {Validate} from "./Validate";
+export {Validator} from "./Validator";
 
-import {AnyConstraints} from "./constraints/any";
-import {ArrayConstraints} from "./constraints/array";
-import {BooleanConstraints} from "./constraints/boolean";
-import {DateConstraints} from "./constraints/date";
-import {FunctionConstraints} from "./constraints/func";
-import {NumberConstraints} from "./constraints/number";
-import {ObjectConstraints} from "./constraints/object";
-import {StringConstraints} from "./constraints/string";
-
-export = {
-    core,
-    MultipleValidationError,
-    Nested,
-    Validate,
-    Validator,
-
-    AnyConstraints,
-    ArrayConstraints,
-    BooleanConstraints,
-    DateConstraints,
-    FunctionConstraints,
-    NumberConstraints,
-    ObjectConstraints,
-    StringConstraints
-};
+export {AnyConstraints} from "./constraints/any";
+export {ArrayConstraints} from "./constraints/array";
+export {BooleanConstraints} from "./constraints/boolean";
+export {DateConstraints} from "./constraints/date";
+export {FunctionConstraints} from "./constraints/func";
+export {NumberConstraints} from "./constraints/number";
+export {ObjectConstraints} from "./constraints/object";
+export {StringConstraints} from "./constraints/string";

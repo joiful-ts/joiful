@@ -31,6 +31,9 @@ export function getClassSchema(target : Object) : WorkingSchema {
 
 export function getJoiSchema(clz : Function) : ObjectSchema {
     let classSchema : any = Reflect.getMetadata(SCHEMA_KEY, clz.prototype);
+    if (!classSchema) {
+        throw new ConstraintDefinitionError(`Class "${ (clz && (<any>clz).name) ? (<any>clz).name : clz }" doesn't have a schema. You may need to manually specify the base type schema, set the property type to a class, or use "Any()".`);
+    }
     if (!classSchema['isJoi']) {
         classSchema = Joi.object().keys(classSchema);
         Reflect.defineMetadata(SCHEMA_KEY, classSchema, clz.prototype);
