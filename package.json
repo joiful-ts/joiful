@@ -1,6 +1,6 @@
 {
   "name": "tsdv-joi",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "TypeScript Declarative Validation - Joi. Decorate your class properties to validate them using Joi.",
   "license": "MIT",
   "author": {

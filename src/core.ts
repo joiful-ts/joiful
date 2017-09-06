@@ -1,11 +1,11 @@
 import {Schema, ObjectSchema} from "joi";
-import JoiModule = require("joi");
+import * as joi from "joi";
 
 export const SCHEMA_KEY = "tsdv:schema";
-export let Joi : typeof JoiModule; // TODO: proper interface
+export let Joi = joi;
 
-export function registerJoi(joi : any) {
-    Joi = joi;
+export function registerJoi(customJoi : typeof joi) {
+    Joi = customJoi;
 }
 
 export class ConstraintDefinitionError extends Error {
@@ -72,7 +72,7 @@ export function constraintDecoratorWithPeers(allowedTypes : Function[], peers : 
     };
 }
 
-export function typeConstraintDecorator(allowedTypes : Function[], typeSchema : (Joi : typeof JoiModule) => Schema) {
+export function typeConstraintDecorator(allowedTypes : Function[], typeSchema : (Joi : typeof joi) => Schema) {
     return function (target: Object, propertyKey: string | symbol) : void {
         allowTypes(target, propertyKey, allowedTypes);
 
