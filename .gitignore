@@ -36,4 +36,4 @@ node_modules
 
 # Other
 typings/
-build/
+dist/

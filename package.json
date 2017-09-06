@@ -1,8 +1,7 @@
 {
   "name": "tsdv-joi",
   "version": "0.0.1",
-  "private": true,
-  "description": "TypeScript Declarative Validation - Joi",
+  "description": "TypeScript Declarative Validation - Joi. Decorate your class properties to validate them using Joi.",
   "license": "MIT",
   "author": {
     "name": "Laurence Dougal Myers",
@@ -18,17 +17,16 @@
     "node": "~6.9.1",
     "npm": "~3.10.10"
   },
-  "main": "build/main.js",
-  "types": "build/main.d.ts",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "pretest": "rimraf build && tsc -p tsconfig.all.json",
-    "postinstall": "tsc -p tsconfig.build.json",
-    "test": "mocha --require source-map-support/register build/test/**/*.js",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "pretest": "rimraf dist && tsc -p tsconfig.all.json",
+    "prepublish": "npm run test && npm run build",
+    "test": "mocha --require source-map-support/register dist/test/**/*.js",
     "watch": "tsc -p tsconfig.all.json -w"
   },
   "dependencies": {
-    "@types/reflect-metadata": "0.0.5",
     "joi": "10.2.2"
   },
   "devDependencies": {
@@ -36,6 +34,7 @@
     "@types/joi": "10.0.0",
     "@types/mocha": "2.2.39",
     "@types/node": "6.0.63",
+    "@types/reflect-metadata": "0.0.5",
     "@types/rimraf": "0.0.28",
     "chai": "3.5.0",
     "mocha": "3.2.0",
