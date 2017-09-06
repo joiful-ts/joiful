@@ -47,7 +47,7 @@ export namespace ObjectConstraints {
 
     export function ObjectSchema(schema? : SchemaMap) : PropertyDecorator {
         return typeConstraintDecorator([Object], (Joi) => {
-            return Joi.object();
+            return Joi.object(schema);
         });
     }
 
