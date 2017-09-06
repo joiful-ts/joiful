@@ -29,4 +29,21 @@ export class Validator {
             return Joi.validate(target, classSchema);
         }
     }
+
+    validateArrayAsClass<T>(target : T[], clz : Function, options? : ValidationOptions) : ValidationResult<T[]> {
+        if (target === null || target === undefined) {
+            throw new Error("Can't validate null arrays");
+        }
+
+        const classSchema : ObjectSchema = getJoiSchema(clz);
+        const arraySchema = Joi.array().items(classSchema);
+        if (!options) {
+            options = this.defaultOptions;
+        }
+        if (options !== undefined) { // avoid strict null check issue in TypeScript
+            return Joi.validate(target, arraySchema, options);
+        } else {
+            return Joi.validate(target, arraySchema);
+        }
+    }
 }
