@@ -1,10 +1,10 @@
 import {typeConstraintDecorator, constraintDecorator} from "../core";
-import {FunctionSchema} from "joi";
+import {FunctionSchema, Schema} from "joi";
 
 export namespace FunctionConstraints {
     export function Arity(n : number) : PropertyDecorator {
-        return constraintDecorator([Function], (schema : FunctionSchema) => {
-            return schema.arity(n);
+        return constraintDecorator([Function], (schema : Schema) => {
+            return (schema as FunctionSchema).arity(n);
         });
     }
 
@@ -15,14 +15,14 @@ export namespace FunctionConstraints {
     }
 
     export function MaxArity(n : number) : PropertyDecorator {
-        return constraintDecorator([Function], (schema : FunctionSchema) => {
-            return schema.maxArity(n);
+        return constraintDecorator([Function], (schema : Schema) => {
+            return (schema as FunctionSchema).maxArity(n);
         });
     }
 
     export function MinArity(n : number) : PropertyDecorator {
-        return constraintDecorator([Function], (schema : FunctionSchema) => {
-            return schema.minArity(n);
+        return constraintDecorator([Function], (schema : Schema) => {
+            return (schema as FunctionSchema).minArity(n);
         });
     }
 }

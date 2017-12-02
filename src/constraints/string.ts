@@ -3,88 +3,88 @@ import {constraintDecorator, typeConstraintDecorator} from "../core";
 
 export namespace StringConstraints {
     export function Alphanum() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.alphanum();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).alphanum();
         });
     }
 
     export function CreditCard() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.creditCard();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).creditCard();
         });
     }
 
     export function Email(options? : EmailOptions) : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.email(options);
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).email(options);
         });
     }
 
     export function Guid() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.guid();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).guid();
         });
     }
 
     export function Hex() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.hex();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).hex();
         });
     }
 
     export function Hostname() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.hostname();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).hostname();
         });
     }
 
     export function Ip(options? : IpOptions) : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.ip(options);
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).ip(options);
         });
     }
 
     export function IsoDate() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.isoDate();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).isoDate();
         });
     }
 
     export function Length(limit : number | Reference, encoding? : string) : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.length(<any>limit, encoding);
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).length(<any>limit, encoding);
         });
     }
 
     export function Lowercase() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.lowercase();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).lowercase();
         });
     }
 
     export function Max(limit : number | Reference, encoding? : string) : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.max(<any>limit, encoding);
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).max(<any>limit, encoding);
         });
     }
 
     export function Min(limit : number | Reference, encoding? : string) : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.min(<any>limit, encoding);
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).min(<any>limit, encoding);
         });
     }
 
     export function Regex(pattern : RegExp, name? : string) : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.regex(pattern, name);
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).regex(pattern, name);
         });
     }
 
     export const Pattern = Regex;
 
     export function Replace(pattern : RegExp, replacement : string) : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.replace(pattern, replacement);
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).replace(pattern, replacement);
         });
     }
 
@@ -95,27 +95,27 @@ export namespace StringConstraints {
     }
 
     export function Token() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.token();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).token();
         });
     }
 
     export function Trim() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.trim();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).trim();
         });
     }
 
     export function Uppercase() : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.uppercase();
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).uppercase();
         });
     }
 
 // TODO: update Joi UriOptions to support "allowRelative" option.
     export function Uri(options? : UriOptions) : PropertyDecorator {
-        return constraintDecorator([String], (schema : StringSchema) => {
-            return schema.uri(options);
+        return constraintDecorator([String], (schema : Schema) => {
+            return (schema as StringSchema).uri(options);
         });
     }
 }

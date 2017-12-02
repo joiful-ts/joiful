@@ -1,5 +1,5 @@
 {
-  "version": "2.1.6",
+  "version": "2.6.2",
   "compilerOptions": {
     "outDir": "dist",
     "target": "es5",
@@ -8,8 +8,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,

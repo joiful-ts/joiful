@@ -142,7 +142,6 @@ export function verifyPeers(target : Object, peers : string[]) {
     let notFound : string[] = [];
     for (let peer of peers) {
         let type = Reflect.getMetadata("design:type", target, peer);
-        console.log(type);
         if (type === undefined) {
             notFound.push(peer);
 

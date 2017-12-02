@@ -1,5 +1,5 @@
-import {BooleanSchema} from "joi";
-import {typeConstraintDecorator, ConstraintDefinitionError, constraintDecorator} from "../core";
+import {BooleanSchema, Schema} from "joi";
+import {constraintDecorator, typeConstraintDecorator} from "../core";
 
 export namespace BooleanConstraints {
     export function BooleanSchema() : PropertyDecorator {
@@ -8,32 +8,23 @@ export namespace BooleanConstraints {
         });
     }
 
-    export function Truthy(...values : Array<string | boolean | number>) {
-        if (values.length == 0) {
-            throw new ConstraintDefinitionError("Truthy constraint must have one or more arguments.");
-        } else {
-            return constraintDecorator([Boolean], (schema : BooleanSchema) => {
-                // TODO: update Joi type definitions
-                return (<any> schema).truthy(...values);
-            });
-        }
+    export function Truthy(value : string | number, ...values : Array<string | number>) {
+        values = [value].concat(values);
+        return constraintDecorator([Boolean], (schema : Schema) => {
+            return (schema as BooleanSchema).truthy(...values);
+        });
     }
 
-    export function Falsy(...values : Array<string | boolean | number>) {
-        if (values.length == 0) {
-            throw new ConstraintDefinitionError("Falsy constraint must have one or more arguments.");
-        } else {
-            return constraintDecorator([Boolean], (schema : BooleanSchema) => {
-                // TODO: update Joi type definitions
-                return (<any> schema).falsy(...values);
-            });
-        }
+    export function Falsy(value : string | number, ...values : Array<string | number>) {
+        values = [value].concat(values);
+        return constraintDecorator([Boolean], (schema : Schema) => {
+            return (schema as BooleanSchema).falsy(...values);
+        });
     }
 
     export function Insensitive(enabled : boolean = true) {
-        return constraintDecorator([Boolean], (schema : BooleanSchema) => {
-            // TODO: update Joi type definitions
-            return (<any> schema).insensitive(enabled);
+        return constraintDecorator([Boolean], (schema : Schema) => {
+            return (schema as BooleanSchema).insensitive(enabled);
         });
     }
 }
