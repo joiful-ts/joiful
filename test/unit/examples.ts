@@ -5,7 +5,6 @@ import {registerJoi} from "../../src/core";
 import * as Joi from "joi";
 import {Nested} from "../../src/Nested";
 import {StringConstraints} from "../../src/constraints/string";
-import AssertStatic = Chai.AssertStatic;
 import Length = StringConstraints.Length;
 import StringSchema = StringConstraints.StringSchema;
 

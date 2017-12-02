@@ -1,9 +1,7 @@
 import "./metadataShim";
-import * as chai from "chai";
+import {assert} from "chai";
 import {Validator} from "../../src/Validator";
 import {ValidationOptions} from "joi";
-import AssertStatic = Chai.AssertStatic;
-const assert : AssertStatic = chai.assert;
 
 export function isValid(validator : Validator, object : any) {
     const result = validator.validate(object);
