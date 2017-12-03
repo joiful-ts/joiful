@@ -2,17 +2,28 @@ import "./metadataShim";
 import {assert} from "chai";
 import {Validator} from "../../src/Validator";
 import {ValidationOptions} from "joi";
+import {
+    isValidationFail, isValidationPass, ValidationResultFail,
+    ValidationResultPass
+} from "../../src/ValidationResult";
 
-export function isValid(validator : Validator, object : any) {
-    const result = validator.validate(object);
+export function isValid<T = any>(validator : Validator, object : T) : ValidationResultPass<T> {
+    const result = validator.validate<T>(object);
     assert.property(result, "error");
-    assert.isNull(result.error, `Validation should pass, but got error: ${ result.error }`);
+    if (isValidationFail(result)) {
+        throw assert.isNull(result.error, `Validation should pass, but got error: ${ result.error }`);
+    }
+    return result;
 }
 
-export function isInvalid(validator : Validator, object : any) {
-    const result = validator.validate(object);
+export function isInvalid<T = any>(validator : Validator, object : T) : never | ValidationResultFail<T> {
+    const result = validator.validate<T>(object);
     assert.property(result, "error");
-    assert.isNotNull(result.error, "Validation should fail");
+    if (isValidationPass(result)) {
+        throw assert.isNotNull(result.error, "Validation should fail");
+    } else {
+        return result;
+    }
 }
 
 export function testConstraint<T>(

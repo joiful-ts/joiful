@@ -1,5 +1,6 @@
 import {Joi, getJoiSchema} from "./core";
-import {ObjectSchema, ValidationOptions, ValidationResult} from "joi";
+import {ObjectSchema, ValidationOptions} from "joi";
+import {ValidationResult} from "./ValidationResult";
 
 export class Validator {
     constructor(
