@@ -15,7 +15,9 @@ export namespace ObjectConstraints {
         });
     }
 
-    export function Keys(schema? : SchemaMap) : PropertyDecorator {
+    export type KeysSchemaMap<TClass> = { [P in keyof TClass]: Schema | SchemaMap | (Schema | SchemaMap)[] };
+
+    export function Keys<TClass>(schema? : KeysSchemaMap<TClass>) : PropertyDecorator {
         return constraintDecorator([Object], (schemaToUpdate : Schema) => {
             return (schemaToUpdate as ObjectSchema).keys(schema);
         });
@@ -71,7 +73,6 @@ export namespace ObjectConstraints {
         });
     }
 
-// NOTE: peers should really also accept a string type.
     export function Rename(from : string, to : string, options? : RenameOptions) : PropertyDecorator {
         return constraintDecorator([Object], (schema : Schema) => {
             return (schema as ObjectSchema).rename(from, to, options);

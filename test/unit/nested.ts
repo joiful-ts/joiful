@@ -29,7 +29,7 @@ describe('Nested', function () {
             }
             assert.fail();
         } catch (err) {
-            assert.equal(err && err.message, `No validation schema exists, nor could it be derived, for property "nestedProperty". Please decorate the property with a type schema.`);
+            assert.equal(err && err.message, `No validation schema exists, nor could it be inferred from the design:type metadata, for property "nestedProperty". Please decorate the property with a type schema.`);
         }
     });
 

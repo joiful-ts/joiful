@@ -109,7 +109,9 @@ function guessTypeSchema(target : Object, propertyKey : string | symbol) : Schem
             schema = Joi.number();
             break;
         case Object:
-            schema = Joi.object();
+            // We don't guess the type for "Object" types, because these can represent unions like "number | null".
+            // To use an object schema, you must explicitly decorate the property with ObjectSchema().
+            // schema = Joi.object();
             break;
         case String:
             schema = Joi.string();
@@ -118,7 +120,7 @@ function guessTypeSchema(target : Object, propertyKey : string | symbol) : Schem
             break;
     }
     if (schema === undefined) {
-        throw new ConstraintDefinitionError(`No validation schema exists, nor could it be derived, for property "${propertyKey}". Please decorate the property with a type schema.`);
+        throw new ConstraintDefinitionError(`No validation schema exists, nor could it be inferred from the design:type metadata, for property "${propertyKey}". Please decorate the property with a type schema.`);
     }
     return schema;
 }
@@ -126,12 +128,12 @@ function guessTypeSchema(target : Object, propertyKey : string | symbol) : Schem
 /**
  * @param target
  * @param propertyKey
- * @param types - the constructors for allowed classes. If empty, all types are allowed.
+ * @param types - the constructors for allowed classes. If empty, all types are allowed. Note that "Object" is always allowed, to support union types like "number | null".
  */
 export function allowTypes(target : any, propertyKey : string | symbol, types : Function[]) {
     if (types && types.length > 0) {
         const propertyType = Reflect.getMetadata("design:type", target, propertyKey);
-        if (types.indexOf(propertyType) == -1) {
+        if (propertyType !== Object && types.indexOf(propertyType) == -1) {
             throw new ConstraintDefinitionError(`Constrained property "${ propertyKey }" has an unsupported type. Wanted ${ types.map((t) => '"' + (<any> t).name + '"').join(' or ') }, found "${ propertyType ? propertyType.name : propertyType }"`);
         }
     }
