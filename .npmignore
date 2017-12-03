@@ -3,3 +3,6 @@ test/
 .idea/
 dist/test
 *.iml
+node_modules/
+.gitignore
+tsconfig.*.json
