@@ -15,27 +15,41 @@ export class ConstraintDefinitionError extends Error {
     constructor(public message : string) {
         super(message);
 
-        (<any> Object).setPrototypeOf(this, ConstraintDefinitionError.prototype);
+        Object.setPrototypeOf(this, ConstraintDefinitionError.prototype);
     }
 }
 
 export type WorkingSchema = { [index : string] : Schema };
 
-export function getWorkingSchema(target : Object) : WorkingSchema {
-    let classSchema : WorkingSchema = Reflect.getMetadata(WORKING_SCHEMA_KEY, target);
-    if (!classSchema) {
-        classSchema = {};
-        Reflect.defineMetadata(WORKING_SCHEMA_KEY, classSchema, target);
+function getDesignType(target : Object, targetKey : string | symbol) : any {
+    return Reflect.getMetadata("design:type", target, targetKey);
+}
+
+export function getWorkingSchema(target : object) : WorkingSchema {
+    let workingSchema : WorkingSchema = Reflect.getOwnMetadata(WORKING_SCHEMA_KEY, target);
+    if (!workingSchema) {
+        workingSchema = {};
+        Reflect.defineMetadata(WORKING_SCHEMA_KEY, workingSchema, target);
     }
-    return classSchema;
+    return workingSchema;
+}
+
+export function getMergedWorkingSchemas(target : object) : WorkingSchema {
+    const workingSchema = {};
+    const parentPrototype = Object.getPrototypeOf(target);
+    if (!!(parentPrototype && parentPrototype.constructor !== Object)) {
+        Object.assign(workingSchema, getMergedWorkingSchemas(parentPrototype));
+    }
+    Object.assign(workingSchema, getWorkingSchema(target));
+    return workingSchema;
 }
 
 export function getJoiSchema(clz : Function) : ObjectSchema {
-    let joiSchema : ObjectSchema | undefined = Reflect.getMetadata(SCHEMA_KEY, clz.prototype);
+    let joiSchema : ObjectSchema | undefined = Reflect.getOwnMetadata(SCHEMA_KEY, clz.prototype);
     if (joiSchema) {
         return joiSchema;
     } else {
-        let workingSchema : any = Reflect.getMetadata(WORKING_SCHEMA_KEY, clz.prototype);
+        let workingSchema : WorkingSchema = getMergedWorkingSchemas(clz.prototype);
         if (!workingSchema) {
             throw new ConstraintDefinitionError(`Class "${ (clz && (<any>clz).name) ? (<any>clz).name : clz }" doesn't have a schema. You may need to manually specify the base type schema, set the property type to a class, or use "Any()".`);
         }
@@ -45,17 +59,17 @@ export function getJoiSchema(clz : Function) : ObjectSchema {
     }
 }
 
-export function getPropertySchema(target : Object, propertyKey : string | symbol) {
+export function getPropertySchema(target : object, propertyKey : string | symbol) {
     const classSchema = getWorkingSchema(target);
     return classSchema[propertyKey];
 }
 
-export function updateSchema(target : Object, propertyKey : string | symbol, schema : Schema) {
+export function updateSchema(target : object, propertyKey : string | symbol, schema : Schema) {
     const classSchema = getWorkingSchema(target);
     classSchema[propertyKey] = schema;
 }
 
-export function getAndUpdateSchema(target : Object, propertyKey : string | symbol, updateFunction : (schema : Schema) => Schema) {
+export function getAndUpdateSchema(target : object, propertyKey : string | symbol, updateFunction : (schema : Schema) => Schema) {
     let schema = getPropertySchema(target, propertyKey);
     if (!schema) {
         schema = guessTypeSchema(target, propertyKey);
@@ -65,14 +79,14 @@ export function getAndUpdateSchema(target : Object, propertyKey : string | symbo
 }
 
 export function constraintDecorator(allowedTypes : Function[], updateFunction : (schema : Schema) => Schema) : PropertyDecorator {
-    return function (target : Object, propertyKey : string | symbol) {
+    return function (target : object, propertyKey : string | symbol) {
         allowTypes(target, propertyKey, allowedTypes);
         getAndUpdateSchema(target, propertyKey, updateFunction);
     };
 }
 
 export function constraintDecoratorWithPeers(allowedTypes : Function[], peers : string[], updateFunction : (schema : Schema) => Schema) : PropertyDecorator {
-    return function (target : Object, propertyKey : string | symbol) {
+    return function (target : object, propertyKey : string | symbol) {
         allowTypes(target, propertyKey, allowedTypes);
         verifyPeers(target, peers);
         getAndUpdateSchema(target, propertyKey, updateFunction);
@@ -80,7 +94,7 @@ export function constraintDecoratorWithPeers(allowedTypes : Function[], peers : 
 }
 
 export function typeConstraintDecorator(allowedTypes : Function[], typeSchema : (Joi : typeof joi) => Schema) {
-    return function (target: Object, propertyKey: string | symbol) : void {
+    return function (target: object, propertyKey: string | symbol) : void {
         allowTypes(target, propertyKey, allowedTypes);
 
         let schema = getPropertySchema(target, propertyKey);
@@ -93,8 +107,8 @@ export function typeConstraintDecorator(allowedTypes : Function[], typeSchema : 
     }
 }
 
-function guessTypeSchema(target : Object, propertyKey : string | symbol) : Schema{
-    let propertyType = Reflect.getMetadata("design:type", target, propertyKey);
+function guessTypeSchema(target : object, propertyKey : string | symbol) : Schema{
+    let propertyType = getDesignType(target, propertyKey);
     let schema : Schema | undefined = undefined;
     switch (propertyType) {
         case Array:
@@ -136,18 +150,18 @@ function guessTypeSchema(target : Object, propertyKey : string | symbol) : Schem
  */
 export function allowTypes(target : any, propertyKey : string | symbol, types : Function[]) {
     if (types && types.length > 0) {
-        const propertyType = Reflect.getMetadata("design:type", target, propertyKey);
+        const propertyType = getDesignType(target, propertyKey);
         if (propertyType !== Object && types.indexOf(propertyType) == -1) {
             throw new ConstraintDefinitionError(`Constrained property "${ propertyKey }" has an unsupported type. Wanted ${ types.map((t) => '"' + (<any> t).name + '"').join(' or ') }, found "${ propertyType ? propertyType.name : propertyType }"`);
         }
     }
 }
 
-export function verifyPeers(target : Object, peers : string[]) {
+export function verifyPeers(target : object, peers : string[]) {
     // Verify that the properties actually exist on the class.
     let notFound : string[] = [];
     for (let peer of peers) {
-        let type = Reflect.getMetadata("design:type", target, peer);
+        let type = getDesignType(target, peer);
         if (type === undefined) {
             notFound.push(peer);
 

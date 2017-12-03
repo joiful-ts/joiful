@@ -9,7 +9,7 @@ export function Nested(clz? : Function) : PropertyDecorator {
         } else {
             propertyType = Reflect.getMetadata("design:type", target, propertyKey);
         }
-        if (!propertyType) {
+        if (!propertyType || propertyType === Object) {
             throw new ConstraintDefinitionError(`Could not determine the type of the nested property "${ propertyKey }". Please pass the class to the Nested() decorator.`);
         }
         const nestedSchema = getJoiSchema(propertyType);

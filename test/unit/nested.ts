@@ -66,7 +66,7 @@ describe('Nested', function () {
             }
             assert.fail();
         } catch (err) {
-            assert.equal(err && err.message, `Class "Object" doesn't have a schema. You may need to manually specify the base type schema, set the property type to a class, or use "Any()".`);
+            assert.equal(err && err.message, `Could not determine the type of the nested property "nestedProperty". Please pass the class to the Nested() decorator.`);
         }
     });
 
