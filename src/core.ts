@@ -1,6 +1,7 @@
 import {Schema, ObjectSchema} from "joi";
 import * as joi from "joi";
 
+export const WORKING_SCHEMA_KEY = "tsdv:working-schema";
 export const SCHEMA_KEY = "tsdv:schema";
 export let Joi = joi;
 
@@ -20,34 +21,37 @@ export class ConstraintDefinitionError extends Error {
 
 export type WorkingSchema = { [index : string] : Schema };
 
-export function getClassSchema(target : Object) : WorkingSchema {
-    let classSchema : WorkingSchema = Reflect.getMetadata(SCHEMA_KEY, target);
+export function getWorkingSchema(target : Object) : WorkingSchema {
+    let classSchema : WorkingSchema = Reflect.getMetadata(WORKING_SCHEMA_KEY, target);
     if (!classSchema) {
         classSchema = {};
-        Reflect.defineMetadata(SCHEMA_KEY, classSchema, target);
+        Reflect.defineMetadata(WORKING_SCHEMA_KEY, classSchema, target);
     }
     return classSchema;
 }
 
 export function getJoiSchema(clz : Function) : ObjectSchema {
-    let classSchema : any = Reflect.getMetadata(SCHEMA_KEY, clz.prototype);
-    if (!classSchema) {
-        throw new ConstraintDefinitionError(`Class "${ (clz && (<any>clz).name) ? (<any>clz).name : clz }" doesn't have a schema. You may need to manually specify the base type schema, set the property type to a class, or use "Any()".`);
+    let joiSchema : ObjectSchema | undefined = Reflect.getMetadata(SCHEMA_KEY, clz.prototype);
+    if (joiSchema) {
+        return joiSchema;
+    } else {
+        let workingSchema : any = Reflect.getMetadata(WORKING_SCHEMA_KEY, clz.prototype);
+        if (!workingSchema) {
+            throw new ConstraintDefinitionError(`Class "${ (clz && (<any>clz).name) ? (<any>clz).name : clz }" doesn't have a schema. You may need to manually specify the base type schema, set the property type to a class, or use "Any()".`);
+        }
+        joiSchema = Joi.object().keys(workingSchema);
+        Reflect.defineMetadata(SCHEMA_KEY, joiSchema, clz.prototype);
+        return <ObjectSchema> joiSchema;
     }
-    if (!classSchema['isJoi']) {
-        classSchema = Joi.object().keys(classSchema);
-        Reflect.defineMetadata(SCHEMA_KEY, classSchema, clz.prototype);
-    }
-    return <ObjectSchema> classSchema;
 }
 
 export function getPropertySchema(target : Object, propertyKey : string | symbol) {
-    const classSchema = getClassSchema(target);
+    const classSchema = getWorkingSchema(target);
     return classSchema[propertyKey];
 }
 
 export function updateSchema(target : Object, propertyKey : string | symbol, schema : Schema) {
-    const classSchema = getClassSchema(target);
+    const classSchema = getWorkingSchema(target);
     classSchema[propertyKey] = schema;
 }
 

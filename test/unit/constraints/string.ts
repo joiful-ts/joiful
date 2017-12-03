@@ -1,6 +1,6 @@
 import "../metadataShim";
 import * as chai from "chai";
-import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi} from "../../../src/core";
+import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import {StringConstraints} from "../../../src/constraints/string";
 import * as Joi from "joi";
 import {Validator} from "../../../src/Validator";
@@ -40,7 +40,7 @@ describe("String constraints", function () {
         }
 
         it("should annotate the class property", function () {
-            const metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype);
+            const metadata = Reflect.getMetadata(WORKING_SCHEMA_KEY, MyClass.prototype);
             const expected = {
                 myProperty: Joi.string(),
                 myOtherProperty: Joi.string()
@@ -66,7 +66,7 @@ describe("String constraints", function () {
                 myProperty : string;
             }
 
-            const metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype);
+            const metadata = Reflect.getMetadata(WORKING_SCHEMA_KEY, MyClass.prototype);
             const expected : any = {
                 myProperty: Joi.string().length(5)
             };

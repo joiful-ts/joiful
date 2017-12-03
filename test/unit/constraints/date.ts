@@ -1,6 +1,6 @@
 import "../metadataShim";
 import * as chai from "chai";
-import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi} from "../../../src/core";
+import {ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import * as Joi from "joi";
 import {testConstraint} from "../testUtil";
 import {DateConstraints} from "../../../src/constraints/date";
@@ -22,7 +22,7 @@ describe("Date constraints", function () {
         }
 
         it("should annotate the class property", function () {
-            const metadata = Reflect.getMetadata(SCHEMA_KEY, MyClass.prototype);
+            const metadata = Reflect.getMetadata(WORKING_SCHEMA_KEY, MyClass.prototype);
             const expected = {
                 myProperty: Joi.date(),
                 myOtherProperty: Joi.date(),
