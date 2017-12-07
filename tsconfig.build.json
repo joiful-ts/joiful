@@ -1,5 +1,8 @@
 {
   "extends": "./tsconfig.base",
+  "compilerOptions": {
+    "sourceMap": false
+  },
   "files": [
     "src/main.ts"
   ]
