@@ -1,8 +1,6 @@
-src/
-test/
-.idea/
+*
+!README.md
+!package.json
+!dist/**/*
 dist/test
-*.iml
-node_modules/
-.gitignore
-tsconfig.*.json
+*.js.map
