@@ -14,8 +14,8 @@
     "typescript-validator"
   ],
   "engines": {
-    "node": "~6.9.1",
-    "npm": "~3.10.10"
+    "node": "^6.9.1",
+    "npm": "^3.10.10"
   },
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
