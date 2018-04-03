@@ -3,13 +3,11 @@ import * as chai from "chai";
 import {Validator} from "../../src/Validator";
 import {registerJoi} from "../../src/core";
 import * as Joi from "joi";
-import {StringConstraints} from "../../src/constraints/string";
+import {Length} from "../../src/constraints/string";
 import {Nested, NestedArray} from "../../src/Nested";
-import {AnyConstraints} from "../../src/constraints/any";
+import {Required} from "../../src/constraints/any";
 import AssertStatic = Chai.AssertStatic;
 const assert : AssertStatic = chai.assert;
-const Length = StringConstraints.Length;
-const Required = AnyConstraints.Required;
 
 registerJoi(Joi);
 

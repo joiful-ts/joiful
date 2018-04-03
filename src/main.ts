@@ -5,11 +5,22 @@ export {Nested, NestedArray} from "./Nested";
 export {Validate} from "./Validate";
 export {Validator} from "./Validator";
 
-export {AnyConstraints} from "./constraints/any";
-export {ArrayConstraints} from "./constraints/array";
-export {BooleanConstraints} from "./constraints/boolean";
-export {DateConstraints} from "./constraints/date";
-export {FunctionConstraints} from "./constraints/func";
-export {NumberConstraints} from "./constraints/number";
-export {ObjectConstraints} from "./constraints/object";
-export {StringConstraints} from "./constraints/string";
+import * as AnyConstraints from "./constraints/any";
+import * as ArrayConstraints from "./constraints/any";
+import * as BooleanConstraints from "./constraints/boolean";
+import * as DateConstraints from "./constraints/date";
+import * as FunctionConstraints from "./constraints/func";
+import * as NumberConstraints from "./constraints/number";
+import * as ObjectConstraints from "./constraints/object";
+import * as StringConstraints from "./constraints/string";
+
+export {
+    AnyConstraints,
+    ArrayConstraints,
+    BooleanConstraints,
+    DateConstraints,
+    FunctionConstraints,
+    NumberConstraints,
+    ObjectConstraints,
+    StringConstraints
+};

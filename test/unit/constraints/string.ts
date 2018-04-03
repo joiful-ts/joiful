@@ -1,30 +1,14 @@
 import "../metadataShim";
 import * as chai from "chai";
 import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
-import {StringConstraints} from "../../../src/constraints/string";
+import {
+    StringSchema, Length, Alphanum, CreditCard, Email, Guid, Hex, Hostname, Ip,
+    IsoDate, Lowercase, Max, Min, Regex, Replace, Token, Trim, Uppercase, Uri
+} from "../../../src/constraints/string";
 import * as Joi from "joi";
 import {Validator} from "../../../src/Validator";
 import {isValid, isInvalid, testConstraint, testConversion} from "../testUtil";
 import AssertStatic = Chai.AssertStatic;
-import StringSchema = StringConstraints.StringSchema;
-import Length = StringConstraints.Length;
-import Alphanum = StringConstraints.Alphanum;
-import CreditCard = StringConstraints.CreditCard;
-import Email = StringConstraints.Email;
-import Guid = StringConstraints.Guid;
-import Hex = StringConstraints.Hex;
-import Hostname = StringConstraints.Hostname;
-import Ip = StringConstraints.Ip;
-import IsoDate = StringConstraints.IsoDate;
-import Lowercase = StringConstraints.Lowercase;
-import Max = StringConstraints.Max;
-import Min = StringConstraints.Min;
-import Regex = StringConstraints.Regex;
-import Replace = StringConstraints.Replace;
-import Token = StringConstraints.Token;
-import Trim = StringConstraints.Trim;
-import Uppercase = StringConstraints.Uppercase;
-import Uri = StringConstraints.Uri;
 const assert : AssertStatic = chai.assert;
 
 registerJoi(Joi);
