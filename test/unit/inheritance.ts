@@ -97,7 +97,7 @@ describe(`Inheritance`, function () {
         assert.lengthOf(result.error.details, 3);
     });
 
-    it(`Grandchild classes without and validations apply validations from the grandparent class`, function () {
+    it(`Grandchild classes without any validations apply validations from the grandparent class`, function () {
         class ParentClass {
             @Min(10)
             foo : number;
