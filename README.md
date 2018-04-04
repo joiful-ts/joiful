@@ -1,10 +1,12 @@
-# TSDV-Joi - TypeScript Declarative Validation for Joi
+# tsdv-joi - TypeScript Declarative Validation for Joi
+
+[![CircleCI](https://circleci.com/gh/laurence-myers/tsdv-joi.svg?style=shield)](https://circleci.com/gh/laurence-myers/tsdv-joi)
 
 This lib allows you to apply Joi validation constraints on class properties, by using decorators.
 
 This means you can combine your type schema and your validation schema in one go!
 
-Calling `Validator.validateAsClass()` allows you to validate any object as if it were a class.
+Calling `Validator.validateAsClass()` allows you to validate any object as if it were an instance of a given class.
 
 ## Installation
 
@@ -61,3 +63,7 @@ Joi.
 - Abstract message into property keys (for i18n support). (Can be achieved through validator config)
 - Support some object constraints at the class level, e.g. and/nand/or/xor.
 - Support "alternatives", other Joi functions.
+
+## Alternatives
+
+- [class-validator](https://github.com/typestack/class-validator): usable in both Node.js and the browser. Mostly designed for validating string values. Can't validate plain objects, only class instances.
