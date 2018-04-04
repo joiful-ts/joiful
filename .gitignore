@@ -37,3 +37,4 @@ node_modules
 # Other
 typings/
 dist/
+/publish/

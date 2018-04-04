@@ -1,6 +1,7 @@
 *
 !README.md
 !package.json
-!dist/**/*
-dist/test
-*.js.map
+!*.js
+!*.d.ts
+build.js
+build.d.ts

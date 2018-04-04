@@ -1,9 +1,11 @@
 {
   "extends": "./tsconfig.base",
   "compilerOptions": {
+    "outDir": "publish",
     "sourceMap": false
   },
   "files": [
+    "src/build.ts",
     "src/main.ts"
   ]
 }
