@@ -4,9 +4,7 @@ import {isValid, isInvalid} from "./testUtil";
 import {registerJoi} from "../../src/core";
 import * as Joi from "joi";
 import {Nested} from "../../src/Nested";
-import {StringConstraints} from "../../src/constraints/string";
-import Length = StringConstraints.Length;
-import StringSchema = StringConstraints.StringSchema;
+import {Length, StringSchema} from "../../src/constraints/string";
 
 registerJoi(Joi);
 

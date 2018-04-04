@@ -1,8 +1,7 @@
-import {NumberConstraints} from "../../src/constraints/number";
+import {Min} from "../../src/constraints/number";
 import {isInvalid, isValid} from "./testUtil";
 import {Validator} from "../../src/Validator";
 import {assert} from "chai";
-import Min = NumberConstraints.Min;
 import {getMergedWorkingSchemas, getWorkingSchema} from "../../src/core";
 
 describe(`Inheritance`, function () {

@@ -3,10 +3,9 @@ import * as chai from "chai";
 import {Validator} from "../../src/Validator";
 import {registerJoi} from "../../src/core";
 import * as Joi from "joi";
-import {StringConstraints} from "../../src/constraints/string";
+import {Length} from "../../src/constraints/string";
 import AssertStatic = Chai.AssertStatic;
 const assert : AssertStatic = chai.assert;
-import Length = StringConstraints.Length;
 import {isValidationFail} from "../../src/ValidationResult";
 
 registerJoi(Joi);

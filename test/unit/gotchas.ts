@@ -1,15 +1,10 @@
 import {isValid} from "./testUtil";
 import {Validator} from "../../src/Validator";
-import {NumberConstraints} from "../../src/constraints/number";
-import NumberSchema = NumberConstraints.NumberSchema;
-import Min = NumberConstraints.Min;
+import {NumberSchema, Min} from "../../src/constraints/number";
 import { assert } from "chai";
 import {ConstraintDefinitionError, Joi} from "../../src/core";
-import {AnyConstraints} from "../../src/constraints/any";
-import Optional = AnyConstraints.Optional;
-import {ObjectConstraints} from "../../src/constraints/object";
-import Keys = ObjectConstraints.Keys;
-import ObjectSchema = ObjectConstraints.ObjectSchema;
+import {Optional} from "../../src/constraints/any";
+import {Keys, ObjectSchema} from "../../src/constraints/object";
 
 describe(`Gotchas`, function () {
     describe(`object types`, function () {

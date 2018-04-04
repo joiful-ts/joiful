@@ -3,10 +3,8 @@ import * as chai from "chai";
 import {ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import * as Joi from "joi";
 import {testConstraint} from "../testUtil";
-import {DateConstraints} from "../../../src/constraints/date";
+import {DateSchema, Iso} from "../../../src/constraints/date";
 import AssertStatic = Chai.AssertStatic;
-import DateSchema = DateConstraints.DateSchema;
-import Iso = DateConstraints.Iso;
 const assert : AssertStatic = chai.assert;
 
 registerJoi(Joi);
