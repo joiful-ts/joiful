@@ -9,10 +9,13 @@
     "email": "laurencedougalmyers@gmail.com"
   },
   "tags": [
-    "validator",
-    "validation",
+    "decorator",
+    "joi",
+    "schema",
     "typescript",
-    "typescript-validator"
+    "typescript-validator",
+    "validator",
+    "validation"
   ],
   "engines": {
     "node": ">=6.9.1",
