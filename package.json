@@ -25,9 +25,8 @@
   "types": "dist/main.d.ts",
   "scripts": {
     "build": "rimraf publish && tsc -p tsconfig.build.json && node publish/build.js",
-    "postpublish": "rimraf publish",
     "pretest": "rimraf dist && tsc -p tsconfig.all.json",
-    "prepublish": "npm run test && npm run build",
+    "publishToNpm": "npm run test && npm run build && cd publish && npm publish && cd .. && rimraf publish",
     "test": "mocha --require source-map-support/register \"dist/test/**/*.js\"",
     "watch": "tsc -p tsconfig.all.json -w"
   },
