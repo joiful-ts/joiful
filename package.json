@@ -3,6 +3,7 @@
   "version": "0.0.10-dev",
   "description": "TypeScript Declarative Validation - Joi. Decorate your class properties to validate them using Joi.",
   "license": "MIT",
+  "repository": "https://github.com/laurence-myers/tsdv-joi",
   "private": true,
   "author": {
     "name": "Laurence Dougal Myers",
