@@ -28,7 +28,7 @@
     "postpublish": "rimraf publish",
     "pretest": "rimraf dist && tsc -p tsconfig.all.json",
     "prepublish": "npm run test && npm run build",
-    "test": "mocha --require source-map-support/register dist/test/**/*.js",
+    "test": "mocha --require source-map-support/register \"dist/test/**/*.js\"",
     "watch": "tsc -p tsconfig.all.json -w"
   },
   "peerDependencies": {
