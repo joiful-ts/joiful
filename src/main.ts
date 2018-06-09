@@ -6,7 +6,7 @@ export {Validate} from "./Validate";
 export {Validator} from "./Validator";
 
 import * as AnyConstraints from "./constraints/any";
-import * as ArrayConstraints from "./constraints/any";
+import * as ArrayConstraints from "./constraints/array";
 import * as BooleanConstraints from "./constraints/boolean";
 import * as DateConstraints from "./constraints/date";
 import * as FunctionConstraints from "./constraints/func";
