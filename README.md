@@ -14,7 +14,7 @@ You must enable experimental decorators and metadata in your TypeScript configur
 
 ## Usage
 
-```
+```typescript
 // ...imports...
 
 registerJoi(Joi);
@@ -38,7 +38,7 @@ console.log(result); // outputs the Joi returned value
 
 You can provide your own decorators to chain together Joi constraints.
 
-```
+```typescript
 export function RequiredPositiveInteger() : PropertyDecorator {
     return constraintDecorator([Number], (schema : NumberSchema) => {
         return schema.required().positive().integer().min(1);
