@@ -67,3 +67,4 @@ Joi.
 ## Alternatives
 
 - [class-validator](https://github.com/typestack/class-validator): usable in both Node.js and the browser. Mostly designed for validating string values. Can't validate plain objects, only class instances.
+- [typesafe-joi](https://github.com/hjkcai/typesafe-joi): automatically infers type information of validated objects, via the standard Joi schema API.
