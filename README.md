@@ -23,7 +23,7 @@ class MyClass {
 	@Max(5)
 	@Min(2)
 	@StringSchema
-	public myProperty : string;
+	public myProperty! : string;
 }
 
 let instance = new MyClass();
@@ -47,7 +47,7 @@ export function RequiredPositiveInteger() : PropertyDecorator {
 
 class MyClass {
     @RequiredPositiveInteger()
-    public myProperty : number;
+    public myProperty! : number;
 }
 ```
 
@@ -67,4 +67,5 @@ Joi.
 ## Alternatives
 
 - [class-validator](https://github.com/typestack/class-validator): usable in both Node.js and the browser. Mostly designed for validating string values. Can't validate plain objects, only class instances.
+- [joi-extract-type](https://github.com/TCMiranda/joi-extract-type): provides native type extraction from Joi Schemas. Augments the Joi type definitions.
 - [typesafe-joi](https://github.com/hjkcai/typesafe-joi): automatically infers type information of validated objects, via the standard Joi schema API.
