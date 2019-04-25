@@ -16,8 +16,9 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      # Install will also run the tests, because it invokes the "prepublish" npm script
+      # Build and test
       - run: yarn install
+      - run: yarn test
 
       - save_cache:
           paths:
