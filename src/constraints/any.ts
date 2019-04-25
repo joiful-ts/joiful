@@ -8,7 +8,7 @@ export function Allow(...values : any[]) : PropertyDecorator {
 }
 
 export function AnySchema() : PropertyDecorator {
-    return typeConstraintDecorator([Number], (Joi : { any : () => Schema }) => {
+    return typeConstraintDecorator([], (Joi : { any : () => Schema }) => {
         return Joi.any();
     });
 }
