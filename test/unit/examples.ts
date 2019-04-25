@@ -5,6 +5,7 @@ import {registerJoi} from "../../src/core";
 import * as Joi from "joi";
 import {Nested} from "../../src/Nested";
 import {Length, StringSchema} from "../../src/constraints/string";
+import { Keys, ObjectSchema } from "../../src/constraints/object";
 
 registerJoi(Joi);
 
@@ -73,6 +74,33 @@ describe('Examples', function () {
 
         class ClassToValidate {
             @Nested()
+            public myProperty! : InnerClass;
+        }
+
+        const instance = new ClassToValidate();
+        instance.myProperty = {
+            innerProperty: "abcde"
+        };
+
+        isValid(validator, instance);
+
+        instance.myProperty.innerProperty = <any> 1234;
+        isInvalid(validator, instance);
+    });
+
+    it(`a property with a class instance type and an object schema`, function () {
+        const validator = new Validator();
+
+        class InnerClass {
+            @StringSchema()
+            public innerProperty! : string;
+        }
+
+        class ClassToValidate {
+            @Keys({
+                innerProperty: Joi.string()
+            })
+            @ObjectSchema()
             public myProperty! : InnerClass;
         }
 

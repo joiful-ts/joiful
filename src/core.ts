@@ -107,7 +107,7 @@ export function typeConstraintDecorator(allowedTypes : Function[], typeSchema : 
     }
 }
 
-function guessTypeSchema(target : object, propertyKey : string | symbol) : Schema{
+function guessTypeSchema(target : object, propertyKey : string | symbol) : Schema {
     let propertyType = getDesignType(target, propertyKey);
     let schema : Schema | undefined = undefined;
     switch (propertyType) {
@@ -143,6 +143,19 @@ function guessTypeSchema(target : object, propertyKey : string | symbol) : Schem
     return schema;
 }
 
+function looksLikeAClass(somethingClassy: Function) {
+    return (
+        somethingClassy.toString().lastIndexOf('class ', 0) === 0 // Easy check for ES6 classes
+        || ( // Otherwise, let's use some heuristics
+            somethingClassy !== Function // Don't allow regular functions.
+            && somethingClassy instanceof Function // All classes extend Function.
+            && !somethingClassy.name // Anonymous functions don't have a name.
+            && somethingClassy.prototype !== undefined // Functions usually don't have a prototype.
+            && somethingClassy.prototype.constructor === somethingClassy // A class's (prototype) constructor should be the same as the function passed in.
+        )
+    );
+}
+
 /**
  * @param target
  * @param propertyKey
@@ -151,7 +164,13 @@ function guessTypeSchema(target : object, propertyKey : string | symbol) : Schem
 export function allowTypes(target : any, propertyKey : string | symbol, types : Function[]) {
     if (types && types.length > 0) {
         const propertyType = getDesignType(target, propertyKey);
-        if (propertyType !== Object && types.indexOf(propertyType) == -1) {
+        if (propertyType !== Object && types.indexOf(propertyType) === -1) {
+            for (const allowedType of types) {
+                if (allowedType === Object && looksLikeAClass(propertyType)) {
+                    // Class instances extend Function, but can be considered "objects".
+                    return;
+                }
+            }
             throw new ConstraintDefinitionError(`Constrained property "${ String(propertyKey) }" has an unsupported type. Wanted ${ types.map((t) => '"' + (<any> t).name + '"').join(' or ') }, found "${ propertyType ? propertyType.name : propertyType }"`);
         }
     }
