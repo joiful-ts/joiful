@@ -1,9 +1,9 @@
 import "./metadataShim";
-import {Validator} from "../../src/Validator";
-import {ValidationOptions} from "joi";
+import { Validator } from "../../src/Validator";
+import { ValidationOptions } from "joi";
 
 interface ToBeValidOptions {
-    clz?: { new (...args: any[]): any };
+    clz?: { new(...args: any[]): any };
     validator?: Validator;
 }
 
@@ -39,16 +39,16 @@ expect.extend({
 });
 
 export interface AssertValidationOptions<T> {
-    clz?: { new (...args: any[]): T };
+    clz?: { new(...args: any[]): T };
     object: T;
     validator?: Validator;
 }
 
 export function testConstraint<T>(
-    classFactory : () => any,
-    valid : T[],
-    invalid : T[],
-    validationOptions? : ValidationOptions
+    classFactory: () => any,
+    valid: T[],
+    invalid: T[],
+    validationOptions?: ValidationOptions
 ) {
     const validator = new Validator(validationOptions);
 
@@ -60,7 +60,7 @@ export function testConstraint<T>(
         }
     });
 
-    it("should invalidate successful candidates", () => {
+    it("should invalidate unsuccessful candidates", () => {
         const clz = classFactory();
         for (let val of invalid) {
             let instance = new clz(val);
@@ -69,11 +69,34 @@ export function testConstraint<T>(
     });
 }
 
+export function testConstraintWithPojos<T>(
+    classFactory: () => { new(...args: any[]): T },
+    valid: T[],
+    invalid: T[],
+    validationOptions?: ValidationOptions
+) {
+    const validator = new Validator(validationOptions);
+
+    it("should validate successful candidates", () => {
+        const clz = classFactory();
+        for (let val of valid) {
+            expect(val).toBeValid({ validator, clz });
+        }
+    });
+
+    it("should invalidate unsuccessful candidates", () => {
+        const clz = classFactory();
+        for (let val of invalid) {
+            expect(val).not.toBeValid({ validator, clz });
+        }
+    });
+}
+
 export function testConversion<T>(
-    classFactory : () => any,
-    getter : (object : any) => any,
-    converted : T[][],
-    unconverted : T[]
+    classFactory: () => any,
+    getter: (object: any) => any,
+    converted: T[][],
+    unconverted: T[]
 ) {
     const clz = classFactory();
 
