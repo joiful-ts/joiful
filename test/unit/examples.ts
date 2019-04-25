@@ -14,7 +14,7 @@ describe('Examples', function () {
 
         class ClassToValidate {
             @Length(5)
-            public myProperty : string;
+            public myProperty! : string;
 
             public myMethod() {
 
@@ -34,9 +34,9 @@ describe('Examples', function () {
 
         class ClassToValidate {
             @Length(5)
-            public myProperty : string;
+            public myProperty! : string;
 
-            public myOtherProperty : string;
+            public myOtherProperty! : string;
         }
 
         const instance = new ClassToValidate();
@@ -53,7 +53,7 @@ describe('Examples', function () {
             static STATIC_PROPERTY = "bloop";
 
             @Length(5)
-            public myProperty : string;
+            public myProperty! : string;
 
         }
 
@@ -68,12 +68,12 @@ describe('Examples', function () {
 
         class InnerClass {
             @StringSchema()
-            public innerProperty : string;
+            public innerProperty! : string;
         }
 
         class ClassToValidate {
             @Nested()
-            public myProperty : InnerClass;
+            public myProperty! : InnerClass;
         }
 
         const instance = new ClassToValidate();

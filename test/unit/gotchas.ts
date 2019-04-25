@@ -14,7 +14,7 @@ describe(`Gotchas`, function () {
                     @Keys({
                         nestedProperty: Joi.number()
                     })
-                    public myProperty : {
+                    public myProperty! : {
                         nestedProperty : number;
                     };
                 }
@@ -32,7 +32,7 @@ describe(`Gotchas`, function () {
                     nestedProperty: Joi.number()
                 })
                 @ObjectSchema()
-                public myProperty : {
+                public myProperty! : {
                     nestedProperty : number;
                 };
             }
@@ -90,7 +90,7 @@ describe(`Gotchas`, function () {
             try {
                 class ClassToValidate {
                     @Min(10)
-                    public myProperty : number | null;
+                    public myProperty! : number | null;
                 }
                 assert.fail();
             } catch (err) {
@@ -105,7 +105,7 @@ describe(`Gotchas`, function () {
             class ClassToValidate {
                 @Min(10)
                 @NumberSchema()
-                public myProperty : number | null;
+                public myProperty! : number | null;
             }
 
             const instance = new ClassToValidate();

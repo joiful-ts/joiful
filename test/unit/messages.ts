@@ -16,7 +16,7 @@ describe('Messages', function () {
 
         class ClassToValidate {
             @Length(5)
-            public myProperty : string;
+            public myProperty! : string;
         }
 
         let instance = new ClassToValidate();

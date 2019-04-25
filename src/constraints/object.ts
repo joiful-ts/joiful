@@ -1,7 +1,7 @@
 import {ObjectSchema, Reference, RenameOptions, Schema, SchemaMap} from "joi";
 import {constraintDecorator, constraintDecoratorWithPeers, typeConstraintDecorator} from "../core";
 
-export function And<TClass>(peer : keyof TClass, ...peers : (keyof TClass)[]) : PropertyDecorator {
+export function And<TClass>(peer : keyof TClass & string, ...peers : (keyof TClass & string)[]) : PropertyDecorator {
     peers = [peer].concat(peers);
     return constraintDecoratorWithPeers([Object], peers, (schema : Schema) => {
         return (schema as ObjectSchema).and(peers as string[]);
@@ -40,7 +40,7 @@ export function Min(limit : number) : PropertyDecorator {
     });
 }
 
-export function Nand<TClass>(peer : keyof TClass, ...peers : (keyof TClass)[]) : PropertyDecorator {
+export function Nand<TClass>(peer : keyof TClass & string, ...peers : (keyof TClass & string)[]) : PropertyDecorator {
     peers = [peer].concat(peers);
     return constraintDecoratorWithPeers([Object], peers, (schema : Schema) => {
         return (schema as ObjectSchema).nand(peers as string[]);
@@ -53,13 +53,13 @@ export function ObjectSchema(schema? : SchemaMap) : PropertyDecorator {
     });
 }
 
-export function OptionalKeys<TClass>(...children : (keyof TClass)[]) : PropertyDecorator {
+export function OptionalKeys<TClass>(...children : (keyof TClass & string)[]) : PropertyDecorator {
     return constraintDecorator([Object], (schema : Schema) => {
         return (schema as ObjectSchema).optionalKeys(children as string[]);
     });
 }
 
-export function Or<TClass>(peer : keyof TClass, ...peers : (keyof TClass)[]) : PropertyDecorator {
+export function Or<TClass>(peer : keyof TClass & string, ...peers : (keyof TClass & string)[]) : PropertyDecorator {
     peers = [peer].concat(peers);
     return constraintDecoratorWithPeers([Object], peers, (schema : Schema) => {
         return (schema as ObjectSchema).or(peers as string[]);
@@ -78,7 +78,7 @@ export function Rename(from : string, to : string, options? : RenameOptions) : P
     });
 }
 
-export function RequiredKeys<TClass>(...children : (keyof TClass)[]) : PropertyDecorator {
+export function RequiredKeys<TClass>(...children : (keyof TClass & string)[]) : PropertyDecorator {
     return constraintDecorator([Object], (schema : Schema) => {
         return (schema as ObjectSchema).requiredKeys(children as string[]);
     });
@@ -96,19 +96,19 @@ export function Unknown(allow? : boolean) : PropertyDecorator {
     });
 }
 
-export function With<TClass>(key : keyof TClass, peers : (keyof TClass)[]) : PropertyDecorator {
+export function With<TClass>(key : keyof TClass & string, peers : (keyof TClass & string)[]) : PropertyDecorator {
     return constraintDecoratorWithPeers([Object], peers, (schema : Schema) => {
         return (schema as ObjectSchema).with(key as string, peers as string[]);
     });
 }
 
-export function Without<TClass>(key : keyof TClass, peers : (keyof TClass)[]) : PropertyDecorator {
+export function Without<TClass>(key : keyof TClass & string, peers : (keyof TClass & string)[]) : PropertyDecorator {
     return constraintDecoratorWithPeers([Object], peers, (schema : Schema) => {
         return (schema as ObjectSchema).without(key as string, peers as string[]);
     });
 }
 
-export function Xor<TClass>(peer : keyof TClass, ...peers : (keyof TClass)[]) : PropertyDecorator {
+export function Xor<TClass>(peer : keyof TClass & string, ...peers : (keyof TClass & string)[]) : PropertyDecorator {
     peers = [peer].concat(peers);
     return constraintDecoratorWithPeers([Object], peers, (schema : Schema) => {
         return (schema as ObjectSchema).xor(peers as string[]);

@@ -18,12 +18,12 @@ describe('Nested', function () {
             class NestedClassToValidate {
                 @Length(3)
                 @Required()
-                public myProperty : string;
+                public myProperty! : string;
             }
 
             class ClassToValidate {
                 @Required()
-                public nestedProperty : NestedClassToValidate;
+                public nestedProperty! : NestedClassToValidate;
             }
             assert.fail();
         } catch (err) {
@@ -37,13 +37,13 @@ describe('Nested', function () {
         class NestedClassToValidate {
             @Length(3)
             @Required()
-            public myProperty : string;
+            public myProperty! : string;
         }
 
         class ClassToValidate {
             @Required()
             @Nested()
-            public nestedProperty : NestedClassToValidate;
+            public nestedProperty! : NestedClassToValidate;
         }
 
         let instance = new ClassToValidate();
@@ -60,7 +60,7 @@ describe('Nested', function () {
             class ClassToValidate {
                 @Required()
                 @Nested()
-                public nestedProperty : { myProperty : string };
+                public nestedProperty! : { myProperty : string };
             }
             assert.fail();
         } catch (err) {
@@ -74,13 +74,13 @@ describe('Nested', function () {
         class NestedClassToValidate {
             @Length(3)
             @Required()
-            public myProperty : string;
+            public myProperty! : string;
         }
 
         class ClassToValidate {
             @Required()
             @Nested(NestedClassToValidate)
-            public nestedProperty : { myProperty : string };
+            public nestedProperty! : { myProperty : string };
         }
 
         let instance = new ClassToValidate();
@@ -98,13 +98,13 @@ describe('Nested', function () {
         class NestedClassToValidate {
             @Length(3)
             @Required()
-            public myProperty : string;
+            public myProperty! : string;
         }
 
         class ClassToValidate {
             @Required()
             @NestedArray(NestedClassToValidate)
-            public nestedProperty : { myProperty : string }[];
+            public nestedProperty! : { myProperty : string }[];
         }
 
         let instance = new ClassToValidate();

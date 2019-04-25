@@ -17,7 +17,7 @@ describe('Validate', function () {
 
        class ClassToValidate {
            @Length(5)
-           myProperty : string;
+           myProperty! : string;
        }
 
        class OuterClass {

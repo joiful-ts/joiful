@@ -13,10 +13,10 @@ describe("Date constraints", function () {
     describe("DateSchema", function () {
         class MyClass {
             @DateSchema()
-            myProperty : Date;
+            myProperty! : Date;
 
             @DateSchema()
-            myOtherProperty : string;
+            myOtherProperty! : string;
         }
 
         it("should annotate the class property", function () {
@@ -32,7 +32,7 @@ describe("Date constraints", function () {
             assert.throws(function () {
                 class MyBadClass {
                     @DateSchema()
-                    myBadProperty : number;
+                    myBadProperty! : number;
                 }
             }, ConstraintDefinitionError);
         });

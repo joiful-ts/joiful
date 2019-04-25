@@ -1,4 +1,4 @@
-import {Schema, ObjectSchema} from "joi";
+import { Schema, ObjectSchema, ArraySchema } from "joi";
 import * as joi from "joi";
 
 export const WORKING_SCHEMA_KEY = "tsdv:working-schema";
@@ -61,12 +61,12 @@ export function getJoiSchema(clz : Function) : ObjectSchema {
 
 export function getPropertySchema(target : object, propertyKey : string | symbol) {
     const classSchema = getWorkingSchema(target);
-    return classSchema[propertyKey];
+    return classSchema[String(propertyKey)];
 }
 
 export function updateSchema(target : object, propertyKey : string | symbol, schema : Schema) {
     const classSchema = getWorkingSchema(target);
-    classSchema[propertyKey] = schema;
+    classSchema[String(propertyKey)] = schema;
 }
 
 export function getAndUpdateSchema(target : object, propertyKey : string | symbol, updateFunction : (schema : Schema) => Schema) {
@@ -99,7 +99,7 @@ export function typeConstraintDecorator(allowedTypes : Function[], typeSchema : 
 
         let schema = getPropertySchema(target, propertyKey);
         if (schema) {
-            throw new ConstraintDefinitionError(`A validation schema already exists for property: ${propertyKey}`);
+            throw new ConstraintDefinitionError(`A validation schema already exists for property: ${ String(propertyKey) }`);
         } else {
             schema = typeSchema(Joi);
             updateSchema(target, propertyKey, schema);
@@ -138,7 +138,7 @@ function guessTypeSchema(target : object, propertyKey : string | symbol) : Schem
             break;
     }
     if (schema === undefined) {
-        throw new ConstraintDefinitionError(`No validation schema exists, nor could it be inferred from the design:type metadata, for property "${propertyKey}". Please decorate the property with a type schema.`);
+        throw new ConstraintDefinitionError(`No validation schema exists, nor could it be inferred from the design:type metadata, for property "${ String(propertyKey) }". Please decorate the property with a type schema.`);
     }
     return schema;
 }
@@ -152,7 +152,7 @@ export function allowTypes(target : any, propertyKey : string | symbol, types : 
     if (types && types.length > 0) {
         const propertyType = getDesignType(target, propertyKey);
         if (propertyType !== Object && types.indexOf(propertyType) == -1) {
-            throw new ConstraintDefinitionError(`Constrained property "${ propertyKey }" has an unsupported type. Wanted ${ types.map((t) => '"' + (<any> t).name + '"').join(' or ') }, found "${ propertyType ? propertyType.name : propertyType }"`);
+            throw new ConstraintDefinitionError(`Constrained property "${ String(propertyKey) }" has an unsupported type. Wanted ${ types.map((t) => '"' + (<any> t).name + '"').join(' or ') }, found "${ propertyType ? propertyType.name : propertyType }"`);
         }
     }
 }

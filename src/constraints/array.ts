@@ -40,7 +40,7 @@ export function Min(limit : number) : PropertyDecorator {
  */
 export function Ordered(...types : Schema[]) : PropertyDecorator {
     return constraintDecorator([Array], (schema : Schema) => {
-        return (schema as ArraySchema).ordered.apply(schema, types); // hmm?
+        return (schema as ArraySchema).ordered(types);
     });
 }
 

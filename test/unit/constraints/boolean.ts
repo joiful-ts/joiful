@@ -14,7 +14,7 @@ describe("Boolean constraints", function () {
     describe("BooleanSchema", function () {
         class MyClass {
             @BooleanSchema()
-            myProperty : boolean;
+            myProperty! : boolean;
         }
 
         it("should annotate the class property", function () {
@@ -29,10 +29,10 @@ describe("Boolean constraints", function () {
             assert.throws(function () {
                 class MyBadClass {
                     @BooleanSchema()
-                    myBadProperty : number;
+                    myBadProperty! : number;
 
                     @BooleanSchema()
-                    myOtherBadProperty : string;
+                    myOtherBadProperty! : string;
                 }
             }, ConstraintDefinitionError);
         });

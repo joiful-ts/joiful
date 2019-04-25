@@ -13,11 +13,11 @@ describe(`Inheritance`, function () {
     it(`Working schemas in inheritence chains are correctly merged`, function () {
         class ParentClass {
             @Min(10)
-            foo : number;
+            foo! : number;
         }
         class ChildClass extends ParentClass {
             @Min(10)
-            bar : number;
+            bar! : number;
         }
 
         const parentSchemaUnmerged = getWorkingSchema(ParentClass.prototype);
@@ -36,11 +36,11 @@ describe(`Inheritance`, function () {
     it(`Inheriting classes apply both the parent's validations, and the child's validations`, function () {
         class ParentClass {
             @Min(10)
-            foo : number;
+            foo! : number;
         }
         class ChildClass extends ParentClass {
             @Min(10)
-            bar : number;
+            bar! : number;
         }
 
         const instance = new ChildClass();
@@ -51,11 +51,11 @@ describe(`Inheritance`, function () {
     it(`Child validations do not apply when validating the parent class`, function () {
         class ParentClass {
             @Min(10)
-            foo : number;
+            foo! : number;
         }
         class ChildClass extends ParentClass {
             @Min(10)
-            bar : number;
+            bar! : number;
         }
 
         const instance = new ParentClass();
@@ -66,11 +66,11 @@ describe(`Inheritance`, function () {
     it(`Child validations can override the parent's validations`, function () {
         class ParentClass {
             @Min(10)
-            foo : number;
+            foo! : number;
         }
         class ChildClass extends ParentClass {
             @Min(0)
-            foo : number;
+            foo! : number;
         }
 
         const instance = new ChildClass();
@@ -81,15 +81,15 @@ describe(`Inheritance`, function () {
     it(`Grandchild classes apply validations from parent and grandparent classes`, function () {
         class ParentClass {
             @Min(10)
-            foo : number;
+            foo! : number;
         }
         class ChildClass extends ParentClass {
             @Min(10)
-            bar : number;
+            bar! : number;
         }
         class GrandchildClass extends ChildClass {
             @Min(10)
-            baz : number;
+            baz! : number;
         }
 
         const instance = new GrandchildClass();
@@ -100,13 +100,13 @@ describe(`Inheritance`, function () {
     it(`Grandchild classes without any validations apply validations from the grandparent class`, function () {
         class ParentClass {
             @Min(10)
-            foo : number;
+            foo! : number;
         }
         class ChildClass extends ParentClass {
-            bar : number;
+            bar! : number;
         }
         class GrandchildClass extends ChildClass {
-            baz : number;
+            baz! : number;
         }
 
         const instance = new GrandchildClass();

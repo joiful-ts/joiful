@@ -17,10 +17,10 @@ describe("String constraints", function () {
     describe("StringSchema", function () {
         class MyClass {
             @StringSchema()
-            myProperty : string;
+            myProperty! : string;
 
             @StringSchema()
-            myOtherProperty : String;
+            myOtherProperty! : String;
         }
 
         it("should annotate the class property", function () {
@@ -36,7 +36,7 @@ describe("String constraints", function () {
             assert.throws(function () {
                 class MyBadClass {
                     @StringSchema()
-                    myBadProperty : number;
+                    myBadProperty! : number;
                 }
             }, ConstraintDefinitionError);
         });
@@ -47,7 +47,7 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty : string;
+                myProperty! : string;
             }
 
             const metadata = Reflect.getMetadata(WORKING_SCHEMA_KEY, MyClass.prototype);
@@ -61,7 +61,7 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty : string;
+                myProperty! : string;
             }
 
             const object = new MyClass();
@@ -74,7 +74,7 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty : string;
+                myProperty! : string;
             }
 
             const object = new MyClass();
@@ -87,7 +87,7 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty : string;
+                myProperty! : string;
             }
 
             const object = {
@@ -104,7 +104,7 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty : string;
+                myProperty! : string;
             }
 
             const object = {
@@ -120,7 +120,7 @@ describe("String constraints", function () {
         it("should create Joi type schema derived from property type, if no type schema specified", function () {
             class MyClass {
                 @Length(5)
-                myProperty : string;
+                myProperty! : string;
             }
 
             let object = new MyClass();
