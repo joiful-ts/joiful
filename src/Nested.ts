@@ -1,9 +1,17 @@
-import {ConstraintDefinitionError, getJoiSchema, Joi, updateSchema} from "./core";
+import {
+    AnyClass,
+    ConstraintDefinitionError,
+    getJoiSchema,
+    Joi,
+    StringOrSymbolKey,
+    TypedPropertyDecorator,
+    updateSchema
+} from "./core";
 
-export function Nested(clz? : Function) : PropertyDecorator {
-    return function (target : Object, propertyKey : string | symbol) {
+export function Nested<TClass, TKey extends StringOrSymbolKey<TClass>>(clz? : AnyClass) : TypedPropertyDecorator<TClass, TKey> {
+    return function (target : TClass, propertyKey : TKey) {
         // allowTypes(target, propertyKey, [Object]);
-        let propertyType : Function;
+        let propertyType : AnyClass;
         if (clz) {
             propertyType = clz;
         } else {
@@ -17,10 +25,10 @@ export function Nested(clz? : Function) : PropertyDecorator {
     };
 }
 
-export function NestedArray(clz : Function) : PropertyDecorator {
-    return function (target : Object, propertyKey : string | symbol) {
+export function NestedArray<TClass, TKey extends StringOrSymbolKey<TClass>>(clz : AnyClass) : TypedPropertyDecorator<TClass, TKey> {
+    return function (target : TClass, propertyKey : TKey) {
         // allowTypes(target, propertyKey, [Object]);
-        let propertyType : Function;
+        let propertyType : AnyClass;
         if (clz) {
             propertyType = clz;
         } else {

@@ -1,26 +1,28 @@
-import {typeConstraintDecorator, constraintDecorator} from "../core";
+import {typeConstraintDecorator, constraintDecorator, StringOrSymbolKey, TypedPropertyDecorator} from "../core";
 import {FunctionSchema, Schema} from "joi";
 
-export function Arity(n : number) : PropertyDecorator {
-    return constraintDecorator([Function], (schema : Schema) => {
+type AllowedPropertyTypes = Function;
+
+export function Arity<TClass, TKey extends StringOrSymbolKey<TClass>>(n : number) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as FunctionSchema).arity(n);
     });
 }
 
-export function FuncSchema() : PropertyDecorator {
-    return typeConstraintDecorator([Function], (Joi) => {
+export function FuncSchema<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return typeConstraintDecorator<AllowedPropertyTypes, TClass, TKey>((Joi) => {
         return Joi.func();
     });
 }
 
-export function MaxArity(n : number) : PropertyDecorator {
-    return constraintDecorator([Function], (schema : Schema) => {
+export function MaxArity<TClass, TKey extends StringOrSymbolKey<TClass>>(n : number) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as FunctionSchema).maxArity(n);
     });
 }
 
-export function MinArity(n : number) : PropertyDecorator {
-    return constraintDecorator([Function], (schema : Schema) => {
+export function MinArity<TClass, TKey extends StringOrSymbolKey<TClass>>(n : number) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as FunctionSchema).minArity(n);
     });
 }

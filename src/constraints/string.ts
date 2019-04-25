@@ -1,119 +1,121 @@
 import {EmailOptions, IpOptions, Reference, StringSchema, UriOptions, Schema} from "joi";
-import {constraintDecorator, typeConstraintDecorator} from "../core";
+import {constraintDecorator, StringOrSymbolKey, typeConstraintDecorator, TypedPropertyDecorator} from "../core";
 
-export function Alphanum() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+type AllowedPropertyTypes = string;
+
+export function Alphanum<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).alphanum();
     });
 }
 
-export function CreditCard() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function CreditCard<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).creditCard();
     });
 }
 
-export function Email(options? : EmailOptions) : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Email<TClass, TKey extends StringOrSymbolKey<TClass>>(options? : EmailOptions) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).email(options);
     });
 }
 
-export function Guid() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Guid<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).guid();
     });
 }
 
-export function Hex() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Hex<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).hex();
     });
 }
 
-export function Hostname() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Hostname<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).hostname();
     });
 }
 
-export function Ip(options? : IpOptions) : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Ip<TClass, TKey extends StringOrSymbolKey<TClass>>(options? : IpOptions) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).ip(options);
     });
 }
 
-export function IsoDate() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function IsoDate<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).isoDate();
     });
 }
 
-export function Length(limit : number | Reference, encoding? : string) : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Length<TClass, TKey extends StringOrSymbolKey<TClass>>(limit : number | Reference, encoding? : string) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).length(<any>limit, encoding);
     });
 }
 
-export function Lowercase() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Lowercase<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).lowercase();
     });
 }
 
-export function Max(limit : number | Reference, encoding? : string) : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Max<TClass, TKey extends StringOrSymbolKey<TClass>>(limit : number | Reference, encoding? : string) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).max(<any>limit, encoding);
     });
 }
 
-export function Min(limit : number | Reference, encoding? : string) : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Min<TClass, TKey extends StringOrSymbolKey<TClass>>(limit : number | Reference, encoding? : string) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).min(<any>limit, encoding);
     });
 }
 
-export function Regex(pattern : RegExp, name? : string) : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Regex<TClass, TKey extends StringOrSymbolKey<TClass>>(pattern : RegExp, name? : string) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).regex(pattern, name);
     });
 }
 
 export const Pattern = Regex;
 
-export function Replace(pattern : RegExp, replacement : string) : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Replace<TClass, TKey extends StringOrSymbolKey<TClass>>(pattern : RegExp, replacement : string) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).replace(pattern, replacement);
     });
 }
 
-export function StringSchema() : PropertyDecorator {
-    return typeConstraintDecorator([String], (Joi) => {
+export function StringSchema<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return typeConstraintDecorator<AllowedPropertyTypes, TClass, TKey>((Joi) => {
         return <Schema> Joi.string();
     });
 }
 
-export function Token() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Token<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).token();
     });
 }
 
-export function Trim() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Trim<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).trim();
     });
 }
 
-export function Uppercase() : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Uppercase<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).uppercase();
     });
 }
 
 // TODO: update Joi UriOptions to support "allowRelative" option.
-export function Uri(options? : UriOptions) : PropertyDecorator {
-    return constraintDecorator([String], (schema : Schema) => {
+export function Uri<TClass, TKey extends StringOrSymbolKey<TClass>>(options? : UriOptions) : TypedPropertyDecorator<TClass, TKey> {
+    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
         return (schema as StringSchema).uri(options);
     });
 }
