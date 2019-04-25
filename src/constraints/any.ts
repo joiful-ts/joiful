@@ -1,4 +1,4 @@
-import {Reference, Schema, ValidationOptions, WhenOptions} from "joi";
+import {lazy, Reference, Schema, ValidationOptions, WhenOptions} from "joi";
 import {constraintDecorator, typeConstraintDecorator} from "../core";
 
 export function Allow(...values : any[]) : PropertyDecorator {
@@ -86,6 +86,12 @@ export const Not = Invalid;
 export function Label(name : string) : PropertyDecorator {
     return constraintDecorator([], (schema : Schema) => {
         return schema.label(name);
+    });
+}
+
+export function Lazy(cb : () => Schema) : PropertyDecorator {
+    return typeConstraintDecorator([], (Joi : { lazy: typeof lazy }) => {
+        return Joi.lazy(cb);
     });
 }
 

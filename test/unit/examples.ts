@@ -1,11 +1,12 @@
 import "./metadataShim";
 import {Validator} from "../../src/Validator";
 import {isValid, isInvalid} from "./testUtil";
-import {registerJoi} from "../../src/core";
+import { getJoiSchema, registerJoi } from "../../src/core";
 import * as Joi from "joi";
-import {Nested} from "../../src/Nested";
+import { Nested, NestedArray } from "../../src/Nested";
 import {Length, StringSchema} from "../../src/constraints/string";
 import { Keys, ObjectSchema } from "../../src/constraints/object";
+import { Lazy, Required } from "../../src/constraints/any";
 
 registerJoi(Joi);
 
@@ -113,5 +114,28 @@ describe('Examples', function () {
 
         instance.myProperty.innerProperty = <any> 1234;
         isInvalid(validator, instance);
+    });
+
+    it(`lazy evaluation (for recursive data structures)`, function () {
+        const validator = new Validator();
+
+        class TreeNode {
+            @Required()
+            tagName! : string;
+
+            @Lazy(() => Joi.array().items(getJoiSchema(TreeNode)))
+            children! : TreeNode[];
+        }
+
+        const instance = new TreeNode();
+        instance.tagName = 'outer';
+        instance.children = [
+            {
+                tagName: 'inner',
+                children: []
+            }
+        ];
+
+        isValid(validator, instance);
     });
 });
