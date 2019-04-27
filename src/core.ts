@@ -29,7 +29,7 @@ export type StringKey<T> = Extract<keyof T, string>;
 export type StringOrSymbolKey<T> = Extract<keyof T, string | symbol>;
 
 // The default PropertyDecorator type is not very type safe, we'll use a stricter version.
-export type TypedPropertyDecorator<TClass, TKey extends StringOrSymbolKey<TClass>> = (target: TClass, propertyKey: TKey) => void;
+export type TypedPropertyDecorator<TPropertyType> = <TClass extends Record<TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey) => void;
 
 function getDesignType<TClass, TKey extends StringOrSymbolKey<TClass>>(target : TClass, targetKey : TKey) : any {
     return Reflect.getMetadata("design:type", target, String(targetKey));
@@ -89,11 +89,9 @@ export function getAndUpdateSchema<TClass, TKey extends StringOrSymbolKey<TClass
 }
 
 export function constraintDecorator<
-    TPropertyType,
-    TClass,
-    TKey extends StringOrSymbolKey<TClass>
->(updateFunction : (schema : Schema) => Schema) : TypedPropertyDecorator<TClass, TKey> {
-    return function (target : TClass, propertyKey : TKey) {
+    TPropertyType
+>(updateFunction : (schema : Schema) => Schema) : TypedPropertyDecorator<TPropertyType> {
+    return function <TClass extends Record<TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
         getAndUpdateSchema(target, propertyKey, updateFunction);
     };
 }
@@ -101,9 +99,8 @@ export function constraintDecorator<
 export function constraintDecoratorWithPeers<
     TPropertyType,
     TClass,
-    TKey extends StringOrSymbolKey<TClass>
->(peers : StringOrSymbolKey<TClass>[], updateFunction : (schema : Schema) => Schema) : TypedPropertyDecorator<TClass, TKey> {
-    return function (target : TClass, propertyKey : TKey) {
+>(peers : StringOrSymbolKey<TClass>[], updateFunction : (schema : Schema) => Schema) : TypedPropertyDecorator<TPropertyType> {
+    return function <TClass, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
         verifyPeers(target, peers);
         getAndUpdateSchema(target, propertyKey, updateFunction);
     };
@@ -111,10 +108,8 @@ export function constraintDecoratorWithPeers<
 
 export function typeConstraintDecorator<
     TPropertyType,
-    TClass,
-    TKey extends StringOrSymbolKey<TClass>
 >(typeSchema : (Joi : typeof joi) => Schema) {
-    return function (target : TClass, propertyKey : TKey) : void {
+    return function <TClass extends Record<TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) : void {
         let schema = getPropertySchema(target, propertyKey);
         if (schema) {
             throw new ConstraintDefinitionError(`A validation schema already exists for property: ${ String(propertyKey) }`);

@@ -28,13 +28,16 @@ describe("Date constraints", function () {
             assert.deepEqual(metadata, expected);
         });
 
-        it("should error when applied to a non-date property", function () {
-            assert.throws(function () {
-                class MyBadClass {
-                    @DateSchema()
-                    myBadProperty! : number;
-                }
-            }, ConstraintDefinitionError);
+        /**
+         * TODO: test compilation failures
+         */
+        xit("should error when applied to a non-date property", function () {
+            // assert.throws(function () {
+            //     class MyBadClass {
+            //         @DateSchema()
+            //         myBadProperty! : number;
+            //     }
+            // }, ConstraintDefinitionError);
         });
     });
 

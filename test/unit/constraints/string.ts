@@ -1,14 +1,32 @@
 import "../metadataShim";
 import * as chai from "chai";
-import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
+import {registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import {
-    StringSchema, Length, Alphanum, CreditCard, Email, Guid, Hex, Hostname, Ip,
-    IsoDate, Lowercase, Max, Min, Regex, Replace, Token, Trim, Uppercase, Uri
+    Alphanum,
+    CreditCard,
+    Email,
+    Guid,
+    Hex,
+    Hostname,
+    Ip,
+    IsoDate,
+    Length,
+    Lowercase,
+    Max,
+    Min,
+    Regex,
+    Replace,
+    StringSchema,
+    Token,
+    Trim,
+    Uppercase,
+    Uri
 } from "../../../src/constraints/string";
 import * as Joi from "joi";
 import {Validator} from "../../../src/Validator";
-import {isValid, isInvalid, testConstraint, testConversion} from "../testUtil";
+import {isInvalid, isValid, testConstraint, testConversion} from "../testUtil";
 import AssertStatic = Chai.AssertStatic;
+
 const assert : AssertStatic = chai.assert;
 
 registerJoi(Joi);
@@ -19,8 +37,9 @@ describe("String constraints", function () {
             @StringSchema()
             myProperty! : string;
 
-            @StringSchema()
-            myOtherProperty! : String;
+            // Object wrappers are not supported
+            // @StringSchema()
+            // myOtherProperty! : String;
         }
 
         it("should annotate the class property", function () {
@@ -32,13 +51,16 @@ describe("String constraints", function () {
             assert.deepEqual(metadata, expected);
         });
 
-        it("should error when applied to a non-string property", function () {
-            assert.throws(function () {
-                class MyBadClass {
-                    @StringSchema()
-                    myBadProperty! : number;
-                }
-            }, ConstraintDefinitionError);
+        /**
+         * TODO: test compilation failures
+         */
+        xit("should error when applied to a non-string property", function () {
+            // assert.throws(function () {
+            //     class MyBadClass {
+            //         @StringSchema()
+            //         myBadProperty! : number;
+            //     }
+            // }, ConstraintDefinitionError);
         });
     });
 

@@ -1,34 +1,34 @@
 import {DateSchema, Reference, Schema} from "joi";
-import {typeConstraintDecorator, constraintDecorator, TypedPropertyDecorator, StringOrSymbolKey} from "../core";
+import {constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator} from "../core";
 
 type AllowedPropertyTypes = Date | string;
 
-export function DateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
-    return typeConstraintDecorator<AllowedPropertyTypes, TClass, TKey>((Joi) => {
+export function DateSchema() : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
         return Joi.date();
     });
 }
 
-export function Iso<TClass, TKey extends StringOrSymbolKey<TClass>>() : TypedPropertyDecorator<TClass, TKey> {
-    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
+export function Iso() : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as DateSchema).iso();
     });
 }
 
-export function Max<TClass, TKey extends StringOrSymbolKey<TClass>>(limit : number | 'now' | string | Date | Reference) : TypedPropertyDecorator<TClass, TKey> {
-    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
+export function Max(limit : number | 'now' | string | Date | Reference) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as DateSchema).max(<any>limit);
     });
 }
 
-export function Min<TClass, TKey extends StringOrSymbolKey<TClass>>(limit : number | 'now' | string | Date | Reference) : TypedPropertyDecorator<TClass, TKey> {
-    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
+export function Min(limit : number | 'now' | string | Date | Reference) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as DateSchema).min(<any>limit);
     });
 }
 
-export function Timestamp<TClass, TKey extends StringOrSymbolKey<TClass>>(type? : 'unix' | 'javascript') : TypedPropertyDecorator<TClass, TKey> {
-    return constraintDecorator<AllowedPropertyTypes, TClass, TKey>((schema : Schema) => {
+export function Timestamp(type? : 'unix' | 'javascript') : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as DateSchema).timestamp(type);
     });
 }
