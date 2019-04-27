@@ -28,7 +28,7 @@
     "build": "rimraf publish && tsc -p tsconfig.build.json && node publish/build.js",
     "pretest": "rimraf dist && tsc -p tsconfig.all.json",
     "publishToNpm": "npm run test && npm run build && cd publish && npm publish && cd .. && rimraf publish",
-    "test": "mocha --require source-map-support/register \"dist/test/**/*.js\"",
+    "test": "jest",
     "watch": "tsc -p tsconfig.all.json -w"
   },
   "peerDependencies": {
@@ -36,18 +36,16 @@
     "joi": "^10.6.0"
   },
   "devDependencies": {
-    "@types/chai": "3.4.35",
+    "@types/jest": "^24.0.11",
     "@types/joi": "10.4.1",
-    "@types/mocha": "2.2.39",
     "@types/node": "6.0.63",
     "@types/reflect-metadata": "0.0.5",
     "@types/rimraf": "0.0.28",
-    "chai": "3.5.0",
+    "jest": "^24.7.1",
     "joi": "10.6.0",
-    "mocha": "3.2.0",
     "reflect-metadata": "0.1.9",
     "rimraf": "2.6.0",
-    "source-map-support": "0.4.11",
+    "ts-jest": "^24.0.2",
     "typescript": "3.4.5"
   }
 }

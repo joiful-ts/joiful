@@ -1,11 +1,8 @@
 import "../metadataShim";
-import * as chai from "chai";
 import {ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import * as Joi from "joi";
 import {testConstraint} from "../testUtil";
 import {DateSchema, Iso} from "../../../src/constraints/date";
-import AssertStatic = Chai.AssertStatic;
-const assert : AssertStatic = chai.assert;
 
 registerJoi(Joi);
 
@@ -25,16 +22,16 @@ describe("Date constraints", function () {
                 myProperty: Joi.date(),
                 myOtherProperty: Joi.date(),
             };
-            assert.deepEqual(metadata, expected);
+            expect(metadata).toEqual(expected);
         });
 
         it("should error when applied to a non-date property", function () {
-            assert.throws(function () {
+            expect(function () {
                 class MyBadClass {
                     @DateSchema()
                     myBadProperty! : number;
                 }
-            }, ConstraintDefinitionError);
+            }).toThrow(ConstraintDefinitionError);
         });
     });
 

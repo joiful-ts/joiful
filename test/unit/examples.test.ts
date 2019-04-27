@@ -1,6 +1,6 @@
 import "./metadataShim";
 import {Validator} from "../../src/Validator";
-import {isValid, isInvalid} from "./testUtil";
+import {assertIsValid, assertIsInvalid} from "./testUtil";
 import { getJoiSchema, registerJoi } from "../../src/core";
 import * as Joi from "joi";
 import { Nested, NestedArray } from "../../src/Nested";
@@ -26,7 +26,7 @@ describe('Examples', function () {
         const instance = new ClassToValidate();
         instance.myProperty = "abcde";
 
-        isValid(validator, instance);
+        assertIsValid(validator, instance);
 
         //instance.myMethod();
     });
@@ -45,7 +45,7 @@ describe('Examples', function () {
         instance.myProperty = "abcde";
         instance.myOtherProperty = "abcde";
 
-        isInvalid(validator, instance);
+        assertIsInvalid(validator, instance);
     });
 
     it('class with static properties', function () {
@@ -62,7 +62,7 @@ describe('Examples', function () {
         const instance = new ClassToValidate();
         instance.myProperty = "abcde";
 
-        isValid(validator, instance);
+        assertIsValid(validator, instance);
     });
 
     it('nested class', function () {
@@ -83,10 +83,10 @@ describe('Examples', function () {
             innerProperty: "abcde"
         };
 
-        isValid(validator, instance);
+        assertIsValid(validator, instance);
 
         instance.myProperty.innerProperty = <any> 1234;
-        isInvalid(validator, instance);
+        assertIsInvalid(validator, instance);
     });
 
     it(`a property with a class instance type and an object schema`, function () {
@@ -110,10 +110,10 @@ describe('Examples', function () {
             innerProperty: "abcde"
         };
 
-        isValid(validator, instance);
+        assertIsValid(validator, instance);
 
         instance.myProperty.innerProperty = <any> 1234;
-        isInvalid(validator, instance);
+        assertIsInvalid(validator, instance);
     });
 
     it(`lazy evaluation (for recursive data structures)`, function () {
@@ -136,6 +136,6 @@ describe('Examples', function () {
             }
         ];
 
-        isValid(validator, instance);
+        assertIsValid(validator, instance);
     });
 });
