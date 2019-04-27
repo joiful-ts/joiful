@@ -29,12 +29,10 @@ describe('Validate', function () {
        instance.myProperty = "abc";
 
        const outer = new OuterClass();
-       try {
+       expect(() => {
            outer.run(instance, 5);
            fail();
-       } catch (err) {
-          expect(err).toBeInstanceOf(MultipleValidationError);
-       }
+       }).toThrow(MultipleValidationError);
 
        instance.myProperty = "abcde";
        outer.run(instance, 5);
