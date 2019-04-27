@@ -28,8 +28,55 @@ export interface AnyClass {
 export type StringKey<T> = Extract<keyof T, string>;
 export type StringOrSymbolKey<T> = Extract<keyof T, string | symbol>;
 
+export type Nullable<T> = {
+    [K in keyof T]: T[K] | null;
+};
+
+/**
+ * If a given type extends the desired type, return the given type. Otherwise, return the desired type.
+ * So, you can do stuff like this:
+ *
+ * ```typescript
+ * interface Foo {
+ *     bar: null;
+ *     baz: number;
+ *     boz: string;
+ *     biz: string | null;
+ * }
+ *
+ * const bars1: AllowUnions<Foo['baz'], number, Foo['baz']>[] = [
+ *     'sdf', // Type 'string' is not assignable to type 'number'.
+ *     null, // Type 'null' is not assignable to type 'number'.
+ *     123
+ * ];
+ *
+ * const bars2: AllowUnions<Foo['boz'], string, Foo['boz']>[] = [
+ *     'sdf',
+ *     null, // Type 'null' is not assignable to type 'string'.
+ *     123 // Type 'number' is not assignable to type 'string'.
+ * ];
+ *
+ * const bars3: AllowUnions<Foo['biz'], string, Foo['biz']>[] = [
+ *     'sdf',
+ *     null,
+ *     123 // Type 'number' is not assignable to type 'string | null'.
+ * ];
+ * ```
+ *
+ * Notice that you pass the TOriginal type parameter, which is identical to the TType type parameter. This is because
+ * the "extends" condition will narrow the type of TType to just TDesired. So, "string | null" will be narrowed to
+ * "string", but we actually want to return the original "string | null".
+ *
+ * By returning the TDesired when there's no match, we get nice error messages that state what the desired type was.
+ */
+type AllowUnions<TType, TDesired, TOriginal> = TType extends TDesired ? TOriginal : TDesired;
+
+type MapAllowUnions<TObject, TKey extends keyof TObject, TDesired> = {
+    [K in TKey]: AllowUnions<TObject[K], TDesired, TObject[K]>;
+};
+
 // The default PropertyDecorator type is not very type safe, we'll use a stricter version.
-export type TypedPropertyDecorator<TPropertyType> = <TClass extends Record<TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey) => void;
+export type TypedPropertyDecorator<TPropertyType> = <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey) => void;
 
 function getDesignType<TClass, TKey extends StringOrSymbolKey<TClass>>(target : TClass, targetKey : TKey) : any {
     return Reflect.getMetadata("design:type", target, String(targetKey));
@@ -91,7 +138,7 @@ export function getAndUpdateSchema<TClass, TKey extends StringOrSymbolKey<TClass
 export function constraintDecorator<
     TPropertyType
 >(updateFunction : (schema : Schema) => Schema) : TypedPropertyDecorator<TPropertyType> {
-    return function <TClass extends Record<TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
+    return function <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
         getAndUpdateSchema(target, propertyKey, updateFunction);
     };
 }
@@ -100,7 +147,7 @@ export function constraintDecoratorWithPeers<
     TPropertyType,
     TClass,
 >(peers : StringOrSymbolKey<TClass>[], updateFunction : (schema : Schema) => Schema) : TypedPropertyDecorator<TPropertyType> {
-    return function <TClass, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
+    return function <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
         verifyPeers(target, peers);
         getAndUpdateSchema(target, propertyKey, updateFunction);
     };
@@ -109,7 +156,7 @@ export function constraintDecoratorWithPeers<
 export function typeConstraintDecorator<
     TPropertyType,
 >(typeSchema : (Joi : typeof joi) => Schema) {
-    return function <TClass extends Record<TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) : void {
+    return function <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) : void {
         let schema = getPropertySchema(target, propertyKey);
         if (schema) {
             throw new ConstraintDefinitionError(`A validation schema already exists for property: ${ String(propertyKey) }`);
