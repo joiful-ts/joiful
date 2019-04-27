@@ -3,13 +3,16 @@ import {
     ConstraintDefinitionError,
     getJoiSchema,
     Joi,
+    MapAllowUnions,
     StringOrSymbolKey,
     TypedPropertyDecorator,
     updateSchema
 } from "./core";
 
-export function Nested<TClass, TKey extends StringOrSymbolKey<TClass>>(clz? : AnyClass) : TypedPropertyDecorator<TClass, TKey> {
-    return function (target : TClass, propertyKey : TKey) {
+type AllowedTypes = object;
+
+export function Nested(clz? : AnyClass) : TypedPropertyDecorator<AllowedTypes> {
+    return function <TClass extends MapAllowUnions<TClass, TKey, AllowedTypes>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
         // allowTypes(target, propertyKey, [Object]);
         let propertyType : AnyClass;
         if (clz) {
@@ -25,8 +28,8 @@ export function Nested<TClass, TKey extends StringOrSymbolKey<TClass>>(clz? : An
     };
 }
 
-export function NestedArray<TClass, TKey extends StringOrSymbolKey<TClass>>(clz : AnyClass) : TypedPropertyDecorator<TClass, TKey> {
-    return function (target : TClass, propertyKey : TKey) {
+export function NestedArray(clz : AnyClass) : TypedPropertyDecorator<AllowedTypes> {
+    return function <TClass extends MapAllowUnions<TClass, TKey, AllowedTypes>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
         // allowTypes(target, propertyKey, [Object]);
         let propertyType : AnyClass;
         if (clz) {

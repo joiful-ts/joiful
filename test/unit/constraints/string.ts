@@ -46,7 +46,6 @@ describe("String constraints", function () {
             const metadata = Reflect.getMetadata(WORKING_SCHEMA_KEY, MyClass.prototype);
             const expected = {
                 myProperty: Joi.string(),
-                myOtherProperty: Joi.string()
             };
             assert.deepEqual(metadata, expected);
         });

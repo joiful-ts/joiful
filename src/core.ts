@@ -69,9 +69,9 @@ export type Nullable<T> = {
  *
  * By returning the TDesired when there's no match, we get nice error messages that state what the desired type was.
  */
-type AllowUnions<TType, TDesired, TOriginal> = TType extends TDesired ? TOriginal : TDesired;
+export type AllowUnions<TType, TDesired, TOriginal> = TType extends TDesired ? TOriginal : TDesired;
 
-type MapAllowUnions<TObject, TKey extends keyof TObject, TDesired> = {
+export type MapAllowUnions<TObject, TKey extends keyof TObject, TDesired> = {
     [K in TKey]: AllowUnions<TObject[K], TDesired, TObject[K]>;
 };
 
@@ -145,10 +145,10 @@ export function constraintDecorator<
 
 export function constraintDecoratorWithPeers<
     TPropertyType,
-    TClass,
->(peers : StringOrSymbolKey<TClass>[], updateFunction : (schema : Schema) => Schema) : TypedPropertyDecorator<TPropertyType> {
+    TClassForPeers,
+>(peers : StringOrSymbolKey<TClassForPeers>[], updateFunction : (schema : Schema) => Schema) : TypedPropertyDecorator<TPropertyType> {
     return function <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
-        verifyPeers(target, peers);
+        verifyPeers(target as unknown as TClassForPeers, peers); // TODO: fix this dodgy cast
         getAndUpdateSchema(target, propertyKey, updateFunction);
     };
 }
