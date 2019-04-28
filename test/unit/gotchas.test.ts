@@ -1,5 +1,4 @@
-import {assertIsValid} from "./testUtil";
-import {Validator} from "../../src/Validator";
+import "./testUtil";
 import {NumberSchema, Min} from "../../src/constraints/number";
 import {Joi, ValidationSchemaNotFound} from "../../src/core";
 import {Optional} from "../../src/constraints/any";
@@ -19,7 +18,6 @@ describe(`Gotchas`, function () {
                 }
             }).toThrow(new ValidationSchemaNotFound('myProperty'));
 
-            const validator = new Validator();
             class ClassToValidate2 {
                 @Keys({
                     nestedProperty: Joi.number()
@@ -34,13 +32,12 @@ describe(`Gotchas`, function () {
             instance.myProperty = {
                 nestedProperty: 123
             };
-            assertIsValid(validator, instance);
+            expect(instance).toBeValid();
         });
     });
 
     describe(`union types`, function () {
         it('an optional property will pass', function () {
-            const validator = new Validator();
             class ClassToValidate {
                 @Min(10)
                 @Optional()
@@ -49,7 +46,7 @@ describe(`Gotchas`, function () {
             }
 
             const instance = new ClassToValidate();
-            assertIsValid(validator, instance);
+            expect(instance).toBeValid();
         });
 
         it('a union with undefined, but without an explicit schema annotation, will fail', function () {
@@ -63,7 +60,6 @@ describe(`Gotchas`, function () {
         });
 
         it('a union with undefined and an explicit schema annotation will pass', function () {
-            const validator = new Validator();
             class ClassToValidate {
                 @Min(10)
                 @Optional()
@@ -72,7 +68,7 @@ describe(`Gotchas`, function () {
             }
 
             const instance = new ClassToValidate();
-            assertIsValid(validator, instance);
+            expect(instance).toBeValid();
         });
 
         it('nullable number property without explicit schema annotation will fail', function () {
@@ -85,8 +81,6 @@ describe(`Gotchas`, function () {
         });
 
         it('nullable number property with explicit schema annotation will pass', function () {
-            const validator = new Validator();
-
             class ClassToValidate {
                 @Min(10)
                 @NumberSchema()
@@ -96,7 +90,7 @@ describe(`Gotchas`, function () {
             const instance = new ClassToValidate();
             instance.myProperty = 20;
 
-            assertIsValid(validator, instance);
+            expect(instance).toBeValid();
         });
     });
 });

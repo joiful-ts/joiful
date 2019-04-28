@@ -1,5 +1,5 @@
+import "./testUtil";
 import {Min} from "../../src/constraints/number";
-import {assertIsValid} from "./testUtil";
 import {Validator} from "../../src/Validator";
 import {getMergedWorkingSchemas, getWorkingSchema} from "../../src/core";
 
@@ -76,7 +76,7 @@ describe(`Inheritance`, function () {
 
         const instance = new ChildClass();
         instance.foo = 1;
-        assertIsValid(validator, instance);
+        expect(instance).toBeValid({ validator });
     });
 
     it(`Grandchild classes apply validations from parent and grandparent classes`, function () {

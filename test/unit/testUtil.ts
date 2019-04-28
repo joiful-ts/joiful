@@ -2,16 +2,46 @@ import "./metadataShim";
 import {Validator} from "../../src/Validator";
 import {ValidationOptions} from "joi";
 
-export function assertIsValid<T = any>(validator : Validator, object : T): void {
-    const result = validator.validate<T>(object);
-    expect(result).toHaveProperty('error');
-    expect(result.error).toBeNull();
+interface ToBeValidOptions {
+    clz?: { new (...args: any[]): any };
+    validator?: Validator;
 }
 
-export function assertIsInvalid<T = any>(validator : Validator, object : T): void {
-    const result = validator.validate<T>(object);
-    expect(result).toHaveProperty('error');
-    expect(result.error).toBeTruthy()
+declare global {
+    namespace jest {
+        interface Matchers<R> {
+            toBeValid(options?: ToBeValidOptions): void;
+        }
+
+        interface Expect {
+            toBeValid(options?: ToBeValidOptions): void;
+        }
+    }
+}
+
+expect.extend({
+    toBeValid(received: any, options: ToBeValidOptions) {
+        const validator = (options && options.validator) || new Validator();
+        const clz = options && options.clz;
+        const result = clz ?
+            validator.validateAsClass(received, clz) :
+            validator.validate(received);
+
+        const pass = result.error === null;
+
+        return {
+            pass,
+            message: () => this.isNot ?
+                `expected candidate to fail validation` :
+                `expected candidate to pass validation`
+        };
+    }
+});
+
+export interface AssertValidationOptions<T> {
+    clz?: { new (...args: any[]): T };
+    object: T;
+    validator?: Validator;
 }
 
 export function testConstraint<T>(
@@ -26,7 +56,7 @@ export function testConstraint<T>(
         const clz = classFactory();
         for (let val of valid) {
             let instance = new clz(val);
-            assertIsValid(validator, instance);
+            expect(instance).toBeValid({ validator });
         }
     });
 
@@ -34,7 +64,7 @@ export function testConstraint<T>(
         const clz = classFactory();
         for (let val of invalid) {
             let instance = new clz(val);
-            assertIsInvalid(validator, instance);
+            expect(instance).not.toBeValid({ validator });
         }
     });
 }

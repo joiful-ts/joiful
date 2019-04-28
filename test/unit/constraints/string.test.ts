@@ -1,12 +1,12 @@
 import "../metadataShim";
-import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
+import {ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import {
     StringSchema, Length, Alphanum, CreditCard, Email, Guid, Hex, Hostname, Ip,
     IsoDate, Lowercase, Max, Min, Regex, Replace, Token, Trim, Uppercase, Uri
 } from "../../../src/constraints/string";
 import * as Joi from "joi";
 import {Validator} from "../../../src/Validator";
-import {assertIsValid, assertIsInvalid, testConstraint, testConversion} from "../testUtil";
+import {testConstraint, testConversion} from "../testUtil";
 
 registerJoi(Joi);
 
@@ -51,7 +51,6 @@ describe("String constraints", function () {
             const expected : any = {
                 myProperty: Joi.string().length(5)
             };
-            // TODO: Why the stringify? Needed?
             expect(JSON.stringify(metadata)).toEqual(JSON.stringify(expected));
         });
 
@@ -64,8 +63,7 @@ describe("String constraints", function () {
 
             const object = new MyClass();
             object.myProperty = "abcde";
-            const validator = new Validator();
-            assertIsValid(validator, object);
+            expect(object).toBeValid();
         });
 
         it("should validate failing candidates", function () {
@@ -77,8 +75,7 @@ describe("String constraints", function () {
 
             const object = new MyClass();
             object.myProperty = "abc";
-            const validator = new Validator();
-            assertIsInvalid(validator, object);
+            expect(object).not.toBeValid();
         });
 
         it("should validate successful candidate created from object literal", function () {
@@ -121,8 +118,7 @@ describe("String constraints", function () {
 
             let object = new MyClass();
             object.myProperty = "abcde";
-            const validator = new Validator();
-            assertIsValid(validator, object);
+            expect(object).toBeValid();
         });
     });
 
@@ -431,9 +427,10 @@ describe("String constraints", function () {
 
             const input = "test";
             const object = new MyClass(input);
+
+            expect(object).toBeValid({ validator });
+
             const result = validator.validate(object);
-            expect(result).toHaveProperty('error');
-            expect(result.error).toBeNull();
             expect(result).toHaveProperty('value');
             expect(object.myProperty).toEqual(input);
         });
