@@ -22,7 +22,7 @@ describe("Boolean constraints", function () {
             expect(metadata).toEqual(expected);
         });
 
-        it("should error when applied to a non-date property", function () {
+        it("should error when applied to a non-boolean property", function () {
             expect(function () {
                 class MyBadClass {
                     @BooleanSchema()
