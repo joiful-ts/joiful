@@ -20,6 +20,8 @@ export class ConstraintDefinitionError extends Error {
 }
 
 export class ValidationSchemaNotFound extends ConstraintDefinitionError {
+    name = "ValidationSchemaNotFound";
+
     constructor(propertyKey: string | Symbol) {
         super(
             `No validation schema exists, nor could it be inferred from the design:type metadata, ` +

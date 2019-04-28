@@ -1,6 +1,8 @@
 import {ConstraintDefinitionError, getJoiSchema, Joi, updateSchema} from "./core";
 
 export class NestedPropertyTypeUnknown extends ConstraintDefinitionError {
+    name = 'NestedPropertyTypeUnknown';
+
     constructor(propertyKey: string | Symbol) {
         super(`Could not determine the type of the nested property "${ String(propertyKey) }". Please pass the class to the Nested() decorator.`);
     }
