@@ -1,18 +1,14 @@
 import "./metadataShim";
 import {Validator} from "../../src/Validator";
 import {ValidationOptions} from "joi";
-import {
-    isValidationFail, isValidationPass, ValidationResultFail,
-    ValidationResultPass
-} from "../../src/ValidationResult";
 
-export function assertIsValid<T = any>(validator : Validator, object : T) {
+export function assertIsValid<T = any>(validator : Validator, object : T): void {
     const result = validator.validate<T>(object);
     expect(result).toHaveProperty('error');
     expect(result.error).toBeNull();
 }
 
-export function assertIsInvalid<T = any>(validator : Validator, object : T) {
+export function assertIsInvalid<T = any>(validator : Validator, object : T): void {
     const result = validator.validate<T>(object);
     expect(result).toHaveProperty('error');
     expect(result.error).toBeTruthy()
