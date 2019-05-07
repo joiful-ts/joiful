@@ -1,9 +1,13 @@
 import {DateSchema, Reference, Schema} from "joi";
 import {typeConstraintDecorator, constraintDecorator} from "../core";
 
-export function DateSchema() : PropertyDecorator {
+export function DateSchema(schemaBuilder?: (schema: DateSchema) => DateSchema) : PropertyDecorator {
     return typeConstraintDecorator([Date, String], (Joi) => {
-        return Joi.date();
+        let schema = Joi.date();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

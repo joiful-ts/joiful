@@ -7,9 +7,13 @@ export function Arity(n : number) : PropertyDecorator {
     });
 }
 
-export function FuncSchema() : PropertyDecorator {
+export function FuncSchema(schemaBuilder?: (schema: FunctionSchema) => FunctionSchema) : PropertyDecorator {
     return typeConstraintDecorator([Function], (Joi) => {
-        return Joi.func();
+        let schema = Joi.func();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

@@ -43,9 +43,13 @@ export function Negative() : PropertyDecorator {
     });
 }
 
-export function NumberSchema() : PropertyDecorator {
+export function NumberSchema(schemaBuilder?: (schema: NumberSchema) => NumberSchema) : PropertyDecorator {
     return typeConstraintDecorator([Number], (Joi) => {
-        return Joi.number();
+        let schema = Joi.number();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

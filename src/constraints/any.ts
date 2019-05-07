@@ -7,9 +7,13 @@ export function Allow(...values : any[]) : PropertyDecorator {
     });
 }
 
-export function AnySchema() : PropertyDecorator {
+export function AnySchema(schemaBuilder?: (schema: Schema) => Schema) : PropertyDecorator {
     return typeConstraintDecorator([], (Joi : { any : () => Schema }) => {
-        return Joi.any();
+        let schema = Joi.any();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

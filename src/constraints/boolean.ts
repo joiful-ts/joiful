@@ -1,9 +1,13 @@
 import {BooleanSchema, Schema} from "joi";
 import {constraintDecorator, typeConstraintDecorator} from "../core";
 
-export function BooleanSchema() : PropertyDecorator {
+export function BooleanSchema(schemaBuilder?: (schema: BooleanSchema) => BooleanSchema) : PropertyDecorator {
     return typeConstraintDecorator([Boolean], (Joi) => {
-        return Joi.boolean();
+        let schema = Joi.boolean();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

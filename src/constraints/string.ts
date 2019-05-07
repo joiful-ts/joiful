@@ -87,9 +87,13 @@ export function Replace(pattern : RegExp, replacement : string) : PropertyDecora
     });
 }
 
-export function StringSchema() : PropertyDecorator {
+export function StringSchema(schemaBuilder?: (schema: StringSchema) => StringSchema) : PropertyDecorator {
     return typeConstraintDecorator([String], (Joi) => {
-        return <Schema> Joi.string();
+        let schema = Joi.string();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

@@ -1,9 +1,13 @@
 import {ArraySchema, Schema} from "joi";
 import {typeConstraintDecorator, constraintDecorator} from "../core";
 
-export function ArraySchema() : PropertyDecorator {
+export function ArraySchema(schemaBuilder?: (schema: ArraySchema) => ArraySchema) : PropertyDecorator {
     return typeConstraintDecorator([Array], (Joi) => {
-        return Joi.array();
+        let schema = Joi.array();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

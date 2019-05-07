@@ -6,7 +6,7 @@ import {
 } from "../../../src/constraints/string";
 import * as Joi from "joi";
 import {Validator} from "../../../src/Validator";
-import {testConstraint, testConversion} from "../testUtil";
+import { testConstraint, testConversion, testConstraintWithPojos } from '../testUtil';
 
 registerJoi(Joi);
 
@@ -14,10 +14,10 @@ describe("String constraints", function () {
     describe("StringSchema", function () {
         class MyClass {
             @StringSchema()
-            myProperty! : string;
+            myProperty!: string;
 
             @StringSchema()
-            myOtherProperty! : String;
+            myOtherProperty!: String;
         }
 
         it("should annotate the class property", function () {
@@ -33,10 +33,26 @@ describe("String constraints", function () {
             expect(function () {
                 class MyBadClass {
                     @StringSchema()
-                    myBadProperty! : number;
+                    myBadProperty!: number;
                 }
             }).toThrow(ConstraintDefinitionError);
         });
+
+        describe('when using fluent API', () => {
+            class ForgotPasswordForm {
+                @StringSchema(schema => schema.email().required())
+                emailAddress?: string;
+            }
+
+            testConstraintWithPojos(
+                () => ForgotPasswordForm,
+                [{ emailAddress: 'valid@example.com' }],
+                [
+                    {},
+                    { emailAddress: 'invalid email' }
+                ]
+            );
+        })
     });
 
     describe("Length, and core functionality", function () {
@@ -44,11 +60,11 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty! : string;
+                myProperty!: string;
             }
 
             const metadata = Reflect.getMetadata(WORKING_SCHEMA_KEY, MyClass.prototype);
-            const expected : any = {
+            const expected: any = {
                 myProperty: Joi.string().length(5)
             };
             expect(JSON.stringify(metadata)).toEqual(JSON.stringify(expected));
@@ -58,7 +74,7 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty! : string;
+                myProperty!: string;
             }
 
             const object = new MyClass();
@@ -70,7 +86,7 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty! : string;
+                myProperty!: string;
             }
 
             const object = new MyClass();
@@ -82,7 +98,7 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty! : string;
+                myProperty!: string;
             }
 
             const object = {
@@ -98,7 +114,7 @@ describe("String constraints", function () {
             class MyClass {
                 @Length(5)
                 @StringSchema()
-                myProperty! : string;
+                myProperty!: string;
             }
 
             const object = {
@@ -113,7 +129,7 @@ describe("String constraints", function () {
         it("should create Joi type schema derived from property type, if no type schema specified", function () {
             class MyClass {
                 @Length(5)
-                myProperty! : string;
+                myProperty!: string;
             }
 
             let object = new MyClass();
@@ -124,16 +140,16 @@ describe("String constraints", function () {
 
     describe("Alphanum", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Alphanum()
-                    myProperty:string;
+            class MyClass {
+                @Alphanum()
+                myProperty: string;
 
-                    constructor(myProperty:string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["abcdEFG12390"],
             ["!@#$"]
         );
@@ -141,16 +157,16 @@ describe("String constraints", function () {
 
     describe("CreditCard", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @CreditCard()
-                    myProperty : string;
+            class MyClass {
+                @CreditCard()
+                myProperty: string;
 
-                    constructor(myProperty:string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["4444333322221111"],
             ["abcd", "1234", "4444-3333-2222-1111"]
         );
@@ -158,16 +174,16 @@ describe("String constraints", function () {
 
     describe("Email", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Email()
-                    myProperty : string;
+            class MyClass {
+                @Email()
+                myProperty: string;
 
-                    constructor(myProperty:string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["monkey@see.com", "monkey@do", "howdy+there@pardner.co.kr"],
             ["123.com"]
         );
@@ -175,16 +191,16 @@ describe("String constraints", function () {
 
     describe("Guid", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Guid()
-                    myProperty : string;
+            class MyClass {
+                @Guid()
+                myProperty: string;
 
-                    constructor(myProperty:string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["3F2504E0-4F89-41D3-9A0C-0305E82C3301", "3f2504e0-4f89-41d3-9a0c-0305e82c3301"],
             ["123", "abc"]
         );
@@ -192,16 +208,16 @@ describe("String constraints", function () {
 
     describe("Hex", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Hex()
-                    myProperty : string;
+            class MyClass {
+                @Hex()
+                myProperty: string;
 
-                    constructor(myProperty:string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["AB", "0123456789abcdef", "0123456789ABCDEF", "123", "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"],
             ["0xf", "0x0F", "0xAB", "A B", "jj"]
         );
@@ -209,16 +225,16 @@ describe("String constraints", function () {
 
     describe("Hostname", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Hostname()
-                    myProperty : string;
+            class MyClass {
+                @Hostname()
+                myProperty: string;
 
-                    constructor(myProperty:string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["www.thisisnotarealdomainnameoratleastihopeitsnot.com.au", "www.zxcv.ninja", "127.0.0.1"],
             ["https://www.thisisnotarealdomainnameoratleastihopeitsnot.com.au", "www.zxcv.ninja/hello", "www.zxcv.ninja?query=meow"]
         );
@@ -227,16 +243,16 @@ describe("String constraints", function () {
     describe("Ip", function () {
         describe("no options", () => {
             testConstraint<string>(() => {
-                    class MyClass {
-                        @Ip()
-                        myProperty : string;
+                class MyClass {
+                    @Ip()
+                    myProperty: string;
 
-                        constructor(myProperty:string) {
-                            this.myProperty = myProperty;
-                        }
+                    constructor(myProperty: string) {
+                        this.myProperty = myProperty;
                     }
-                    return MyClass;
-                },
+                }
+                return MyClass;
+            },
                 ["127.0.0.1", "127.0.0.1/24", "2001:0db8:0000:0000:0000:ff00:0042:8329"],
                 ["abc.def.ghi.jkl", "123"]
             );
@@ -244,18 +260,18 @@ describe("String constraints", function () {
 
         describe("IPv4", () => {
             testConstraint<string>(() => {
-                    class MyClass {
-                        @Ip({
-                            version: 'ipv4'
-                        })
-                        myProperty : string;
+                class MyClass {
+                    @Ip({
+                        version: 'ipv4'
+                    })
+                    myProperty: string;
 
-                        constructor(myProperty:string) {
-                            this.myProperty = myProperty;
-                        }
+                    constructor(myProperty: string) {
+                        this.myProperty = myProperty;
                     }
-                    return MyClass;
-                },
+                }
+                return MyClass;
+            },
                 ["127.0.0.1", "127.0.0.1/24"],
                 ["2001:0db8:0000:0000:0000:ff00:0042:8329"]
             );
@@ -263,18 +279,18 @@ describe("String constraints", function () {
 
         describe("IPv6", () => {
             testConstraint<string>(() => {
-                    class MyClass {
-                        @Ip({
-                            version: 'ipv6'
-                        })
-                        myProperty : string;
+                class MyClass {
+                    @Ip({
+                        version: 'ipv6'
+                    })
+                    myProperty: string;
 
-                        constructor(myProperty:string) {
-                            this.myProperty = myProperty;
-                        }
+                    constructor(myProperty: string) {
+                        this.myProperty = myProperty;
                     }
-                    return MyClass;
-                },
+                }
+                return MyClass;
+            },
                 ["2001:0db8:0000:0000:0000:ff00:0042:8329", "2001:db8:0:0:0:ff00:42:8329", "2001:db8::ff00:42:8329", "::1"],
                 ["127.0.0.1", "127.0.0.1/24"]
             );
@@ -282,18 +298,18 @@ describe("String constraints", function () {
 
         describe("CIDR required", () => {
             testConstraint<string>(() => {
-                    class MyClass {
-                        @Ip({
-                            cidr: "required"
-                        })
-                        myProperty : string;
+                class MyClass {
+                    @Ip({
+                        cidr: "required"
+                    })
+                    myProperty: string;
 
-                        constructor(myProperty:string) {
-                            this.myProperty = myProperty;
-                        }
+                    constructor(myProperty: string) {
+                        this.myProperty = myProperty;
                     }
-                    return MyClass;
-                },
+                }
+                return MyClass;
+            },
                 ["127.0.0.1/24", /*"2001:db8:abcd:8000::/50"*/], // bug in Joi? doesn't like IPv6 CIDR
                 ["127.0.0.1", "2001:0db8:0000:0000:0000:ff00:0042:8329", "2001:db8:abcd:8000::/50"]
             );
@@ -302,16 +318,16 @@ describe("String constraints", function () {
 
     describe("IsoDate", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @IsoDate()
-                    myProperty : string;
+            class MyClass {
+                @IsoDate()
+                myProperty: string;
 
-                    constructor(myProperty:string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["2016-05-20", "2016-05-20T23:09:53+00:00", "2016-05-20T23:09:53Z", "2016-05-20T23:09:53", /*"20160520T230953Z"*/],
             ["20-05-2016", "23:09:53", "abcd", String(new Date().valueOf())]
         );
@@ -320,9 +336,9 @@ describe("String constraints", function () {
     describe("Lowercase", function () {
         class MyClass {
             @Lowercase()
-            myProperty : string;
+            myProperty: string;
 
-            constructor(myProperty:string) {
+            constructor(myProperty: string) {
                 this.myProperty = myProperty;
             }
         }
@@ -341,7 +357,7 @@ describe("String constraints", function () {
         describe("with conversion", () => {
             testConversion<string>(
                 () => MyClass,
-                (obj : MyClass) => obj.myProperty,
+                (obj: MyClass) => obj.myProperty,
                 [
                     ["ABCD123", "abcd123"],
                 ],
@@ -352,16 +368,16 @@ describe("String constraints", function () {
 
     describe("Max", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Max(5)
-                    myProperty : string;
+            class MyClass {
+                @Max(5)
+                myProperty: string;
 
-                    constructor(myProperty : string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["!@#$"],
             ["abcdEFG12390"]
         );
@@ -369,16 +385,16 @@ describe("String constraints", function () {
 
     describe("Min", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Min(5)
-                    myProperty : string;
+            class MyClass {
+                @Min(5)
+                myProperty: string;
 
-                    constructor(myProperty : string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["abcdEFG12390"],
             ["!@#$"]
         );
@@ -386,16 +402,16 @@ describe("String constraints", function () {
 
     describe("Regex", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Regex(/test/g)
-                    myProperty : string;
+            class MyClass {
+                @Regex(/test/g)
+                myProperty: string;
 
-                    constructor(myProperty : string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["test123", "123test", "123test123"],
             ["abcd", "TEST"]
         );
@@ -404,15 +420,15 @@ describe("String constraints", function () {
     describe("Replace", function () {
         class MyClass {
             @Replace(/test/g, "new")
-            myProperty : string;
+            myProperty: string;
 
-            constructor(myProperty : string) {
+            constructor(myProperty: string) {
                 this.myProperty = myProperty;
             }
         }
         testConversion<string>(
             () => MyClass,
-            (obj : MyClass) => obj.myProperty,
+            (obj: MyClass) => obj.myProperty,
             [
                 ["test", "new"]
             ], [
@@ -438,16 +454,16 @@ describe("String constraints", function () {
 
     describe("Token", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Token()
-                    myProperty : string;
+            class MyClass {
+                @Token()
+                myProperty: string;
 
-                    constructor(myProperty : string) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: string) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["abcdEFG12390", "_"],
             ["!@#$", " "]
         );
@@ -456,16 +472,16 @@ describe("String constraints", function () {
     describe("Trim", function () {
         describe("without conversion", () => {
             testConstraint<string>(() => {
-                    class MyClass {
-                        @Trim()
-                        myProperty : string;
+                class MyClass {
+                    @Trim()
+                    myProperty: string;
 
-                        constructor(myProperty : string) {
-                            this.myProperty = myProperty;
-                        }
+                    constructor(myProperty: string) {
+                        this.myProperty = myProperty;
                     }
-                    return MyClass;
-                },
+                }
+                return MyClass;
+            },
                 ["abcdEFG12390", "_"],
                 [" !@#$", "abcdEFG12390 ", " ", "abcdEFG12390\t", "\nabcdEFG12390", "\r"],
                 {
@@ -477,15 +493,15 @@ describe("String constraints", function () {
         describe("with conversion", () => {
             class MyClass {
                 @Trim()
-                myProperty : string;
+                myProperty: string;
 
-                constructor(myProperty : string) {
+                constructor(myProperty: string) {
                     this.myProperty = myProperty;
                 }
             }
             testConversion<string>(
                 () => MyClass,
-                (obj : MyClass) => obj.myProperty,
+                (obj: MyClass) => obj.myProperty,
                 [
                     ["abcdEFG12390", "abcdEFG12390"],
                     ["_", "_"],
@@ -503,9 +519,9 @@ describe("String constraints", function () {
     describe("Uppercase", function () {
         class MyClass {
             @Uppercase()
-            myProperty : string;
+            myProperty: string;
 
-            constructor(myProperty:string) {
+            constructor(myProperty: string) {
                 this.myProperty = myProperty;
             }
         }
@@ -524,7 +540,7 @@ describe("String constraints", function () {
         describe("with conversion", () => {
             testConversion<string>(
                 () => MyClass,
-                (obj : MyClass) => obj.myProperty,
+                (obj: MyClass) => obj.myProperty,
                 [
                     ["abcd123", "ABCD123"],
                 ],
@@ -536,16 +552,16 @@ describe("String constraints", function () {
     describe("Uri", function () {
         describe("no options", () => {
             testConstraint<string>(() => {
-                    class MyClass {
-                        @Uri()
-                        myProperty : string;
+                class MyClass {
+                    @Uri()
+                    myProperty: string;
 
-                        constructor(myProperty : string) {
-                            this.myProperty = myProperty;
-                        }
+                    constructor(myProperty: string) {
+                        this.myProperty = myProperty;
                     }
-                    return MyClass;
-                },
+                }
+                return MyClass;
+            },
                 ["https://my.site.com"],
                 ["!@#$", " "]
             );
@@ -553,18 +569,18 @@ describe("String constraints", function () {
 
         describe("scheme", () => {
             testConstraint<string>(() => {
-                    class MyClass {
-                        @Uri({
-                            scheme: 'git'
-                        })
-                        myProperty : string;
+                class MyClass {
+                    @Uri({
+                        scheme: 'git'
+                    })
+                    myProperty: string;
 
-                        constructor(myProperty : string) {
-                            this.myProperty = myProperty;
-                        }
+                    constructor(myProperty: string) {
+                        this.myProperty = myProperty;
                     }
-                    return MyClass;
-                },
+                }
+                return MyClass;
+            },
                 ["git://my.site.com"],
                 ["https://my.site.com"]
             );
