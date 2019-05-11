@@ -1,29 +1,47 @@
 import "./metadataShim";
-import {assert} from "chai";
 import {Validator} from "../../src/Validator";
 import {ValidationOptions} from "joi";
-import {
-    isValidationFail, isValidationPass, ValidationResultFail,
-    ValidationResultPass
-} from "../../src/ValidationResult";
 
-export function isValid<T = any>(validator : Validator, object : T) : ValidationResultPass<T> {
-    const result = validator.validate<T>(object);
-    assert.property(result, "error");
-    if (isValidationFail(result)) {
-        throw assert.isNull(result.error, `Validation should pass, but got error: ${ result.error }`);
-    }
-    return result;
+interface ToBeValidOptions {
+    clz?: { new (...args: any[]): any };
+    validator?: Validator;
 }
 
-export function isInvalid<T = any>(validator : Validator, object : T) : never | ValidationResultFail<T> {
-    const result = validator.validate<T>(object);
-    assert.property(result, "error");
-    if (isValidationPass(result)) {
-        throw assert.isNotNull(result.error, "Validation should fail");
-    } else {
-        return result;
+declare global {
+    namespace jest {
+        interface Matchers<R> {
+            toBeValid(options?: ToBeValidOptions): void;
+        }
+
+        interface Expect {
+            toBeValid(options?: ToBeValidOptions): void;
+        }
     }
+}
+
+expect.extend({
+    toBeValid(received: any, options: ToBeValidOptions) {
+        const validator = (options && options.validator) || new Validator();
+        const clz = options && options.clz;
+        const result = clz ?
+            validator.validateAsClass(received, clz) :
+            validator.validate(received);
+
+        const pass = result.error === null;
+
+        return {
+            pass,
+            message: () => this.isNot ?
+                `expected candidate to fail validation` :
+                `expected candidate to pass validation`
+        };
+    }
+});
+
+export interface AssertValidationOptions<T> {
+    clz?: { new (...args: any[]): T };
+    object: T;
+    validator?: Validator;
 }
 
 export function testConstraint<T>(
@@ -38,7 +56,7 @@ export function testConstraint<T>(
         const clz = classFactory();
         for (let val of valid) {
             let instance = new clz(val);
-            isValid(validator, instance);
+            expect(instance).toBeValid({ validator });
         }
     });
 
@@ -46,7 +64,7 @@ export function testConstraint<T>(
         const clz = classFactory();
         for (let val of invalid) {
             let instance = new clz(val);
-            isInvalid(validator, instance);
+            expect(instance).not.toBeValid({ validator });
         }
     });
 }
@@ -69,11 +87,10 @@ export function testConversion<T>(
             const expected = entry[1];
             const object = new clz(input);
             const result = validator.validate(object);
-            assert.property(result, "error");
-            assert.isNull(result.error, "Validation should pass");
-            assert.property(result, "value");
-            const value = result.value;
-            assert.equal(getter(value), expected);
+            expect(result).toHaveProperty('error');
+            expect(result.error).toBeNull();
+            expect(result).toHaveProperty('value');
+            expect(getter(result.value)).toEqual(expected);
         }
     });
 
@@ -85,11 +102,10 @@ export function testConversion<T>(
         for (const input of unconverted) {
             const object = new clz(input);
             const result = validator.validate(object);
-            assert.property(result, "error");
-            assert.isNull(result.error, "Validation should pass");
-            assert.property(result, "value");
-            const value = result.value;
-            assert.equal(getter(value), input);
+            expect(result).toHaveProperty('error');
+            expect(result.error).toBeNull();
+            expect(result).toHaveProperty('value');
+            expect(getter(result.value)).toEqual(input);
         }
     });
 }

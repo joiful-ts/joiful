@@ -1,9 +1,8 @@
 import "./metadataShim";
-import {Validator} from "../../src/Validator";
-import {isValid, isInvalid} from "./testUtil";
+import "./testUtil";
 import { getJoiSchema, registerJoi } from "../../src/core";
 import * as Joi from "joi";
-import { Nested, NestedArray } from "../../src/Nested";
+import { Nested } from "../../src/Nested";
 import {Length, StringSchema} from "../../src/constraints/string";
 import { Keys, ObjectSchema } from "../../src/constraints/object";
 import { Lazy, Required } from "../../src/constraints/any";
@@ -12,8 +11,6 @@ registerJoi(Joi);
 
 describe('Examples', function () {
     it('class with methods', function () {
-        const validator = new Validator();
-
         class ClassToValidate {
             @Length(5)
             public myProperty! : string;
@@ -26,14 +23,12 @@ describe('Examples', function () {
         const instance = new ClassToValidate();
         instance.myProperty = "abcde";
 
-        isValid(validator, instance);
+        expect(instance).toBeValid();
 
         //instance.myMethod();
     });
 
     it('class with unvalidated properties', function () {
-        const validator = new Validator();
-
         class ClassToValidate {
             @Length(5)
             public myProperty! : string;
@@ -45,12 +40,10 @@ describe('Examples', function () {
         instance.myProperty = "abcde";
         instance.myOtherProperty = "abcde";
 
-        isInvalid(validator, instance);
+        expect(instance).not.toBeValid();
     });
 
     it('class with static properties', function () {
-        const validator = new Validator();
-
         class ClassToValidate {
             static STATIC_PROPERTY = "bloop";
 
@@ -62,12 +55,10 @@ describe('Examples', function () {
         const instance = new ClassToValidate();
         instance.myProperty = "abcde";
 
-        isValid(validator, instance);
+        expect(instance).toBeValid();
     });
 
     it('nested class', function () {
-        const validator = new Validator();
-
         class InnerClass {
             @StringSchema()
             public innerProperty! : string;
@@ -83,15 +74,13 @@ describe('Examples', function () {
             innerProperty: "abcde"
         };
 
-        isValid(validator, instance);
+        expect(instance).toBeValid();
 
         instance.myProperty.innerProperty = <any> 1234;
-        isInvalid(validator, instance);
+        expect(instance).not.toBeValid();
     });
 
     it(`a property with a class instance type and an object schema`, function () {
-        const validator = new Validator();
-
         class InnerClass {
             @StringSchema()
             public innerProperty! : string;
@@ -110,15 +99,13 @@ describe('Examples', function () {
             innerProperty: "abcde"
         };
 
-        isValid(validator, instance);
+        expect(instance).toBeValid();
 
         instance.myProperty.innerProperty = <any> 1234;
-        isInvalid(validator, instance);
+        expect(instance).not.toBeValid();
     });
 
     it(`lazy evaluation (for recursive data structures)`, function () {
-        const validator = new Validator();
-
         class TreeNode {
             @Required()
             tagName! : string;
@@ -136,6 +123,6 @@ describe('Examples', function () {
             }
         ];
 
-        isValid(validator, instance);
+        expect(instance).toBeValid();
     });
 });

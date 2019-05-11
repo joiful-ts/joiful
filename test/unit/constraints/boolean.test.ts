@@ -1,11 +1,8 @@
 import "../metadataShim";
-import * as chai from "chai";
-import {ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
+import {registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import * as Joi from "joi";
 import {testConstraint} from "../testUtil";
 import {BooleanSchema, Truthy, Falsy, Insensitive} from "../../../src/constraints/boolean";
-import AssertStatic = Chai.AssertStatic;
-const assert : AssertStatic = chai.assert;
 
 
 registerJoi(Joi);
@@ -22,14 +19,14 @@ describe("Boolean constraints", function () {
             const expected = {
                 myProperty: Joi.boolean()
             };
-            assert.deepEqual(metadata, expected);
+            expect(metadata).toEqual(expected);
         });
 
         /**
          * TODO: test compilation failures
          */
-        xit("should error when applied to a non-date property", function () {
-            // assert.throws(function () {
+        xit("should error when applied to a non-boolean property", function () {
+            // expect(function () {
             //     class MyBadClass {
             //         @BooleanSchema()
             //         myBadProperty! : number;
@@ -37,7 +34,7 @@ describe("Boolean constraints", function () {
             //         @BooleanSchema()
             //         myOtherBadProperty! : string;
             //     }
-            // }, ConstraintDefinitionError);
+            // }).toThrow(ConstraintDefinitionError);
         });
     });
 

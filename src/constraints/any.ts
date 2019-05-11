@@ -19,8 +19,8 @@ export function AnySchema() : TypedPropertyDecorator<AllowedPropertyTypes> {
  * Returns a new type that is the result of adding the rules of one type to another.
  */
 export function Concat(schema : Schema) : TypedPropertyDecorator<AllowedPropertyTypes> {
-    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
-        return schema.concat(schema);
+    return constraintDecorator<AllowedPropertyTypes>((existingSchema : Schema) => {
+        return existingSchema.concat(schema);
     });
 }
 
@@ -47,8 +47,8 @@ export function Description(desc : string) : TypedPropertyDecorator<AllowedPrope
  * Outputs the original untouched value instead of the casted value.
  */
 export function Empty(schema : any) : TypedPropertyDecorator<AllowedPropertyTypes> {
-    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
-        return schema.empty(schema);
+    return constraintDecorator<AllowedPropertyTypes>((existingSchema : Schema) => {
+        return existingSchema.empty(schema);
     });
 }
 
