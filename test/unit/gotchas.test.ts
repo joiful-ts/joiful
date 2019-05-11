@@ -1,32 +1,23 @@
-import {isValid} from "./testUtil";
-import {Validator} from "../../src/Validator";
+import "./testUtil";
 import {NumberSchema, Min} from "../../src/constraints/number";
-import { assert } from "chai";
-import {ConstraintDefinitionError, Joi} from "../../src/core";
+import {Joi, ValidationSchemaNotFound} from "../../src/core";
 import {Optional} from "../../src/constraints/any";
 import {Keys, ObjectSchema} from "../../src/constraints/object";
 
 describe(`Gotchas`, function () {
     describe(`object types`, function () {
         it(`an inline or anonymous interface must be explicitly annotated with ObjectSchema()`, function () {
-            try {
+            expect(() => {
                 class ClassToValidate {
                     @Keys({
                         nestedProperty: Joi.number()
                     })
-                    public myProperty! : {
-                        nestedProperty : number;
+                    public myProperty!: {
+                        nestedProperty: number;
                     };
                 }
-                assert.fail();
-            } catch (err) {
-                if (!(err instanceof ConstraintDefinitionError)) {
-                    throw err;
-                }
-                assert.equal(err.message, "No validation schema exists, nor could it be inferred from the design:type metadata, for property \"myProperty\". Please decorate the property with a type schema.");
-            }
+            }).toThrow(new ValidationSchemaNotFound('myProperty'));
 
-            const validator = new Validator();
             class ClassToValidate2 {
                 @Keys({
                     nestedProperty: Joi.number()
@@ -41,13 +32,12 @@ describe(`Gotchas`, function () {
             instance.myProperty = {
                 nestedProperty: 123
             };
-            isValid(validator, instance);
+            expect(instance).toBeValid();
         });
     });
 
     describe(`union types`, function () {
         it('an optional property will pass', function () {
-            const validator = new Validator();
             class ClassToValidate {
                 @Min(10)
                 @Optional()
@@ -56,25 +46,20 @@ describe(`Gotchas`, function () {
             }
 
             const instance = new ClassToValidate();
-            isValid(validator, instance);
+            expect(instance).toBeValid();
         });
 
         it('a union with undefined, but without an explicit schema annotation, will fail', function () {
-            try {
+            expect(() => {
                 class ClassToValidate {
                     @Min(10)
                     @Optional()
-                    public myProperty : number | undefined;
+                    public myProperty: number | undefined;
                 }
-                assert.fail();
-            } catch (err) {
-                assert.instanceOf(err, ConstraintDefinitionError);
-                assert.equal(err.message, `No validation schema exists, nor could it be inferred from the design:type metadata, for property "myProperty". Please decorate the property with a type schema.`);
-            }
+            }).toThrow(new ValidationSchemaNotFound('myProperty'));
         });
 
         it('a union with undefined and an explicit schema annotation will pass', function () {
-            const validator = new Validator();
             class ClassToValidate {
                 @Min(10)
                 @Optional()
@@ -83,25 +68,19 @@ describe(`Gotchas`, function () {
             }
 
             const instance = new ClassToValidate();
-            isValid(validator, instance);
+            expect(instance).toBeValid();
         });
 
         it('nullable number property without explicit schema annotation will fail', function () {
-            try {
+            expect(() => {
                 class ClassToValidate {
                     @Min(10)
                     public myProperty! : number | null;
                 }
-                assert.fail();
-            } catch (err) {
-                assert.instanceOf(err, ConstraintDefinitionError);
-                assert.equal(err.message, `No validation schema exists, nor could it be inferred from the design:type metadata, for property "myProperty". Please decorate the property with a type schema.`);
-            }
+            }).toThrow(new ValidationSchemaNotFound('myProperty'));
         });
 
         it('nullable number property with explicit schema annotation will pass', function () {
-            const validator = new Validator();
-
             class ClassToValidate {
                 @Min(10)
                 @NumberSchema()
@@ -111,7 +90,7 @@ describe(`Gotchas`, function () {
             const instance = new ClassToValidate();
             instance.myProperty = 20;
 
-            isValid(validator, instance);
+            expect(instance).toBeValid();
         });
     });
 });

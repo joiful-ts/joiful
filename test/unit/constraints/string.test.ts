@@ -1,15 +1,12 @@
 import "../metadataShim";
-import * as chai from "chai";
-import {SCHEMA_KEY, ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
+import {ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import {
     StringSchema, Length, Alphanum, CreditCard, Email, Guid, Hex, Hostname, Ip,
     IsoDate, Lowercase, Max, Min, Regex, Replace, Token, Trim, Uppercase, Uri
 } from "../../../src/constraints/string";
 import * as Joi from "joi";
 import {Validator} from "../../../src/Validator";
-import {isValid, isInvalid, testConstraint, testConversion} from "../testUtil";
-import AssertStatic = Chai.AssertStatic;
-const assert : AssertStatic = chai.assert;
+import {testConstraint, testConversion} from "../testUtil";
 
 registerJoi(Joi);
 
@@ -29,16 +26,16 @@ describe("String constraints", function () {
                 myProperty: Joi.string(),
                 myOtherProperty: Joi.string()
             };
-            assert.deepEqual(metadata, expected);
+            expect(metadata).toEqual(expected);
         });
 
         it("should error when applied to a non-string property", function () {
-            assert.throws(function () {
+            expect(function () {
                 class MyBadClass {
                     @StringSchema()
                     myBadProperty! : number;
                 }
-            }, ConstraintDefinitionError);
+            }).toThrow(ConstraintDefinitionError);
         });
     });
 
@@ -54,7 +51,7 @@ describe("String constraints", function () {
             const expected : any = {
                 myProperty: Joi.string().length(5)
             };
-            assert.equal(JSON.stringify(metadata), JSON.stringify(expected));
+            expect(JSON.stringify(metadata)).toEqual(JSON.stringify(expected));
         });
 
         it("should validate successful candidates", function () {
@@ -66,8 +63,7 @@ describe("String constraints", function () {
 
             const object = new MyClass();
             object.myProperty = "abcde";
-            const validator = new Validator();
-            isValid(validator, object);
+            expect(object).toBeValid();
         });
 
         it("should validate failing candidates", function () {
@@ -79,8 +75,7 @@ describe("String constraints", function () {
 
             const object = new MyClass();
             object.myProperty = "abc";
-            const validator = new Validator();
-            isInvalid(validator, object);
+            expect(object).not.toBeValid();
         });
 
         it("should validate successful candidate created from object literal", function () {
@@ -95,9 +90,8 @@ describe("String constraints", function () {
             };
             const validator = new Validator();
             const result = validator.validateAsClass(object, MyClass);
-            //console.log(result);
-            assert.property(result, "error");
-            assert.isNull(result.error);
+            expect(result).toHaveProperty('error');
+            expect(result.error).toBeNull();
         });
 
         it("should validate failing candidate created from object literal", function () {
@@ -112,9 +106,8 @@ describe("String constraints", function () {
             };
             const validator = new Validator();
             const result = validator.validateAsClass(object, MyClass);
-            //console.log(result);
-            assert.property(result, "error");
-            assert.isNotNull(result.error);
+            expect(result).toHaveProperty('error');
+            expect(result.error).not.toBeNull();
         });
 
         it("should create Joi type schema derived from property type, if no type schema specified", function () {
@@ -125,8 +118,7 @@ describe("String constraints", function () {
 
             let object = new MyClass();
             object.myProperty = "abcde";
-            const validator = new Validator();
-            isValid(validator, object);
+            expect(object).toBeValid();
         });
     });
 
@@ -435,12 +427,12 @@ describe("String constraints", function () {
 
             const input = "test";
             const object = new MyClass(input);
+
+            expect(object).toBeValid({ validator });
+
             const result = validator.validate(object);
-            assert.property(result, "error");
-            assert.isNull(result.error, "Validation should pass");
-            assert.property(result, "value");
-            const value = result.value;
-            assert.equal(object.myProperty, input);
+            expect(result).toHaveProperty('value');
+            expect(object.myProperty).toEqual(input);
         });
     });
 

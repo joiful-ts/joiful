@@ -19,6 +19,17 @@ export class ConstraintDefinitionError extends Error {
     }
 }
 
+export class ValidationSchemaNotFound extends ConstraintDefinitionError {
+    name = "ValidationSchemaNotFound";
+
+    constructor(propertyKey: string | Symbol) {
+        super(
+            `No validation schema exists, nor could it be inferred from the design:type metadata, ` +
+            `for property "${ String(propertyKey) }". Please decorate the property with a type schema.`
+        );
+    }
+}
+
 export type WorkingSchema = { [index : string] : Schema };
 
 function getDesignType(target : Object, targetKey : string | symbol) : any {
@@ -138,7 +149,7 @@ function guessTypeSchema(target : object, propertyKey : string | symbol) : Schem
             break;
     }
     if (schema === undefined) {
-        throw new ConstraintDefinitionError(`No validation schema exists, nor could it be inferred from the design:type metadata, for property "${ String(propertyKey) }". Please decorate the property with a type schema.`);
+        throw new ValidationSchemaNotFound(propertyKey);
     }
     return schema;
 }
