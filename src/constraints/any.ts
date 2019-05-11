@@ -17,8 +17,8 @@ export function AnySchema() : PropertyDecorator {
  * Returns a new type that is the result of adding the rules of one type to another.
  */
 export function Concat(schema : Schema) : PropertyDecorator {
-    return constraintDecorator([], (schema : Schema) => {
-        return schema.concat(schema);
+    return constraintDecorator([], (existingSchema : Schema) => {
+        return existingSchema.concat(schema);
     });
 }
 
@@ -45,8 +45,8 @@ export function Description(desc : string) : PropertyDecorator {
  * Outputs the original untouched value instead of the casted value.
  */
 export function Empty(schema : any) : PropertyDecorator {
-    return constraintDecorator([], (schema : Schema) => {
-        return schema.empty(schema);
+    return constraintDecorator([], (existingSchema : Schema) => {
+        return existingSchema.empty(schema);
     });
 }
 
