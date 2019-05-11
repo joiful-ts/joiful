@@ -1,6 +1,6 @@
 {
   "name": "tsdv-joi",
-  "version": "0.0.12-dev",
+  "version": "0.0.12",
   "description": "TypeScript Declarative Validation - Joi. Decorate your class properties to validate them using Joi.",
   "license": "MIT",
   "repository": "https://github.com/laurence-myers/tsdv-joi",
@@ -20,14 +20,15 @@
   ],
   "engines": {
     "node": ">=6.9.1",
-    "npm": ">=3.10.10"
+    "npm": ">=3.10.10",
+    "yarn": ">=1.13.0"
   },
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "scripts": {
     "build": "rimraf publish && tsc -p tsconfig.build.json && node publish/build.js",
     "pretest": "rimraf dist && tsc -p tsconfig.all.json",
-    "publishToNpm": "npm run test && npm run build && cd publish && npm publish && cd .. && rimraf publish",
+    "publishToNpm": "yarn run test && yarn run build && cd publish && yarn publish && cd .. && rimraf publish",
     "test": "jest",
     "watch": "tsc -p tsconfig.all.json -w"
   },
