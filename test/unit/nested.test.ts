@@ -21,6 +21,8 @@ describe('Nested', function () {
                 @Required()
                 public nestedProperty! : NestedClassToValidate;
             }
+
+            return ClassToValidate;
         }).toThrow(new ValidationSchemaNotFound('nestedProperty'));
     });
 
@@ -55,6 +57,7 @@ describe('Nested', function () {
                 @Nested()
                 public nestedProperty! : { myProperty : string };
             }
+            return ClassToValidate;
         }).toThrow(new NestedPropertyTypeUnknown('nestedProperty'));
     });
 

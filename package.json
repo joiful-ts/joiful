@@ -27,10 +27,11 @@
   "types": "dist/main.d.ts",
   "scripts": {
     "build": "rimraf publish && tsc -p tsconfig.build.json && node publish/build.js",
-    "pretest": "rimraf dist && tsc -p tsconfig.all.json",
+    "lint": "tslint -c ./tslint.json --project ./tsconfig.json --format stylish",
+    "pretest": "tsc -p tsconfig.all.json --noEmit",
     "publishToNpm": "yarn run test && yarn run build && cd publish && yarn publish && cd .. && rimraf publish",
     "test": "jest",
-    "watch": "tsc -p tsconfig.all.json -w"
+    "watch": "tsc -p tsconfig.all.json -w --noEmit"
   },
   "peerDependencies": {
     "@types/joi": "^10.4.1",
@@ -47,6 +48,8 @@
     "reflect-metadata": "0.1.9",
     "rimraf": "2.6.0",
     "ts-jest": "24.0.2",
-    "typescript": "3.4.5"
+    "tslint": "^5.16.0",
+    "typescript": "3.4.5",
+    "typestrict": "^1.0.2"
   }
 }

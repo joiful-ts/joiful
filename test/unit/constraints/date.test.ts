@@ -1,8 +1,8 @@
 import "../metadataShim";
-import {ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
+import { ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY } from "../../../src/core";
 import * as Joi from "joi";
-import {testConstraint} from "../testUtil";
-import {DateSchema, Iso} from "../../../src/constraints/date";
+import { testConstraint } from "../testUtil";
+import { DateSchema, Iso } from "../../../src/constraints/date";
 
 registerJoi(Joi);
 
@@ -10,10 +10,10 @@ describe("Date constraints", function () {
     describe("DateSchema", function () {
         class MyClass {
             @DateSchema()
-            myProperty! : Date;
+            myProperty!: Date;
 
             @DateSchema()
-            myOtherProperty! : string;
+            myOtherProperty!: string;
         }
 
         it("should annotate the class property", function () {
@@ -28,28 +28,29 @@ describe("Date constraints", function () {
         /**
          * TODO: test compilation failures
          */
-        xit("should error when applied to a non-date property", function () {
+        it("should error when applied to a non-date property", function () {
             // expect(function () {
             //     class MyBadClass {
             //         @DateSchema()
             //         myBadProperty! : number;
             //     }
+            //     return MyBadClass;
             // }).toThrow(ConstraintDefinitionError);
         });
     });
 
     describe("Iso", function () {
         testConstraint<string>(() => {
-                class MyClass {
-                    @Iso()
-                    myProperty : Date;
+            class MyClass {
+                @Iso()
+                myProperty: Date;
 
-                    constructor(myProperty: Date) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: Date) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["2017-02-20", "2017-02-20T22:55:12Z", "2017-02-20T22:55:12", "2017-02-20T22:55", "2017-02-20T22:55:12+1100", "2017-02-20T22:55:12+11:00"],
             ["20-02-2017", "20/02/2017", "2017/02/20", "2017-02-20T22", "2017-02-20T22:55:"]
         );

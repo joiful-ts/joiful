@@ -16,6 +16,7 @@ describe(`Gotchas`, function () {
                         nestedProperty: number;
                     };
                 }
+                return ClassToValidate;
             }).toThrow(new ValidationSchemaNotFound('myProperty'));
 
             class ClassToValidate2 {
@@ -56,6 +57,7 @@ describe(`Gotchas`, function () {
                     @Optional()
                     public myProperty: number | undefined;
                 }
+                return ClassToValidate;
             }).toThrow(new ValidationSchemaNotFound('myProperty'));
         });
 
@@ -77,6 +79,7 @@ describe(`Gotchas`, function () {
                     @Min(10)
                     public myProperty! : number | null;
                 }
+                return ClassToValidate;
             }).toThrow(new ValidationSchemaNotFound('myProperty'));
         });
 

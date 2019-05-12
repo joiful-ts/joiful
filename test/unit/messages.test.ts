@@ -3,7 +3,6 @@ import {Validator} from "../../src/Validator";
 import {registerJoi} from "../../src/core";
 import * as Joi from "joi";
 import {Length} from "../../src/constraints/string";
-import {isValidationFail} from "../../src/ValidationResult";
 
 registerJoi(Joi);
 

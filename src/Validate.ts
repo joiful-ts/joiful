@@ -27,6 +27,7 @@ export function Validate(validator : Validator) : MethodDecorator {
             if (failures.length > 0) {
                 throw new MultipleValidationError(failures);
             } else {
+                // tslint:disable-next-line:no-invalid-this
                 return original.apply(this, newArgs);
             }
         };

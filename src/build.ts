@@ -1,5 +1,5 @@
 import {readFileSync, writeFileSync} from "fs";
-import {dirname, join, sep} from "path";
+import {dirname, join} from "path";
 
 function copyFile(inPath : string, outPath : string) {
     writeFileSync(outPath, readFileSync(inPath));

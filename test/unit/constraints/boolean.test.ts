@@ -1,8 +1,8 @@
 import "../metadataShim";
-import {registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
+import { registerJoi, WORKING_SCHEMA_KEY } from "../../../src/core";
 import * as Joi from "joi";
-import {testConstraint} from "../testUtil";
-import {BooleanSchema, Truthy, Falsy, Insensitive} from "../../../src/constraints/boolean";
+import { testConstraint } from "../testUtil";
+import { BooleanSchema, Truthy, Falsy, Insensitive } from "../../../src/constraints/boolean";
 
 
 registerJoi(Joi);
@@ -11,7 +11,7 @@ describe("Boolean constraints", function () {
     describe("BooleanSchema", function () {
         class MyClass {
             @BooleanSchema()
-            myProperty! : boolean;
+            myProperty!: boolean;
         }
 
         it("should annotate the class property", function () {
@@ -30,40 +30,41 @@ describe("Boolean constraints", function () {
             //     class MyBadClass {
             //         @BooleanSchema()
             //         myBadProperty! : number;
-            //
+
             //         @BooleanSchema()
             //         myOtherBadProperty! : string;
             //     }
+            //     return MyBadClass;
             // }).toThrow(ConstraintDefinitionError);
         });
     });
 
     describe("Truthy", function () {
         testConstraint<any>(() => {
-                class MyClass {
-                    @Truthy(1, 5)
-                    myProperty : boolean;
+            class MyClass {
+                @Truthy(1, 5)
+                myProperty: boolean;
 
-                    constructor(myProperty: boolean) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: boolean) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             [1, 5],
             [0, 2, "1", "y", "Y"]
         );
         testConstraint<any>(() => {
-                class MyClass {
-                    @Truthy("1", "y")
-                    myProperty : boolean;
+            class MyClass {
+                @Truthy("1", "y")
+                myProperty: boolean;
 
-                    constructor(myProperty: boolean) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: boolean) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["1", "y", "Y"],
             [0, 1, 2, 5, "0", "yes"]
         );
@@ -71,30 +72,30 @@ describe("Boolean constraints", function () {
 
     describe("Falsy", function () {
         testConstraint<any>(() => {
-                class MyClass {
-                    @Falsy(0, 5)
-                    myProperty : boolean;
+            class MyClass {
+                @Falsy(0, 5)
+                myProperty: boolean;
 
-                    constructor(myProperty: boolean) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: boolean) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             [0, 5],
             ["0", 1, "n", "N"]
         );
         testConstraint<any>(() => {
-                class MyClass {
-                    @Falsy("0", "n")
-                    myProperty : boolean;
+            class MyClass {
+                @Falsy("0", "n")
+                myProperty: boolean;
 
-                    constructor(myProperty: boolean) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: boolean) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["0", "n", "N"],
             [0, 1, 2, 5, "yes", "no"]
         );
@@ -102,18 +103,18 @@ describe("Boolean constraints", function () {
 
     describe("Insensitive", function () {
         testConstraint<any>(() => {
-                class MyClass {
-                    @Insensitive(false)
-                    @Falsy("n")
-                    @Truthy("y")
-                    myProperty : boolean;
+            class MyClass {
+                @Insensitive(false)
+                @Falsy("n")
+                @Truthy("y")
+                myProperty: boolean;
 
-                    constructor(myProperty: boolean) {
-                        this.myProperty = myProperty;
-                    }
+                constructor(myProperty: boolean) {
+                    this.myProperty = myProperty;
                 }
-                return MyClass;
-            },
+            }
+            return MyClass;
+        },
             ["y", "n"],
             ["Y", "N"]
         );

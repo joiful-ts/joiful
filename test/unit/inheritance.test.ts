@@ -9,7 +9,7 @@ describe(`Inheritance`, function () {
         presence: 'required'
     });
 
-    it(`Working schemas in inheritence chains are correctly merged`, function () {
+    it(`Working schemas in inheritance chains are correctly merged`, function () {
         class ParentClass {
             @Min(10)
             foo! : number;
@@ -53,6 +53,7 @@ describe(`Inheritance`, function () {
             @Min(10)
             foo!: number;
         }
+
         class ChildClass extends ParentClass {
             @Min(10)
             bar!: number;
@@ -60,6 +61,7 @@ describe(`Inheritance`, function () {
 
         const instance = new ParentClass();
         const result = validator.validate(instance);
+        expect(ChildClass).toBeTruthy();
         expect(result.error).toBeTruthy();
         expect(result.error!.details).toHaveLength(1);
     });

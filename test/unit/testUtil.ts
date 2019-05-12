@@ -28,10 +28,12 @@ expect.extend({
             validator.validate(received);
 
         const pass = result.error === null;
+        // tslint:disable-next-line:no-invalid-this
+        const isNot = this.isNot;
 
         return {
             pass,
-            message: () => this.isNot ?
+            message: () => isNot ?
                 `expected candidate to fail validation` :
                 `expected candidate to pass validation`
         };

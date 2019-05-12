@@ -1,0 +1,9 @@
+{
+    "defaultSeverity": "error",
+    "extends": "typestrict",
+    "jsRules": {},
+    "rules": {
+        "no-unused-variable": false // deprecated. use built-in compiler option instead
+    },
+    "rulesDirectory": []
+}
