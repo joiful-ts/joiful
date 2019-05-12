@@ -9,6 +9,24 @@ export function registerJoi(customJoi: typeof joi) {
     Joi = customJoi;
 }
 
+export type LabelProvider = ((propertyKey: string | Symbol, target: object) => string | null | undefined);
+
+let globalLabelProvider: LabelProvider | undefined | null = undefined;
+
+export function registerLabelProvider(labelProvider: LabelProvider | undefined | null) {
+    globalLabelProvider = labelProvider;
+}
+
+export function tryToAddLabel(target: AnyClass, propertyKey: string | symbol, schema: Schema): Schema {
+    if (globalLabelProvider) {
+        const label = globalLabelProvider(propertyKey, target);
+        if (label) {
+            return schema.label(label);
+        }
+    }
+    return schema;
+}
+
 export class ConstraintDefinitionError extends Error {
     name = 'ConstraintDefinitionError';
 
@@ -164,6 +182,7 @@ export function getAndUpdateSchema<TClass, TKey extends StringOrSymbolKey<TClass
     let schema = getPropertySchema(target, propertyKey);
     if (!schema) {
         schema = guessTypeSchema(target, propertyKey);
+        schema = tryToAddLabel(target as unknown as AnyClass, propertyKey, schema);
     }
     schema = updateFunction(schema);
     updateSchema(target, propertyKey, schema);
@@ -205,6 +224,7 @@ export function typeConstraintDecorator<
         let schema = getPropertySchema(target, propertyKey);
         ensureSchemaNotAlreadyDefined(schema, propertyKey);
         schema = typeSchema(Joi);
+        schema = tryToAddLabel(target as unknown as AnyClass, propertyKey, schema);
         updateSchema(target, propertyKey, schema);
     };
 }
