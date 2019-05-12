@@ -1,14 +1,11 @@
-import * as joiModule from "joi";
-import { getPropertySchema, ConstraintDefinitionError, updateSchema } from '../core';
+import { Schema } from 'joi';
+import { getPropertySchema, Joi, updateSchema, ensureSchemaNotAlreadyDefined } from '../core';
 
-export function Joi(schemaBuilder: (joi: typeof joiModule) => joiModule.Schema) {
+export function JoiSchema(schemaBuilder: (joi: typeof Joi) => Schema) {
     return (target: object, propertyKey: string | symbol) => {
         let schema = getPropertySchema(target, propertyKey);
-        if (schema) {
-            throw new ConstraintDefinitionError(`A validation schema already exists for property: ${String(propertyKey)}`);
-        } else {
-            schema = schemaBuilder(joiModule)
-            updateSchema(target, propertyKey, schema);
-        }
+        ensureSchemaNotAlreadyDefined(schema, propertyKey);
+        schema = schemaBuilder(Joi)
+        updateSchema(target, propertyKey, schema);
     };
 };
