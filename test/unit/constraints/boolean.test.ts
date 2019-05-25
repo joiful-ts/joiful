@@ -1,5 +1,5 @@
 import "../metadataShim";
-import {ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
+import {registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import * as Joi from "joi";
 import {testConstraint} from "../testUtil";
 import {BooleanSchema, Truthy, Falsy, Insensitive} from "../../../src/constraints/boolean";
@@ -22,16 +22,19 @@ describe("Boolean constraints", function () {
             expect(metadata).toEqual(expected);
         });
 
-        it("should error when applied to a non-boolean property", function () {
-            expect(function () {
-                class MyBadClass {
-                    @BooleanSchema()
-                    myBadProperty! : number;
-
-                    @BooleanSchema()
-                    myOtherBadProperty! : string;
-                }
-            }).toThrow(ConstraintDefinitionError);
+        /**
+         * TODO: test compilation failures
+         */
+        xit("should error when applied to a non-boolean property", function () {
+            // expect(function () {
+            //     class MyBadClass {
+            //         @BooleanSchema()
+            //         myBadProperty! : number;
+            //
+            //         @BooleanSchema()
+            //         myOtherBadProperty! : string;
+            //     }
+            // }).toThrow(ConstraintDefinitionError);
         });
     });
 

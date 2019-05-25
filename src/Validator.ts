@@ -1,4 +1,4 @@
-import {Joi, getJoiSchema} from "./core";
+import {Joi, getJoiSchema, AnyClass} from "./core";
 import {ObjectSchema, ValidationOptions} from "joi";
 import {ValidationResult} from "./ValidationResult";
 
@@ -12,10 +12,10 @@ export class Validator {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
-        return this.validateAsClass(target, target.constructor, options);
+        return this.validateAsClass(target, target.constructor as AnyClass, options);
     }
 
-    validateAsClass<T>(target : T, clz : Function, options? : ValidationOptions) : ValidationResult<T> {
+    validateAsClass<T>(target : T, clz : AnyClass, options? : ValidationOptions) : ValidationResult<T> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
@@ -31,7 +31,7 @@ export class Validator {
         }
     }
 
-    validateArrayAsClass<T>(target : T[], clz : Function, options? : ValidationOptions) : ValidationResult<T[]> {
+    validateArrayAsClass<T>(target : T[], clz : AnyClass, options? : ValidationOptions) : ValidationResult<T[]> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null arrays");
         }
