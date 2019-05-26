@@ -1,8 +1,8 @@
-import { Schema, ObjectSchema } from "joi";
-import * as joi from "joi";
+import { Schema, ObjectSchema } from 'joi';
+import * as joi from 'joi';
 
-export const WORKING_SCHEMA_KEY = "tsdv:working-schema";
-export const SCHEMA_KEY = "tsdv:schema";
+export const WORKING_SCHEMA_KEY = 'tsdv:working-schema';
+export const SCHEMA_KEY = 'tsdv:schema';
 export let Joi = joi;
 
 export function registerJoi(customJoi: typeof joi) {
@@ -10,7 +10,7 @@ export function registerJoi(customJoi: typeof joi) {
 }
 
 export class ConstraintDefinitionError extends Error {
-    name = "ConstraintDefinitionError";
+    name = 'ConstraintDefinitionError';
 
     constructor(public message: string) {
         super(message);
@@ -20,12 +20,12 @@ export class ConstraintDefinitionError extends Error {
 }
 
 export class ValidationSchemaNotFound extends ConstraintDefinitionError {
-    name = "ValidationSchemaNotFound";
+    name = 'ValidationSchemaNotFound';
 
     constructor(propertyKey: string | Symbol) {
         super(
-            `No validation schema exists, nor could it be inferred from the design:type metadata, ` +
-            `for property "${String(propertyKey)}". Please decorate the property with a type schema.`
+            'No validation schema exists, nor could it be inferred from the design:type metadata, ' +
+            `for property "${String(propertyKey)}". Please decorate the property with a type schema.`,
         );
     }
 }
@@ -87,10 +87,15 @@ export type MapAllowUnions<TObject, TKey extends keyof TObject, TDesired> = {
 };
 
 // The default PropertyDecorator type is not very type safe, we'll use a stricter version.
-export type TypedPropertyDecorator<TPropertyType> = <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey) => void;
+export type TypedPropertyDecorator<TPropertyType> = (
+    <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(
+        target: TClass,
+        propertyKey: TKey,
+    ) => void
+);
 
 function getDesignType<TClass, TKey extends StringOrSymbolKey<TClass>>(target: TClass, targetKey: TKey): any {
-    return Reflect.getMetadata("design:type", target, String(targetKey));
+    return Reflect.getMetadata('design:type', target, String(targetKey));
 }
 
 export function getWorkingSchema<TClass>(target: TClass): WorkingSchema {
@@ -119,7 +124,11 @@ export function getJoiSchema(clz: AnyClass): ObjectSchema {
     } else {
         let workingSchema: WorkingSchema = getMergedWorkingSchemas(clz.prototype);
         if (!workingSchema) {
-            throw new ConstraintDefinitionError(`Class "${(clz && (<any>clz).name) ? (<any>clz).name : clz}" doesn't have a schema. You may need to manually specify the base type schema, set the property type to a class, or use "Any()".`);
+            throw new ConstraintDefinitionError(
+                `Class "${(clz && (<any>clz).name) ? (<any>clz).name : clz}" doesn't have a schema. ` +
+                'You may need to manually specify the base type schema, ' +
+                'set the property type to a class, or use "Any()".',
+            );
         }
         joiSchema = Joi.object().keys(workingSchema);
         Reflect.defineMetadata(SCHEMA_KEY, joiSchema, clz.prototype);
@@ -132,12 +141,20 @@ export function getPropertySchema<TClass, TKey extends StringOrSymbolKey<TClass>
     return classSchema[String(propertyKey)];
 }
 
-export function updateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey, schema: Schema) {
+export function updateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(
+    target: TClass,
+    propertyKey: TKey,
+    schema: Schema,
+) {
     const classSchema = getWorkingSchema(target);
     classSchema[String(propertyKey)] = schema;
 }
 
-export function getAndUpdateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey, updateFunction: (schema: Schema) => Schema) {
+export function getAndUpdateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(
+    target: TClass,
+    propertyKey: TKey,
+    updateFunction: (schema: Schema) => Schema,
+) {
     let schema = getPropertySchema(target, propertyKey);
     if (!schema) {
         schema = guessTypeSchema(target, propertyKey);
@@ -149,33 +166,46 @@ export function getAndUpdateSchema<TClass, TKey extends StringOrSymbolKey<TClass
 export function constraintDecorator<
     TPropertyType
 >(updateFunction: (schema: Schema) => Schema): TypedPropertyDecorator<TPropertyType> {
-    return function <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey) {
+    return <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(
+        target: TClass,
+        propertyKey: TKey,
+    ) => {
         getAndUpdateSchema(target, propertyKey, updateFunction);
     };
 }
 
-export function constraintDecoratorWithPeers<
-    TPropertyType,
-    TClassForPeers,
-    >(peers: StringOrSymbolKey<TClassForPeers>[], updateFunction: (schema: Schema) => Schema): TypedPropertyDecorator<TPropertyType> {
-    return function <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey) {
-        verifyPeers(target as unknown as TClassForPeers, peers); // TODO: fix this dodgy cast
-        getAndUpdateSchema(target, propertyKey, updateFunction);
-    };
+export function constraintDecoratorWithPeers<TPropertyType, TClassForPeers>(
+    peers: StringOrSymbolKey<TClassForPeers>[],
+    updateFunction: (schema: Schema) => Schema,
+): TypedPropertyDecorator<TPropertyType> {
+    return (
+        <
+            TClass extends MapAllowUnions<TClass, TKey, TPropertyType>,
+            TKey extends StringOrSymbolKey<TClass>
+        >(target: TClass, propertyKey: TKey) => {
+            verifyPeers(target as unknown as TClassForPeers, peers); // TODO: fix this dodgy cast
+            getAndUpdateSchema(target, propertyKey, updateFunction);
+        }
+    );
 }
 
 export function typeConstraintDecorator<
     TPropertyType,
     >(typeSchema: (Joi: typeof joi) => Schema) {
-    return function <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey): void {
+    return <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(
+        target: TClass,
+        propertyKey: TKey,
+    ): void => {
         let schema = getPropertySchema(target, propertyKey);
         if (schema) {
-            throw new ConstraintDefinitionError(`A validation schema already exists for property: ${String(propertyKey)}`);
+            throw new ConstraintDefinitionError(
+                `A validation schema already exists for property: ${String(propertyKey)}`,
+            );
         } else {
             schema = typeSchema(Joi);
             updateSchema(target, propertyKey, schema);
         }
-    }
+    };
 }
 
 function guessTypeSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey): Schema {
@@ -212,39 +242,6 @@ function guessTypeSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(target:
         throw new ValidationSchemaNotFound(propertyKey);
     }
     return schema;
-}
-
-function looksLikeAClass(somethingClassy: Function) {
-    return (
-        somethingClassy.toString().lastIndexOf('class ', 0) === 0 // Easy check for ES6 classes
-        || ( // Otherwise, let's use some heuristics
-            somethingClassy !== Function // Don't allow regular functions.
-            && somethingClassy instanceof Function // All classes extend Function.
-            && !somethingClassy.name // Anonymous functions don't have a name.
-            && somethingClassy.prototype !== undefined // Functions usually don't have a prototype.
-            && somethingClassy.prototype.constructor === somethingClassy // A class's (prototype) constructor should be the same as the function passed in.
-        )
-    );
-}
-
-/**
- * @param target
- * @param propertyKey
- * @param types - the constructors for allowed classes. If empty, all types are allowed. Note that "Object" is always allowed, to support union types like "number | null".
- */
-export function allowTypes(target: any, propertyKey: string | symbol, types: Function[]) {
-    if (types && types.length > 0) {
-        const propertyType = getDesignType(target, propertyKey);
-        if (propertyType !== Object && types.indexOf(propertyType) === -1) {
-            for (const allowedType of types) {
-                if (allowedType === Object && looksLikeAClass(propertyType)) {
-                    // Class instances extend Function, but can be considered "objects".
-                    return;
-                }
-            }
-            throw new ConstraintDefinitionError(`Constrained property "${String(propertyKey)}" has an unsupported type. Wanted ${types.map((t) => `"${t.name}"`).join(' or ')}, found "${propertyType ? propertyType.name : propertyType}"`);
-        }
-    }
 }
 
 export function verifyPeers<TClass>(target: TClass, peers: StringOrSymbolKey<TClass>[]) {

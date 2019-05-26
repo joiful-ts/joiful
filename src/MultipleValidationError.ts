@@ -1,8 +1,8 @@
-import {ValidationError} from "joi";
+import { ValidationError } from 'joi';
 
 export class MultipleValidationError extends Error {
     constructor(
-        public readonly errors : ValidationError[]
+        public readonly errors: ValidationError[],
     ) {
         super();
 

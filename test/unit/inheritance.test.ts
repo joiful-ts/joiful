@@ -1,22 +1,22 @@
-import "./testUtil";
-import {Min} from "../../src/constraints/number";
-import {Validator} from "../../src/Validator";
-import {getMergedWorkingSchemas, getWorkingSchema} from "../../src/core";
+import './testUtil';
+import { Min } from '../../src/constraints/number';
+import { Validator } from '../../src/Validator';
+import { getMergedWorkingSchemas, getWorkingSchema } from '../../src/core';
 
-describe(`Inheritance`, function () {
+describe('Inheritance', () => {
     const validator = new Validator({
         abortEarly: false,
-        presence: 'required'
+        presence: 'required',
     });
 
-    it(`Working schemas in inheritance chains are correctly merged`, function () {
+    it('Working schemas in inheritance chains are correctly merged', () => {
         class ParentClass {
             @Min(10)
-            foo! : number;
+            foo!: number;
         }
         class ChildClass extends ParentClass {
             @Min(10)
-            bar! : number;
+            bar!: number;
         }
 
         const parentSchemaUnmerged = getWorkingSchema(ParentClass.prototype);
@@ -28,11 +28,11 @@ describe(`Inheritance`, function () {
         expect(parentSchema.bar).toBeUndefined();
 
         const childSchema = getMergedWorkingSchemas(ChildClass.prototype);
-        expect(childSchema.foo).toBeDefined()
-        expect(childSchema.bar).toBeDefined()
+        expect(childSchema.foo).toBeDefined();
+        expect(childSchema.bar).toBeDefined();
     });
 
-    it(`Inheriting classes apply both the parent's validations, and the child's validations`, function () {
+    it("Inheriting classes apply both the parent's validations, and the child's validations", () => {
         class ParentClass {
             @Min(10)
             foo!: number;
@@ -48,7 +48,7 @@ describe(`Inheritance`, function () {
         expect(result.error!.details).toHaveLength(2);
     });
 
-    it(`Child validations do not apply when validating the parent class`, function () {
+    it('Child validations do not apply when validating the parent class', () => {
         class ParentClass {
             @Min(10)
             foo!: number;
@@ -66,14 +66,14 @@ describe(`Inheritance`, function () {
         expect(result.error!.details).toHaveLength(1);
     });
 
-    it(`Child validations can override the parent's validations`, function () {
+    it("Child validations can override the parent's validations", () => {
         class ParentClass {
             @Min(10)
-            foo! : number;
+            foo!: number;
         }
         class ChildClass extends ParentClass {
             @Min(0)
-            foo! : number;
+            foo!: number;
         }
 
         const instance = new ChildClass();
@@ -81,18 +81,18 @@ describe(`Inheritance`, function () {
         expect(instance).toBeValid({ validator });
     });
 
-    it(`Grandchild classes apply validations from parent and grandparent classes`, function () {
+    it('Grandchild classes apply validations from parent and grandparent classes', () => {
         class ParentClass {
             @Min(10)
-            foo! : number;
+            foo!: number;
         }
         class ChildClass extends ParentClass {
             @Min(10)
-            bar! : number;
+            bar!: number;
         }
         class GrandchildClass extends ChildClass {
             @Min(10)
-            baz! : number;
+            baz!: number;
         }
 
         const instance = new GrandchildClass();
@@ -101,16 +101,16 @@ describe(`Inheritance`, function () {
         expect(result.error!.details).toHaveLength(3);
     });
 
-    it(`Grandchild classes without any validations apply validations from the grandparent class`, function () {
+    it('Grandchild classes without any validations apply validations from the grandparent class', () => {
         class ParentClass {
             @Min(10)
-            foo! : number;
+            foo!: number;
         }
         class ChildClass extends ParentClass {
-            bar! : number;
+            bar!: number;
         }
         class GrandchildClass extends ChildClass {
-            baz! : number;
+            baz!: number;
         }
 
         const instance = new GrandchildClass();

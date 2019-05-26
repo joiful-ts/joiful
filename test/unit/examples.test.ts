@@ -1,19 +1,19 @@
-import "./metadataShim";
-import "./testUtil";
-import { getJoiSchema, registerJoi } from "../../src/core";
-import * as Joi from "joi";
-import { Nested } from "../../src/Nested";
-import {Length, StringSchema} from "../../src/constraints/string";
-import { Keys, ObjectSchema } from "../../src/constraints/object";
-import { Lazy, Required } from "../../src/constraints/any";
+import './metadataShim';
+import './testUtil';
+import { getJoiSchema, registerJoi } from '../../src/core';
+import * as Joi from 'joi';
+import { Nested } from '../../src/Nested';
+import { Length, StringSchema } from '../../src/constraints/string';
+import { Keys, ObjectSchema } from '../../src/constraints/object';
+import { Lazy, Required } from '../../src/constraints/any';
 
 registerJoi(Joi);
 
-describe('Examples', function () {
-    it('class with methods', function () {
+describe('Examples', () => {
+    it('class with methods', () => {
         class ClassToValidate {
             @Length(5)
-            public myProperty! : string;
+            public myProperty!: string;
 
             public myMethod() {
 
@@ -21,97 +21,97 @@ describe('Examples', function () {
         }
 
         const instance = new ClassToValidate();
-        instance.myProperty = "abcde";
+        instance.myProperty = 'abcde';
 
         expect(instance).toBeValid();
 
         //instance.myMethod();
     });
 
-    it('class with unvalidated properties', function () {
+    it('class with unvalidated properties', () => {
         class ClassToValidate {
             @Length(5)
-            public myProperty! : string;
+            public myProperty!: string;
 
-            public myOtherProperty! : string;
+            public myOtherProperty!: string;
         }
 
         const instance = new ClassToValidate();
-        instance.myProperty = "abcde";
-        instance.myOtherProperty = "abcde";
+        instance.myProperty = 'abcde';
+        instance.myOtherProperty = 'abcde';
 
         expect(instance).not.toBeValid();
     });
 
-    it('class with static properties', function () {
+    it('class with static properties', () => {
         class ClassToValidate {
-            static STATIC_PROPERTY = "bloop";
+            static STATIC_PROPERTY = 'bloop';
 
             @Length(5)
-            public myProperty! : string;
+            public myProperty!: string;
 
         }
 
         const instance = new ClassToValidate();
-        instance.myProperty = "abcde";
+        instance.myProperty = 'abcde';
 
         expect(instance).toBeValid();
     });
 
-    it('nested class', function () {
+    it('nested class', () => {
         class InnerClass {
             @StringSchema()
-            public innerProperty! : string;
+            public innerProperty!: string;
         }
 
         class ClassToValidate {
             @Nested()
-            public myProperty! : InnerClass;
+            public myProperty!: InnerClass;
         }
 
         const instance = new ClassToValidate();
         instance.myProperty = {
-            innerProperty: "abcde"
+            innerProperty: 'abcde',
         };
 
         expect(instance).toBeValid();
 
-        instance.myProperty.innerProperty = <any> 1234;
+        instance.myProperty.innerProperty = <any>1234;
         expect(instance).not.toBeValid();
     });
 
-    it(`a property with a class instance type and an object schema`, function () {
+    it('a property with a class instance type and an object schema', () => {
         class InnerClass {
             @StringSchema()
-            public innerProperty! : string;
+            public innerProperty!: string;
         }
 
         class ClassToValidate {
             @Keys({
-                innerProperty: Joi.string()
+                innerProperty: Joi.string(),
             })
             @ObjectSchema()
-            public myProperty! : InnerClass;
+            public myProperty!: InnerClass;
         }
 
         const instance = new ClassToValidate();
         instance.myProperty = {
-            innerProperty: "abcde"
+            innerProperty: 'abcde',
         };
 
         expect(instance).toBeValid();
 
-        instance.myProperty.innerProperty = <any> 1234;
+        instance.myProperty.innerProperty = <any>1234;
         expect(instance).not.toBeValid();
     });
 
-    it(`lazy evaluation (for recursive data structures)`, function () {
+    it('lazy evaluation (for recursive data structures)', () => {
         class TreeNode {
             @Required()
-            tagName! : string;
+            tagName!: string;
 
             @Lazy(() => Joi.array().items(getJoiSchema(TreeNode)))
-            children! : TreeNode[];
+            children!: TreeNode[];
         }
 
         const instance = new TreeNode();
@@ -119,8 +119,8 @@ describe('Examples', function () {
         instance.children = [
             {
                 tagName: 'inner',
-                children: []
-            }
+                children: [],
+            },
         ];
 
         expect(instance).toBeValid();
