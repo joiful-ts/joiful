@@ -4,6 +4,9 @@
 out
 gen
 
+# VS Code
+.vscode
+
 # Node
 # Logs
 logs
