@@ -9,7 +9,7 @@ registerJoi(Joi);
 
 describe('Any constraints', () => {
     describe('Concat', () => {
-        it('should merge the rules of another schema into this one', () => {
+        describe('should merge the rules of another schema into this one', () => {
             testConstraint<string>(
                 () => {
                     const emailSchema = Joi.string().email();
@@ -31,7 +31,7 @@ describe('Any constraints', () => {
     });
 
     describe('Empty', () => {
-        it('should consider anything that matches the given value/schema to be empty', () => {
+        describe('should consider anything that matches the given value/schema to be empty', () => {
             testConstraint<string>(
                 () => {
                     class ForgotPasswordForm {
