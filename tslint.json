@@ -9,7 +9,7 @@
         "indent": {
             "options": [
                 "spaces",
-                2
+                4
             ]
         },
         "max-line-length": {
@@ -36,7 +36,7 @@
                 "ignore-template-strings"
             ]
         },
-        "no-unused-variable": false, // disabled because deprecated
+        "no-unused-variable": false,
         "number-literal-format": true,
         "quotemark": {
             "options": [
