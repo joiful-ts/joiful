@@ -3043,7 +3043,7 @@ tslint-sonarts@^1.8.0:
   dependencies:
     immutable "^3.8.2"
 
-tslint@^5.16.0:
+tslint@5.16.0:
   version "5.16.0"
   resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.16.0.tgz#ae61f9c5a98d295b9a4f4553b1b1e831c1984d67"
   integrity sha512-UxG2yNxJ5pgGwmMzPMYh/CCnCnh0HfPgtlVRDs1ykZklufFBL1ZoTlWFRz2NQjcoEiDoRp+JyT0lhBbbH/obyA==
@@ -3096,7 +3096,7 @@ typescript@3.4.5:
   version "3.4.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.5.tgz#2d2618d10bb566572b8d7aad5180d84257d70a99"
 
-typestrict@^1.0.2:
+typestrict@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/typestrict/-/typestrict-1.0.2.tgz#7167559a128508162920614ce58af6ac6b5ba29a"
   integrity sha512-4wEr84NPc0ldINrgwgSBTmbWPiGVbwO3c9xumM0ujp0DlzhTs3jUT0NtVBOd5UXneSXcStNJWj80zerbW2YR6Q==
