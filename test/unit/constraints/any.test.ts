@@ -4,6 +4,7 @@ import * as Joi from 'joi';
 import { testConstraint } from '../testUtil';
 import { Concat, Empty, Required } from '../../../src/constraints/any';
 import { StringSchema } from '../../../src/constraints/string';
+import { AnyConstraints, Validator } from "../../../src/main";
 
 registerJoi(Joi);
 
@@ -48,6 +49,29 @@ describe('Any constraints', () => {
                 ['valid'],
                 ['']
             );
+        });
+    });
+
+    describe(`Error`, () => {
+        it(`should return custom error instance when the decorator appears above other decorators`, () => {
+            // Set up
+            class MyError extends Error {
+            }
+
+            const errorToReturn = new MyError('My custom error message will go here');
+
+            class DataToValidate {
+                @AnyConstraints.Error(errorToReturn)
+                public foo!: string;
+            }
+
+            // Execute
+            let result = new Validator().validateAsClass({
+                foo: 1
+            }, DataToValidate);
+
+            // Verify
+            expect(result.error).toBe(errorToReturn); // should be the same error object
         });
     });
 });

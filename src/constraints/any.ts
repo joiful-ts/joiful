@@ -1,4 +1,4 @@
-import {lazy, Reference, Schema, ValidationOptions, WhenOptions} from "joi";
+import {lazy, Reference, Schema, ValidationErrorFunction, ValidationOptions, WhenOptions} from "joi";
 import {constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator} from "../core";
 
 type AllowedPropertyTypes = unknown;
@@ -51,6 +51,14 @@ export function Empty(schema : any) : TypedPropertyDecorator<AllowedPropertyType
         return existingSchema.empty(schema);
     });
 }
+
+export function Error(err: Error | ValidationErrorFunction) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
+        return schema.error!(err);
+    });
+}
+
+export const CustomError = Error; // Provide an alias for Error, to avoid ambiguity with the built-in Error class/type.
 
 /**
  * Annotates the key where:
