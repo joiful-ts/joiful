@@ -1,4 +1,15 @@
-import {ConstraintDefinitionError, getJoiSchema, Joi, updateSchema} from "./core";
+import {
+    AnyClass,
+    ConstraintDefinitionError,
+    getJoiSchema,
+    Joi,
+    MapAllowUnions,
+    StringOrSymbolKey,
+    TypedPropertyDecorator,
+    updateSchema
+} from "./core";
+
+type AllowedTypes = object;
 
 export class NestedPropertyTypeUnknown extends ConstraintDefinitionError {
     name = 'NestedPropertyTypeUnknown';
@@ -8,10 +19,10 @@ export class NestedPropertyTypeUnknown extends ConstraintDefinitionError {
     }
 }
 
-export function Nested(clz? : Function) : PropertyDecorator {
-    return function (target : Object, propertyKey : string | symbol) {
+export function Nested(clz? : AnyClass) : TypedPropertyDecorator<AllowedTypes> {
+    return function <TClass extends MapAllowUnions<TClass, TKey, AllowedTypes>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
         // allowTypes(target, propertyKey, [Object]);
-        let propertyType : Function;
+        let propertyType : AnyClass;
         if (clz) {
             propertyType = clz;
         } else {
@@ -25,10 +36,10 @@ export function Nested(clz? : Function) : PropertyDecorator {
     };
 }
 
-export function NestedArray(clz : Function) : PropertyDecorator {
-    return function (target : Object, propertyKey : string | symbol) {
+export function NestedArray(clz : AnyClass) : TypedPropertyDecorator<AllowedTypes> {
+    return function <TClass extends MapAllowUnions<TClass, TKey, AllowedTypes>, TKey extends StringOrSymbolKey<TClass>>(target : TClass, propertyKey : TKey) {
         // allowTypes(target, propertyKey, [Object]);
-        let propertyType : Function;
+        let propertyType : AnyClass;
         if (clz) {
             propertyType = clz;
         } else {

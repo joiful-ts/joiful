@@ -1,12 +1,30 @@
 import "../metadataShim";
-import {ConstraintDefinitionError, registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
+import {registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
 import {
-    StringSchema, Length, Alphanum, CreditCard, Email, Guid, Hex, Hostname, Ip,
-    IsoDate, Lowercase, Max, Min, Regex, Replace, Token, Trim, Uppercase, Uri
+    Alphanum,
+    CreditCard,
+    Email,
+    Guid,
+    Hex,
+    Hostname,
+    Ip,
+    IsoDate,
+    Length,
+    Lowercase,
+    Max,
+    Min,
+    Regex,
+    Replace,
+    StringSchema,
+    Token,
+    Trim,
+    Uppercase,
+    Uri
 } from "../../../src/constraints/string";
 import * as Joi from "joi";
 import {Validator} from "../../../src/Validator";
 import { testConstraint, testConversion, testConstraintWithPojos } from '../testUtil';
+
 
 registerJoi(Joi);
 
@@ -16,26 +34,29 @@ describe("String constraints", function () {
             @StringSchema()
             myProperty!: string;
 
-            @StringSchema()
-            myOtherProperty!: String;
+            // Object wrappers are not supported
+            // @StringSchema()
+            // myOtherProperty! : String;
         }
 
         it("should annotate the class property", function () {
             const metadata = Reflect.getMetadata(WORKING_SCHEMA_KEY, MyClass.prototype);
             const expected = {
                 myProperty: Joi.string(),
-                myOtherProperty: Joi.string()
             };
             expect(metadata).toEqual(expected);
         });
 
-        it("should error when applied to a non-string property", function () {
-            expect(function () {
-                class MyBadClass {
-                    @StringSchema()
-                    myBadProperty!: number;
-                }
-            }).toThrow(ConstraintDefinitionError);
+        /**
+         * TODO: test compilation failures
+         */
+        xit("should error when applied to a non-string property", function () {
+            // expect(function () {
+            //     class MyBadClass {
+            //         @StringSchema()
+            //         myBadProperty! : number;
+            //     }
+            // }).toThrow(ConstraintDefinitionError);
         });
 
         describe('when using fluent API', () => {

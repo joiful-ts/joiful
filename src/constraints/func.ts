@@ -1,14 +1,16 @@
-import {typeConstraintDecorator, constraintDecorator} from "../core";
+import {constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator} from "../core";
 import {FunctionSchema, Schema} from "joi";
 
-export function Arity(n : number) : PropertyDecorator {
-    return constraintDecorator([Function], (schema : Schema) => {
+type AllowedPropertyTypes = Function;
+
+export function Arity(n : number) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as FunctionSchema).arity(n);
     });
 }
 
-export function FuncSchema(schemaBuilder?: (schema: FunctionSchema) => FunctionSchema) : PropertyDecorator {
-    return typeConstraintDecorator([Function], (Joi) => {
+export function FuncSchema(schemaBuilder?: (schema: FunctionSchema) => FunctionSchema) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
         let schema = Joi.func();
         if (schemaBuilder) {
             schema = schemaBuilder(schema);
@@ -17,14 +19,14 @@ export function FuncSchema(schemaBuilder?: (schema: FunctionSchema) => FunctionS
     });
 }
 
-export function MaxArity(n : number) : PropertyDecorator {
-    return constraintDecorator([Function], (schema : Schema) => {
+export function MaxArity(n : number) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as FunctionSchema).maxArity(n);
     });
 }
 
-export function MinArity(n : number) : PropertyDecorator {
-    return constraintDecorator([Function], (schema : Schema) => {
+export function MinArity(n : number) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as FunctionSchema).minArity(n);
     });
 }

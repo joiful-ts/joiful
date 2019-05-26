@@ -1,8 +1,10 @@
 import {DateSchema, Reference, Schema} from "joi";
-import {typeConstraintDecorator, constraintDecorator} from "../core";
+import {constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator} from "../core";
 
-export function DateSchema(schemaBuilder?: (schema: DateSchema) => DateSchema) : PropertyDecorator {
-    return typeConstraintDecorator([Date, String], (Joi) => {
+type AllowedPropertyTypes = Date | string;
+
+export function DateSchema(schemaBuilder?: (schema: DateSchema) => DateSchema) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
         let schema = Joi.date();
         if (schemaBuilder) {
             schema = schemaBuilder(schema);
@@ -11,26 +13,26 @@ export function DateSchema(schemaBuilder?: (schema: DateSchema) => DateSchema) :
     });
 }
 
-export function Iso() : PropertyDecorator {
-    return constraintDecorator([Date, String], (schema : Schema) => {
+export function Iso() : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as DateSchema).iso();
     });
 }
 
-export function Max(limit : number | 'now' | string | Date | Reference) : PropertyDecorator {
-    return constraintDecorator([Date, String], (schema : Schema) => {
+export function Max(limit : number | 'now' | string | Date | Reference) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as DateSchema).max(<any>limit);
     });
 }
 
-export function Min(limit : number | 'now' | string | Date | Reference) : PropertyDecorator {
-    return constraintDecorator([Date, String], (schema : Schema) => {
+export function Min(limit : number | 'now' | string | Date | Reference) : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as DateSchema).min(<any>limit);
     });
 }
 
-export function Timestamp(type? : 'unix' | 'javascript') : PropertyDecorator {
-    return constraintDecorator([Date, String], (schema : Schema) => {
+export function Timestamp(type? : 'unix' | 'javascript') : TypedPropertyDecorator<AllowedPropertyTypes> {
+    return constraintDecorator<AllowedPropertyTypes>((schema : Schema) => {
         return (schema as DateSchema).timestamp(type);
     });
 }

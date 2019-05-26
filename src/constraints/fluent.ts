@@ -1,8 +1,8 @@
-import { Schema } from 'joi';
-import { getPropertySchema, Joi, updateSchema, ensureSchemaNotAlreadyDefined } from '../core';
+import * as Joi from 'joi';
+import { getPropertySchema, updateSchema, ensureSchemaNotAlreadyDefined, StringOrSymbolKey } from '../core';
 
-export function JoiSchema(schemaBuilder: (joi: typeof Joi) => Schema) {
-    return (target: object, propertyKey: string | symbol) => {
+export function JoiSchema(schemaBuilder: (joi: typeof Joi) => Joi.Schema) {
+    return <TClass, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey) => {
         let schema = getPropertySchema(target, propertyKey);
         ensureSchemaNotAlreadyDefined(schema, propertyKey);
         schema = schemaBuilder(Joi)
