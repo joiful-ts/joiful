@@ -2,7 +2,7 @@ import {ValidationError} from "joi";
 
 export class MultipleValidationError extends Error {
     constructor(
-        public errors : ValidationError[]
+        public readonly errors : ValidationError[]
     ) {
         super();
 
