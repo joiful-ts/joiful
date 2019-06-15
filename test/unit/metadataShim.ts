@@ -4,4 +4,4 @@
  * Importing the module in more than one consuming module will give you a new map each time.
  * Library code should not import this module!
  */
-import "reflect-metadata";
+import 'reflect-metadata';

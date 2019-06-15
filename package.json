@@ -1,52 +1,56 @@
 {
-  "name": "tsdv-joi",
-  "version": "0.0.13-dev",
-  "description": "TypeScript Declarative Validation - Joi. Decorate your class properties to validate them using Joi.",
-  "license": "MIT",
-  "repository": "https://github.com/laurence-myers/tsdv-joi",
-  "private": true,
-  "author": {
-    "name": "Laurence Dougal Myers",
-    "email": "laurencedougalmyers@gmail.com"
-  },
-  "tags": [
-    "decorator",
-    "joi",
-    "schema",
-    "typescript",
-    "typescript-validator",
-    "validator",
-    "validation"
-  ],
-  "engines": {
-    "node": ">=6.9.1",
-    "npm": ">=3.10.10",
-    "yarn": ">=1.13.0"
-  },
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
-  "scripts": {
-    "build": "rimraf publish && tsc -p tsconfig.build.json && node publish/build.js",
-    "pretest": "rimraf dist && tsc -p tsconfig.all.json",
-    "publishToNpm": "yarn run test && yarn run build && cd publish && yarn publish && cd .. && rimraf publish",
-    "test": "jest",
-    "watch": "tsc -p tsconfig.all.json -w"
-  },
-  "peerDependencies": {
-    "@types/joi": "^10.4.1",
-    "joi": "^10.6.0"
-  },
-  "devDependencies": {
-    "@types/jest": "24.0.11",
-    "@types/joi": "10.4.1",
-    "@types/node": "6.0.63",
-    "@types/reflect-metadata": "0.0.5",
-    "@types/rimraf": "0.0.28",
-    "jest": "24.7.1",
-    "joi": "10.6.0",
-    "reflect-metadata": "0.1.9",
-    "rimraf": "2.6.0",
-    "ts-jest": "24.0.2",
-    "typescript": "3.4.5"
-  }
+    "name": "tsdv-joi",
+    "version": "0.0.13-dev",
+    "description": "TypeScript Declarative Validation - Joi. Decorate your class properties to validate them using Joi.",
+    "license": "MIT",
+    "repository": "https://github.com/laurence-myers/tsdv-joi",
+    "private": true,
+    "author": {
+        "name": "Laurence Dougal Myers",
+        "email": "laurencedougalmyers@gmail.com"
+    },
+    "tags": [
+        "decorator",
+        "joi",
+        "schema",
+        "typescript",
+        "typescript-validator",
+        "validator",
+        "validation"
+    ],
+    "engines": {
+        "node": ">=6.9.1",
+        "npm": ">=3.10.10",
+        "yarn": ">=1.13.0"
+    },
+    "main": "dist/main.js",
+    "types": "dist/main.d.ts",
+    "scripts": {
+        "build": "rimraf publish && tsc -p tsconfig.build.json && node publish/build.js",
+        "lint": "tslint -c ./tslint.json --project ./tsconfig.json --format stylish",
+        "pretest": "tsc -p tsconfig.all.json --noEmit && yarn run lint",
+        "publishToNpm": "yarn run test && yarn run build && cd publish && yarn publish && cd .. && rimraf publish",
+        "test": "jest",
+        "watch": "tsc -p tsconfig.all.json -w --noEmit"
+    },
+    "peerDependencies": {
+        "@types/joi": "^10.4.1",
+        "joi": "^10.6.0"
+    },
+    "devDependencies": {
+        "@types/jest": "24.0.11",
+        "@types/joi": "10.4.1",
+        "@types/node": "6.0.63",
+        "@types/reflect-metadata": "0.0.5",
+        "@types/rimraf": "0.0.28",
+        "husky": "2.3.0",
+        "jest": "24.7.1",
+        "joi": "10.6.0",
+        "reflect-metadata": "0.1.9",
+        "rimraf": "2.6.0",
+        "ts-jest": "24.0.2",
+        "tslint": "5.16.0",
+        "typescript": "3.4.5",
+        "typestrict": "1.0.2"
+    }
 }

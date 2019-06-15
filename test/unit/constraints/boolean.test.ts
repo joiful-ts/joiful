@@ -1,23 +1,22 @@
-import "../metadataShim";
-import {registerJoi, WORKING_SCHEMA_KEY} from "../../../src/core";
-import * as Joi from "joi";
+import '../metadataShim';
+import { registerJoi, WORKING_SCHEMA_KEY } from '../../../src/core';
+import * as Joi from 'joi';
 import { testConstraint, testConstraintWithPojos } from '../testUtil';
-import {BooleanSchema, Truthy, Falsy, Insensitive} from "../../../src/constraints/boolean";
-
+import { BooleanSchema, Truthy, Falsy, Insensitive } from '../../../src/constraints/boolean';
 
 registerJoi(Joi);
 
-describe("Boolean constraints", function () {
-    describe("BooleanSchema", function () {
+describe('Boolean constraints', () => {
+    describe('BooleanSchema', () => {
         class MyClass {
             @BooleanSchema()
-            myProperty! : boolean;
+            myProperty!: boolean;
         }
 
-        it("should annotate the class property", function () {
+        it('should annotate the class property', () => {
             const metadata = Reflect.getMetadata(WORKING_SCHEMA_KEY, MyClass.prototype);
             const expected = {
-                myProperty: Joi.boolean()
+                myProperty: Joi.boolean(),
             };
             expect(metadata).toEqual(expected);
         });
@@ -25,21 +24,22 @@ describe("Boolean constraints", function () {
         /**
          * TODO: test compilation failures
          */
-        xit("should error when applied to a non-boolean property", function () {
-            // expect(function () {
+        xit('should error when applied to a non-boolean property', () => {
+            // expect(() => {
             //     class MyBadClass {
             //         @BooleanSchema()
             //         myBadProperty! : number;
-            //
+
             //         @BooleanSchema()
             //         myOtherBadProperty! : string;
             //     }
+            //     return MyBadClass;
             // }).toThrow(ConstraintDefinitionError);
         });
 
         describe('when using fluent API', () => {
             class AcceptTermsAndConditionsForm {
-                @BooleanSchema(schema => schema.required())
+                @BooleanSchema((schema) => schema.required())
                 accept?: boolean;
             }
 
@@ -47,18 +47,19 @@ describe("Boolean constraints", function () {
                 () => AcceptTermsAndConditionsForm,
                 [
                     { accept: true },
-                    { accept: false }
+                    { accept: false },
                 ],
-                [{}]
+                [{}],
             );
-        })
+        });
     });
 
-    describe("Truthy", function () {
-        testConstraint<any>(() => {
+    describe('Truthy', () => {
+        testConstraint<any>(
+            () => {
                 class MyClass {
                     @Truthy(1, 5)
-                    myProperty : boolean;
+                    myProperty: boolean;
 
                     constructor(myProperty: boolean) {
                         this.myProperty = myProperty;
@@ -67,12 +68,13 @@ describe("Boolean constraints", function () {
                 return MyClass;
             },
             [1, 5],
-            [0, 2, "1", "y", "Y"]
+            [0, 2, '1', 'y', 'Y'],
         );
-        testConstraint<any>(() => {
+        testConstraint<any>(
+            () => {
                 class MyClass {
-                    @Truthy("1", "y")
-                    myProperty : boolean;
+                    @Truthy('1', 'y')
+                    myProperty: boolean;
 
                     constructor(myProperty: boolean) {
                         this.myProperty = myProperty;
@@ -80,16 +82,17 @@ describe("Boolean constraints", function () {
                 }
                 return MyClass;
             },
-            ["1", "y", "Y"],
-            [0, 1, 2, 5, "0", "yes"]
+            ['1', 'y', 'Y'],
+            [0, 1, 2, 5, '0', 'yes'],
         );
     });
 
-    describe("Falsy", function () {
-        testConstraint<any>(() => {
+    describe('Falsy', () => {
+        testConstraint<any>(
+            () => {
                 class MyClass {
                     @Falsy(0, 5)
-                    myProperty : boolean;
+                    myProperty: boolean;
 
                     constructor(myProperty: boolean) {
                         this.myProperty = myProperty;
@@ -98,12 +101,13 @@ describe("Boolean constraints", function () {
                 return MyClass;
             },
             [0, 5],
-            ["0", 1, "n", "N"]
+            ['0', 1, 'n', 'N'],
         );
-        testConstraint<any>(() => {
+        testConstraint<any>(
+            () => {
                 class MyClass {
-                    @Falsy("0", "n")
-                    myProperty : boolean;
+                    @Falsy('0', 'n')
+                    myProperty: boolean;
 
                     constructor(myProperty: boolean) {
                         this.myProperty = myProperty;
@@ -111,18 +115,19 @@ describe("Boolean constraints", function () {
                 }
                 return MyClass;
             },
-            ["0", "n", "N"],
-            [0, 1, 2, 5, "yes", "no"]
+            ['0', 'n', 'N'],
+            [0, 1, 2, 5, 'yes', 'no'],
         );
     });
 
-    describe("Insensitive", function () {
-        testConstraint<any>(() => {
+    describe('Insensitive', () => {
+        testConstraint<any>(
+            () => {
                 class MyClass {
                     @Insensitive(false)
-                    @Falsy("n")
-                    @Truthy("y")
-                    myProperty : boolean;
+                    @Falsy('n')
+                    @Truthy('y')
+                    myProperty: boolean;
 
                     constructor(myProperty: boolean) {
                         this.myProperty = myProperty;
@@ -130,8 +135,8 @@ describe("Boolean constraints", function () {
                 }
                 return MyClass;
             },
-            ["y", "n"],
-            ["Y", "N"]
+            ['y', 'n'],
+            ['Y', 'N'],
         );
     });
 });

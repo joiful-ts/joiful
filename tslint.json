@@ -1,0 +1,99 @@
+{
+    "defaultSeverity": "error",
+    "extends": "typestrict",
+    "jsRules": {},
+    "rules": {
+        "arrow-parens": true,
+        "ban-ts-ignore": true,
+        "import-spacing": true,
+        "indent": {
+            "options": [
+                "spaces",
+                4
+            ]
+        },
+        "max-line-length": {
+            "options": {
+                "limit": 120
+            }
+        },
+        "no-debugger": true,
+        "no-console": true,
+        "new-parens": true,
+        "only-arrow-functions": {
+            "options": [
+                "allow-declarations",
+                "allow-named-functions"
+            ]
+        },
+        "no-consecutive-blank-lines": [
+            true,
+            2
+        ],
+        "no-irregular-whitespace": true,
+        "no-trailing-whitespace": {
+            "options": [
+                "ignore-template-strings"
+            ]
+        },
+        "no-unused-variable": false,
+        "number-literal-format": true,
+        "quotemark": {
+            "options": [
+                "single",
+                "avoid-template",
+                "avoid-escape"
+            ]
+        },
+        "semicolon": [
+            true,
+            "always"
+        ],
+        "space-before-function-paren": {
+            "options": {
+                "anonymous": "always",
+                "asyncArrow": "always",
+                "constructor": "never",
+                "method": "never",
+                "named": "never"
+            }
+        },
+        "trailing-comma": {
+            "options": {
+                "multiline": "always",
+                "singleline": "never"
+            }
+        },
+        "typedef-whitespace": [
+            true,
+            {
+                "call-signature": "nospace",
+                "index-signature": "nospace",
+                "parameter": "nospace",
+                "property-declaration": "nospace",
+                "variable-declaration": "nospace"
+            },
+            {
+                "call-signature": "onespace",
+                "index-signature": "onespace",
+                "parameter": "onespace",
+                "property-declaration": "onespace",
+                "variable-declaration": "onespace"
+            }
+        ],
+        "whitespace": {
+            "options": [
+                "check-branch",
+                "check-decl",
+                "check-operator",
+                "check-module",
+                "check-separator",
+                "check-rest-spread",
+                "check-type",
+                "check-type-operator",
+                "check-preblock"
+            ]
+        }
+    },
+    "rulesDirectory": []
+}

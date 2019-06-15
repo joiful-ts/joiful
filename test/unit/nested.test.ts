@@ -1,105 +1,108 @@
-import "./metadataShim";
-import {Validator} from "../../src/Validator";
-import {registerJoi, ValidationSchemaNotFound} from "../../src/core";
-import * as Joi from "joi";
-import {Length} from "../../src/constraints/string";
-import {Nested, NestedArray, NestedPropertyTypeUnknown} from "../../src/Nested";
-import {Required} from "../../src/constraints/any";
+import './metadataShim';
+import { Validator } from '../../src/Validator';
+import { registerJoi, ValidationSchemaNotFound } from '../../src/core';
+import * as Joi from 'joi';
+import { Length } from '../../src/constraints/string';
+import { Nested, NestedArray, NestedPropertyTypeUnknown } from '../../src/Nested';
+import { Required } from '../../src/constraints/any';
 
 registerJoi(Joi);
 
-describe('Nested', function () {
-    it('Errors when a nested property has a type of class (function) but is not decorated with Nested()', function () {
+describe('Nested', () => {
+    it('Errors when a nested property has a type of class (function) but is not decorated with Nested()', () => {
         expect(() => {
             class NestedClassToValidate {
                 @Length(3)
                 @Required()
-                public myProperty! : string;
+                public myProperty!: string;
             }
 
             class ClassToValidate {
                 @Required()
-                public nestedProperty! : NestedClassToValidate;
+                public nestedProperty!: NestedClassToValidate;
             }
+
+            return ClassToValidate;
         }).toThrow(new ValidationSchemaNotFound('nestedProperty'));
     });
 
-    it('Can annotate a nested property', function () {
+    it('Can annotate a nested property', () => {
         let validator = new Validator();
 
         class NestedClassToValidate {
             @Length(3)
             @Required()
-            public myProperty! : string;
+            public myProperty!: string;
         }
 
         class ClassToValidate {
             @Required()
             @Nested()
-            public nestedProperty! : NestedClassToValidate;
+            public nestedProperty!: NestedClassToValidate;
         }
 
         let instance = new ClassToValidate();
         instance.nestedProperty = {
-            myProperty: "abc"
+            myProperty: 'abc',
         };
 
         let result = validator.validate(instance);
         expect(result.error).toBeNull();
     });
 
-    it('Errors when a nested property does not have a type of class (function)', function () {
+    it('Errors when a nested property does not have a type of class (function)', () => {
         expect(() => {
             class ClassToValidate {
                 @Required()
                 @Nested()
-                public nestedProperty! : { myProperty : string };
+                public nestedProperty!: { myProperty: string };
             }
+            return ClassToValidate;
         }).toThrow(new NestedPropertyTypeUnknown('nestedProperty'));
     });
 
-    it('Can annotate a nested property by manually passing a class', function () {
+    it('Can annotate a nested property by manually passing a class', () => {
         let validator = new Validator();
 
         class NestedClassToValidate {
             @Length(3)
             @Required()
-            public myProperty! : string;
+            public myProperty!: string;
         }
 
         class ClassToValidate {
             @Required()
             @Nested(NestedClassToValidate)
-            public nestedProperty! : { myProperty : string };
+            public nestedProperty!: { myProperty: string };
         }
 
         let instance = new ClassToValidate();
         instance.nestedProperty = {
-            myProperty: "abc"
+            myProperty: 'abc',
         };
 
         let result = validator.validate(instance);
         expect(result.error).toBeNull();
     });
 
-    it('Can annotate a nested array', function () {
+    it('Can annotate a nested array', () => {
         let validator = new Validator();
 
         class NestedClassToValidate {
             @Length(3)
             @Required()
-            public myProperty! : string;
+            public myProperty!: string;
         }
 
         class ClassToValidate {
             @Required()
             @NestedArray(NestedClassToValidate)
-            public nestedProperty! : { myProperty : string }[];
+            public nestedProperty!: { myProperty: string }[];
         }
 
         let instance = new ClassToValidate();
         instance.nestedProperty = [{
-            myProperty: "abc"
+            myProperty: 'abc',
         }];
         let result = validator.validate(instance);
         expect(result.error).toBeNull();
@@ -109,9 +112,9 @@ describe('Nested', function () {
         expect(result.error).toBeNull();
 
         instance.nestedProperty = [
-            <any> {
-                random: 'value'
-            }
+            <any>{
+                random: 'value',
+            },
         ];
         result = validator.validate(instance);
         expect(result.error).not.toBeNull();

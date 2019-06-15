@@ -4,7 +4,7 @@ import { ensureSchemaNotAlreadyDefined, ConstraintDefinitionError } from '../../
 describe('ensureSchemaNotAlreadyDefined', () => {
     it('should throw an error if the schema is defined', () => {
         const func = () => ensureSchemaNotAlreadyDefined({} as Schema, 'emailAddress');
-        const expected = new ConstraintDefinitionError(`A validation schema already exists for property: emailAddress`);
+        const expected = new ConstraintDefinitionError('A validation schema already exists for property: emailAddress');
         expect(func).toThrow(expected);
     });
 
