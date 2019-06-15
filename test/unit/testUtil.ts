@@ -1,6 +1,6 @@
-import "./metadataShim";
-import {Validator} from "../../src/Validator";
-import {ValidationOptions} from "joi";
+import './metadataShim';
+import { Validator } from '../../src/Validator';
+import { ValidationOptions } from 'joi';
 
 interface ToBeValidOptions {
     clz?: { new (...args: any[]): any };
@@ -28,14 +28,16 @@ expect.extend({
             validator.validate(received);
 
         const pass = result.error === null;
+        // tslint:disable-next-line:no-invalid-this
+        const isNot = this.isNot;
 
         return {
             pass,
-            message: () => this.isNot ?
-                `expected candidate to fail validation` :
-                `expected candidate to pass validation`
+            message: () => isNot ?
+                'expected candidate to fail validation' :
+                'expected candidate to pass validation',
         };
-    }
+    },
 });
 
 export interface AssertValidationOptions<T> {
@@ -45,14 +47,14 @@ export interface AssertValidationOptions<T> {
 }
 
 export function testConstraint<T>(
-    classFactory : () => any,
-    valid : T[],
-    invalid : T[],
-    validationOptions? : ValidationOptions
+    classFactory: () => any,
+    valid: T[],
+    invalid: T[],
+    validationOptions?: ValidationOptions,
 ) {
     const validator = new Validator(validationOptions);
 
-    it("should validate successful candidates", () => {
+    it('should validate successful candidates', () => {
         const clz = classFactory();
         for (let val of valid) {
             let instance = new clz(val);
@@ -60,7 +62,7 @@ export function testConstraint<T>(
         }
     });
 
-    it("should invalidate successful candidates", () => {
+    it('should invalidate successful candidates', () => {
         const clz = classFactory();
         for (let val of invalid) {
             let instance = new clz(val);
@@ -70,16 +72,16 @@ export function testConstraint<T>(
 }
 
 export function testConversion<T>(
-    classFactory : () => any,
-    getter : (object : any) => any,
-    converted : T[][],
-    unconverted : T[]
+    classFactory: () => any,
+    getter: (object: any) => any,
+    converted: T[][],
+    unconverted: T[],
 ) {
     const clz = classFactory();
 
-    it("should modify matching property", () => {
+    it('should modify matching property', () => {
         const validator = new Validator({
-            convert: true
+            convert: true,
         });
 
         for (const entry of converted) {
@@ -94,9 +96,9 @@ export function testConversion<T>(
         }
     });
 
-    it("should not modify unmatching property", () => {
+    it('should not modify unmatching property', () => {
         const validator = new Validator({
-            convert: true
+            convert: true,
         });
 
         for (const input of unconverted) {

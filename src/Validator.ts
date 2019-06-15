@@ -1,26 +1,26 @@
-import {Joi, getJoiSchema, AnyClass} from "./core";
-import {ObjectSchema, ValidationOptions} from "joi";
-import {ValidationResult} from "./ValidationResult";
+import { Joi, getJoiSchema, AnyClass } from './core';
+import { ObjectSchema, ValidationOptions } from 'joi';
+import { ValidationResult } from './ValidationResult';
 
 export class Validator {
     constructor(
-        private defaultOptions? : ValidationOptions
+        private defaultOptions?: ValidationOptions,
     ) {
     }
 
-    validate<T>(target : T, options? : ValidationOptions) : ValidationResult<T> {
+    validate<T>(target: T, options?: ValidationOptions): ValidationResult<T> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
         return this.validateAsClass(target, target.constructor as AnyClass, options);
     }
 
-    validateAsClass<T>(target : T, clz : AnyClass, options? : ValidationOptions) : ValidationResult<T> {
+    validateAsClass<T>(target: T, clz: AnyClass, options?: ValidationOptions): ValidationResult<T> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
 
-        const classSchema : ObjectSchema = getJoiSchema(clz);
+        const classSchema: ObjectSchema = getJoiSchema(clz);
         if (!options) {
             options = this.defaultOptions;
         }
@@ -31,12 +31,12 @@ export class Validator {
         }
     }
 
-    validateArrayAsClass<T>(target : T[], clz : AnyClass, options? : ValidationOptions) : ValidationResult<T[]> {
+    validateArrayAsClass<T>(target: T[], clz: AnyClass, options?: ValidationOptions): ValidationResult<T[]> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null arrays");
         }
 
-        const classSchema : ObjectSchema = getJoiSchema(clz);
+        const classSchema: ObjectSchema = getJoiSchema(clz);
         const arraySchema = Joi.array().items(classSchema);
         if (!options) {
             options = this.defaultOptions;
