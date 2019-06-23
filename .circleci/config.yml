@@ -17,7 +17,7 @@ jobs:
           - v1-dependencies-
 
       # Build and test
-      - run: yarn install
+      - run: yarn install --ignore-engines
       - run: yarn test
 
       - save_cache:
