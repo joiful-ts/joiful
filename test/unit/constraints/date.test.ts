@@ -1,7 +1,7 @@
 import '../metadataShim';
 import { registerJoi, WORKING_SCHEMA_KEY } from '../../../src/core';
 import * as Joi from 'joi';
-import { testConstraint } from '../testUtil';
+import { testConstraint, testConstraintWithPojos } from '../testUtil';
 import { DateSchema, Iso } from '../../../src/constraints/date';
 
 registerJoi(Joi);
@@ -36,6 +36,22 @@ describe('Date constraints', () => {
             //     }
             //     return MyBadClass;
             // }).toThrow(ConstraintDefinitionError);
+        });
+
+        describe('when using fluent API', () => {
+            class AgeVerificationForm {
+                @DateSchema((schema) => schema.required().min(new Date(1900, 0, 1)))
+                dateOfBirth?: Date;
+            }
+
+            testConstraintWithPojos(
+                () => AgeVerificationForm,
+                [{ dateOfBirth: new Date(1990, 0, 30) }],
+                [
+                    {},
+                    { dateOfBirth: new Date(1899, 11, 30) },
+                ],
+            );
         });
     });
 

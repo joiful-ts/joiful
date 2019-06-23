@@ -9,9 +9,15 @@ export function Arity(n: number): TypedPropertyDecorator<AllowedPropertyTypes> {
     });
 }
 
-export function FuncSchema(): TypedPropertyDecorator<AllowedPropertyTypes> {
+export function FuncSchema(
+    schemaBuilder?: (schema: FunctionSchema) => FunctionSchema,
+): TypedPropertyDecorator<AllowedPropertyTypes> {
     return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
-        return Joi.func();
+        let schema = Joi.func();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

@@ -32,6 +32,12 @@ export class ValidationSchemaNotFound extends ConstraintDefinitionError {
 
 export type WorkingSchema = { [index: string]: Schema };
 
+export function ensureSchemaNotAlreadyDefined(schema: Schema | undefined | null, propertyKey: string | symbol) {
+    if (schema) {
+        throw new ConstraintDefinitionError(`A validation schema already exists for property: ${String(propertyKey)}`);
+    }
+}
+
 export interface AnyClass {
     new(...args: any[]): any;
 }
@@ -197,14 +203,9 @@ export function typeConstraintDecorator<
         propertyKey: TKey,
     ): void => {
         let schema = getPropertySchema(target, propertyKey);
-        if (schema) {
-            throw new ConstraintDefinitionError(
-                `A validation schema already exists for property: ${String(propertyKey)}`,
-            );
-        } else {
-            schema = typeSchema(Joi);
-            updateSchema(target, propertyKey, schema);
-        }
+        ensureSchemaNotAlreadyDefined(schema, propertyKey);
+        schema = typeSchema(Joi);
+        updateSchema(target, propertyKey, schema);
     };
 }
 

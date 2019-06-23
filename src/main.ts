@@ -13,6 +13,7 @@ import * as FunctionConstraints from './constraints/func';
 import * as NumberConstraints from './constraints/number';
 import * as ObjectConstraints from './constraints/object';
 import * as StringConstraints from './constraints/string';
+import { JoiSchema } from './constraints/fluent';
 
 export {
     AnyConstraints,
@@ -20,6 +21,7 @@ export {
     BooleanConstraints,
     DateConstraints,
     FunctionConstraints,
+    JoiSchema,
     NumberConstraints,
     ObjectConstraints,
     StringConstraints,

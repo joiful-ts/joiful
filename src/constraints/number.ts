@@ -45,9 +45,15 @@ export function Negative(): TypedPropertyDecorator<AllowedPropertyTypes> {
     });
 }
 
-export function NumberSchema(): TypedPropertyDecorator<AllowedPropertyTypes> {
+export function NumberSchema(
+    schemaBuilder?: (schema: NumberSchema) => NumberSchema,
+): TypedPropertyDecorator<AllowedPropertyTypes> {
     return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
-        return Joi.number();
+        let schema = Joi.number();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

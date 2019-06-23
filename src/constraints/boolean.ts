@@ -3,9 +3,15 @@ import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } 
 
 type AllowedPropertyTypes = boolean;
 
-export function BooleanSchema(): TypedPropertyDecorator<AllowedPropertyTypes> {
+export function BooleanSchema(
+    schemaBuilder?: (schema: BooleanSchema) => BooleanSchema,
+): TypedPropertyDecorator<AllowedPropertyTypes> {
     return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
-        return Joi.boolean();
+        let schema = Joi.boolean();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

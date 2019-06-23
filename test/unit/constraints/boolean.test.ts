@@ -1,7 +1,7 @@
 import '../metadataShim';
 import { registerJoi, WORKING_SCHEMA_KEY } from '../../../src/core';
 import * as Joi from 'joi';
-import { testConstraint } from '../testUtil';
+import { testConstraint, testConstraintWithPojos } from '../testUtil';
 import { BooleanSchema, Truthy, Falsy, Insensitive } from '../../../src/constraints/boolean';
 
 registerJoi(Joi);
@@ -35,6 +35,22 @@ describe('Boolean constraints', () => {
             //     }
             //     return MyBadClass;
             // }).toThrow(ConstraintDefinitionError);
+        });
+
+        describe('when using fluent API', () => {
+            class AcceptTermsAndConditionsForm {
+                @BooleanSchema((schema) => schema.required())
+                accept?: boolean;
+            }
+
+            testConstraintWithPojos(
+                () => AcceptTermsAndConditionsForm,
+                [
+                    { accept: true },
+                    { accept: false },
+                ],
+                [{}],
+            );
         });
     });
 

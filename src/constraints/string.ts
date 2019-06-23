@@ -89,9 +89,15 @@ export function Replace(pattern: RegExp, replacement: string): TypedPropertyDeco
     });
 }
 
-export function StringSchema(): TypedPropertyDecorator<AllowedPropertyTypes> {
+export function StringSchema(
+    schemaBuilder?: (schema: StringSchema) => StringSchema,
+): TypedPropertyDecorator<AllowedPropertyTypes> {
     return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
-        return <Schema> Joi.string();
+        let schema = Joi.string();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

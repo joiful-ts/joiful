@@ -9,9 +9,13 @@ export function Allow(...values: any[]): TypedPropertyDecorator<AllowedPropertyT
     });
 }
 
-export function AnySchema(): TypedPropertyDecorator<AllowedPropertyTypes> {
+export function AnySchema(schemaBuilder?: (schema: Schema) => Schema): TypedPropertyDecorator<AllowedPropertyTypes> {
     return typeConstraintDecorator<AllowedPropertyTypes>((Joi: { any: () => Schema }) => {
-        return Joi.any();
+        let schema = Joi.any();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

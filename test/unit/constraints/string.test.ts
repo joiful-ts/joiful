@@ -23,7 +23,7 @@ import {
 } from '../../../src/constraints/string';
 import * as Joi from 'joi';
 import { Validator } from '../../../src/Validator';
-import { testConstraint, testConversion } from '../testUtil';
+import { testConstraint, testConversion, testConstraintWithPojos } from '../testUtil';
 
 registerJoi(Joi);
 
@@ -57,6 +57,22 @@ describe('String constraints', () => {
             //     }
             //     return MyBadClass;
             // }).toThrow(ConstraintDefinitionError);
+        });
+
+        describe('when using fluent API', () => {
+            class ForgotPasswordForm {
+                @StringSchema((schema) => schema.email().required())
+                emailAddress?: string;
+            }
+
+            testConstraintWithPojos(
+                () => ForgotPasswordForm,
+                [{ emailAddress: 'valid@example.com' }],
+                [
+                    {},
+                    { emailAddress: 'invalid email' },
+                ],
+            );
         });
     });
 

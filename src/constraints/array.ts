@@ -3,9 +3,15 @@ import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } 
 
 type AllowedPropertyTypes = Array<unknown>;
 
-export function ArraySchema(): TypedPropertyDecorator<AllowedPropertyTypes> {
+export function ArraySchema(
+    schemaBuilder?: (schema: ArraySchema) => ArraySchema,
+): TypedPropertyDecorator<AllowedPropertyTypes> {
     return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
-        return Joi.array();
+        let schema = Joi.array();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

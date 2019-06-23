@@ -3,9 +3,15 @@ import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } 
 
 type AllowedPropertyTypes = Date | string;
 
-export function DateSchema(): TypedPropertyDecorator<AllowedPropertyTypes> {
+export function DateSchema(
+    schemaBuilder?: (schema: DateSchema) => DateSchema,
+): TypedPropertyDecorator<AllowedPropertyTypes> {
     return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
-        return Joi.date();
+        let schema = Joi.date();
+        if (schemaBuilder) {
+            schema = schemaBuilder(schema);
+        }
+        return schema;
     });
 }
 

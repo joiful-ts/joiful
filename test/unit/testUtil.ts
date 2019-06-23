@@ -3,7 +3,7 @@ import { Validator } from '../../src/Validator';
 import { ValidationOptions } from 'joi';
 
 interface ToBeValidOptions {
-    clz?: { new (...args: any[]): any };
+    clz?: { new(...args: any[]): any };
     validator?: Validator;
 }
 
@@ -41,7 +41,7 @@ expect.extend({
 });
 
 export interface AssertValidationOptions<T> {
-    clz?: { new (...args: any[]): T };
+    clz?: { new(...args: any[]): T };
     object: T;
     validator?: Validator;
 }
@@ -62,11 +62,36 @@ export function testConstraint<T>(
         }
     });
 
-    it('should invalidate successful candidates', () => {
+    it('should invalidate unsuccessful candidates', () => {
         const clz = classFactory();
         for (let val of invalid) {
             let instance = new clz(val);
             expect(instance).not.toBeValid({ validator });
+        }
+    });
+}
+
+export function testConstraintWithPojos<T>(
+    classFactory: () => { new(...args: any[]): T },
+    valid: T[],
+    invalid: T[],
+    validationOptions?: ValidationOptions,
+) {
+    const validator = new Validator(validationOptions);
+
+    it('should validate successful candidates', () => {
+        // tslint:disable-next-line: no-inferred-empty-object-type
+        const clz = classFactory();
+        for (let val of valid) {
+            expect(val).toBeValid({ validator, clz });
+        }
+    });
+
+    it('should invalidate unsuccessful candidates', () => {
+        // tslint:disable-next-line: no-inferred-empty-object-type
+        const clz = classFactory();
+        for (let val of invalid) {
+            expect(val).not.toBeValid({ validator, clz });
         }
     });
 }
