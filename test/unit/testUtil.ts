@@ -1,6 +1,6 @@
 import './metadataShim';
 import { Validator } from '../../src/Validator';
-import { ValidationOptions } from 'joi';
+import { ValidationOptions } from '@hapi/joi';
 
 interface ToBeValidOptions {
     clz?: { new(...args: any[]): any };

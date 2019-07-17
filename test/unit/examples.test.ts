@@ -1,7 +1,7 @@
 import './metadataShim';
 import './testUtil';
 import { getJoiSchema, registerJoi } from '../../src/core';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { Nested } from '../../src/Nested';
 import { Length, StringSchema } from '../../src/constraints/string';
 import { Keys, ObjectSchema } from '../../src/constraints/object';

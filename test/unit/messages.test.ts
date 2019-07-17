@@ -1,7 +1,7 @@
 import './metadataShim';
 import { Validator } from '../../src/Validator';
 import { registerJoi } from '../../src/core';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { Length } from '../../src/constraints/string';
 
 registerJoi(Joi);

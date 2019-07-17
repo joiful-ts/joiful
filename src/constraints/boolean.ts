@@ -1,4 +1,4 @@
-import { BooleanSchema, Schema } from 'joi';
+import { BooleanSchema, Schema } from '@hapi/joi';
 import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } from '../core';
 
 type AllowedPropertyTypes = boolean;

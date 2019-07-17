@@ -1,4 +1,4 @@
-import { lazy, Reference, Schema, ValidationErrorFunction, ValidationOptions, WhenOptions } from 'joi';
+import { lazy, Reference, Schema, ValidationErrorFunction, ValidationOptions, WhenOptions } from '@hapi/joi';
 import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } from '../core';
 
 type AllowedPropertyTypes = unknown;
@@ -24,7 +24,7 @@ export function AnySchema(schemaBuilder?: (schema: Schema) => Schema): TypedProp
  */
 export function Concat(schema: Schema): TypedPropertyDecorator<AllowedPropertyTypes> {
     return constraintDecorator<AllowedPropertyTypes>((existingSchema: Schema) => {
-        return existingSchema.concat(schema);
+        return existingSchema.concat(schema as any);
     });
 }
 
@@ -58,7 +58,7 @@ export function Empty(schema: any): TypedPropertyDecorator<AllowedPropertyTypes>
 
 export function Error(err: Error | ValidationErrorFunction): TypedPropertyDecorator<AllowedPropertyTypes> {
     return constraintDecorator<AllowedPropertyTypes>((schema: Schema) => {
-        return schema.error!(err);
+        return schema.error(err);
     });
 }
 
@@ -213,11 +213,11 @@ export const Equal = Valid;
 /**
  * Converts the type into an alternatives type where the conditions are merged into the type definition.
  */
-export function When<TWhen>(
+export function When(
     ref: string | Reference,
-    options: WhenOptions<TWhen>,
+    options: WhenOptions,
 ): TypedPropertyDecorator<AllowedPropertyTypes> {
     return constraintDecorator<AllowedPropertyTypes>((schema: Schema) => {
-        return schema.when<TWhen>(<any>ref, options);
+        return schema.when(ref, options);
     });
 }

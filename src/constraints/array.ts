@@ -1,4 +1,4 @@
-import { ArraySchema, Schema } from 'joi';
+import { ArraySchema, Schema } from '@hapi/joi';
 import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } from '../core';
 
 type AllowedPropertyTypes = Array<unknown>;

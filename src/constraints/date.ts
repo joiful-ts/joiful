@@ -1,4 +1,4 @@
-import { DateSchema, Reference, Schema } from 'joi';
+import { DateSchema, Reference, Schema } from '@hapi/joi';
 import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } from '../core';
 
 type AllowedPropertyTypes = Date | string;

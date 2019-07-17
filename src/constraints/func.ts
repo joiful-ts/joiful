@@ -1,5 +1,5 @@
 import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } from '../core';
-import { FunctionSchema, Schema } from 'joi';
+import { FunctionSchema, Schema } from '@hapi/joi';
 
 type AllowedPropertyTypes = Function;
 

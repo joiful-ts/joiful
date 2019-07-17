@@ -1,4 +1,4 @@
-import { EmailOptions, IpOptions, Reference, Schema, StringSchema, UriOptions } from 'joi';
+import { EmailOptions, IpOptions, Reference, Schema, StringSchema, UriOptions } from '@hapi/joi';
 import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } from '../core';
 
 type AllowedPropertyTypes = string;

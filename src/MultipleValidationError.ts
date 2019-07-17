@@ -1,4 +1,4 @@
-import { ValidationError } from 'joi';
+import { ValidationError } from '@hapi/joi';
 
 export class MultipleValidationError extends Error {
     constructor(

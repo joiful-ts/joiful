@@ -1,5 +1,5 @@
 import { Joi, getJoiSchema, AnyClass } from './core';
-import { ObjectSchema, ValidationOptions } from 'joi';
+import { ObjectSchema, ValidationOptions } from '@hapi/joi';
 import { ValidationResult } from './ValidationResult';
 
 export class Validator {
@@ -8,7 +8,7 @@ export class Validator {
     ) {
     }
 
-    validate<T>(target: T, options?: ValidationOptions): ValidationResult<T> {
+    validate<T extends { constructor: Function }>(target: T, options?: ValidationOptions): ValidationResult<T> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }

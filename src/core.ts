@@ -1,5 +1,5 @@
-import { Schema, ObjectSchema } from 'joi';
-import * as joi from 'joi';
+import { Schema, ObjectSchema } from '@hapi/joi';
+import * as joi from '@hapi/joi';
 
 export const WORKING_SCHEMA_KEY = 'tsdv:working-schema';
 export const SCHEMA_KEY = 'tsdv:schema';

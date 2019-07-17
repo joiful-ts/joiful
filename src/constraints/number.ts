@@ -1,4 +1,4 @@
-import { NumberSchema, Reference, Schema } from 'joi';
+import { NumberSchema, Reference, Schema } from '@hapi/joi';
 import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } from '../core';
 
 type AllowedPropertyTypes = number;

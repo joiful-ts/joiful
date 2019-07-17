@@ -1,6 +1,6 @@
 import '../metadataShim';
 import { registerJoi, WORKING_SCHEMA_KEY } from '../../../src/core';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { testConstraint, testConstraintWithPojos } from '../testUtil';
 import { DateSchema, Iso } from '../../../src/constraints/date';
 

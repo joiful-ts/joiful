@@ -3,7 +3,7 @@ import { Validator } from '../../src/Validator';
 import { Validate } from '../../src/Validate';
 import { MultipleValidationError } from '../../src/MultipleValidationError';
 import { registerJoi } from '../../src/core';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { Length } from '../../src/constraints/string';
 
 registerJoi(Joi);

@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { getPropertySchema, updateSchema, ensureSchemaNotAlreadyDefined, StringOrSymbolKey } from '../core';
 
 export function JoiSchema(schemaBuilder: (joi: typeof Joi) => Joi.Schema) {

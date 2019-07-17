@@ -1,4 +1,4 @@
-import { ObjectSchema, Reference, RenameOptions, Schema, SchemaMap } from 'joi';
+import { ObjectSchema, Reference, RenameOptions, Schema, SchemaMap } from '@hapi/joi';
 import {
     constraintDecorator,
     constraintDecoratorWithPeers,

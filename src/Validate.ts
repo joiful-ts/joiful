@@ -1,7 +1,7 @@
 import { Validator } from './Validator';
 import { WORKING_SCHEMA_KEY } from './core';
 import { MultipleValidationError } from './MultipleValidationError';
-import { ValidationError } from 'joi';
+import { ValidationError } from '@hapi/joi';
 
 export function Validate(validator: Validator): MethodDecorator {
     return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {

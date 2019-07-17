@@ -1,7 +1,7 @@
 import './metadataShim';
 import { Validator } from '../../src/Validator';
 import { registerJoi, ValidationSchemaNotFound } from '../../src/core';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { Length } from '../../src/constraints/string';
 import { Nested, NestedArray, NestedPropertyTypeUnknown } from '../../src/Nested';
 import { Required } from '../../src/constraints/any';

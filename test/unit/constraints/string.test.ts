@@ -21,7 +21,7 @@ import {
     Uppercase,
     Uri,
 } from '../../../src/constraints/string';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { Validator } from '../../../src/Validator';
 import { testConstraint, testConversion, testConstraintWithPojos } from '../testUtil';
 
@@ -77,20 +77,6 @@ describe('String constraints', () => {
     });
 
     describe('Length, and core functionality', () => {
-        it('should annotate the class property', () => {
-            class MyClass {
-                @Length(5)
-                @StringSchema()
-                myProperty!: string;
-            }
-
-            const metadata = Reflect.getMetadata(WORKING_SCHEMA_KEY, MyClass.prototype);
-            const expected: any = {
-                myProperty: Joi.string().length(5),
-            };
-            expect(JSON.stringify(metadata)).toEqual(JSON.stringify(expected));
-        });
-
         it('should validate successful candidates', () => {
             class MyClass {
                 @Length(5)
@@ -208,8 +194,8 @@ describe('String constraints', () => {
                 }
                 return MyClass;
             },
-            ['monkey@see.com', 'monkey@do', 'howdy+there@pardner.co.kr'],
-            ['123.com'],
+            ['monkey@see.com', 'howdy+there@pardner.co.kr'],
+            ['123.com', 'monkey@do'],
         );
     });
 
@@ -357,8 +343,8 @@ describe('String constraints', () => {
                     }
                     return MyClass;
                 },
-                ['127.0.0.1/24' /*"2001:db8:abcd:8000::/50"*/], // bug in Joi? doesn't like IPv6 CIDR
-                ['127.0.0.1', '2001:0db8:0000:0000:0000:ff00:0042:8329', '2001:db8:abcd:8000::/50'],
+                ['127.0.0.1/24', '2001:db8:abcd:8000::/50'],
+                ['127.0.0.1', '2001:0db8:0000:0000:0000:ff00:0042:8329'],
             );
         });
     });
@@ -464,7 +450,7 @@ describe('String constraints', () => {
         testConstraint<string>(
             () => {
                 class MyClass {
-                    @Regex(/test/g)
+                    @Regex(/test/)
                     myProperty: string;
 
                     constructor(myProperty: string) {
@@ -473,8 +459,8 @@ describe('String constraints', () => {
                 }
                 return MyClass;
             },
-            ['test123', '123test', '123test123'],
-            ['abcd', 'TEST'],
+            ['test', 'test123', '123test', '123test123'],
+            ['TEST', 'abcd'],
         );
     });
 

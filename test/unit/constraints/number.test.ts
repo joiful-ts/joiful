@@ -1,6 +1,6 @@
 import '../metadataShim';
 import { registerJoi } from '../../../src/core';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { testConstraintWithPojos } from '../testUtil';
 import { NumberSchema } from '../../../src/constraints/number';
 
