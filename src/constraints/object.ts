@@ -66,7 +66,7 @@ export function Nand<TClass>(
 }
 
 export function ObjectSchema(schema?: SchemaMap): TypedPropertyDecorator<AllowedPropertyTypes> {
-    return typeConstraintDecorator((Joi) => {
+    return typeConstraintDecorator<AllowedPropertyTypes>((Joi) => {
         return Joi.object(schema);
     });
 }
