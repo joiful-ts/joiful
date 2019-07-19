@@ -19,23 +19,35 @@ declare global {
     }
 }
 
+const tryToStringify = (value: any) => {
+    try {
+        return JSON.stringify(value, null, '  ');
+    } catch (err) {
+        return null;
+    }
+};
+
 expect.extend({
-    toBeValid(received: any, options: ToBeValidOptions) {
+    toBeValid(candidate: any, options: ToBeValidOptions) {
         const validator = (options && options.validator) || new Validator();
         const clz = options && options.clz;
         const result = clz ?
-            validator.validateAsClass(received, clz) :
-            validator.validate(received);
+            validator.validateAsClass(candidate, clz) :
+            validator.validate(candidate);
 
         const pass = result.error === null;
         // tslint:disable-next-line:no-invalid-this
         const isNot = this.isNot;
 
+        const candidateAsString = tryToStringify(candidate);
+
+        const message =
+            `expected candidate to ${isNot ? 'fail' : 'pass'} validation` +
+            (!candidateAsString ? '' : `:\n\n  ${candidateAsString.replace(/\n/gm, '\n  ')}`);
+
         return {
             pass,
-            message: () => isNot ?
-                'expected candidate to fail validation' :
-                'expected candidate to pass validation',
+            message: () => message,
         };
     },
 });
