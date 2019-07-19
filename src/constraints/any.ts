@@ -3,6 +3,12 @@ import { constraintDecorator, typeConstraintDecorator, TypedPropertyDecorator } 
 
 type AllowedPropertyTypes = unknown;
 
+/**
+ * Whitelists values.
+ * Note that this list of allowed values is in addition to any other permitted values.
+ * To create an exclusive list of values, use the `Valid` decorator.
+ * @param values Values to be whitelisted.
+ */
 export function Allow(...values: any[]): TypedPropertyDecorator<AllowedPropertyTypes> {
     return constraintDecorator<AllowedPropertyTypes>((schema: Schema) => {
         return schema.allow(values);
@@ -84,6 +90,10 @@ export function Forbidden(): TypedPropertyDecorator<AllowedPropertyTypes> {
     });
 }
 
+/**
+ * Blacklists values for this property.
+ * @param values Values to be blacklisted.
+ */
 export function Invalid(...values: any[]): TypedPropertyDecorator<AllowedPropertyTypes> {
     return constraintDecorator<AllowedPropertyTypes>((schema: Schema) => {
         return schema.invalid(values);
@@ -129,6 +139,9 @@ export function Notes(...notes: string[]): TypedPropertyDecorator<AllowedPropert
     });
 }
 
+/**
+ * Marks the property as optional, and allows `undefined` as a value.
+ */
 export function Optional(): TypedPropertyDecorator<AllowedPropertyTypes> {
     return constraintDecorator<AllowedPropertyTypes>((schema: Schema) => {
         return schema.optional();
@@ -154,6 +167,9 @@ export function Raw(isRaw?: boolean): TypedPropertyDecorator<AllowedPropertyType
     });
 }
 
+/**
+ * Marks the property as required, and not allow `undefined` as a value.
+ */
 export function Required(): TypedPropertyDecorator<AllowedPropertyTypes> {
     return constraintDecorator<AllowedPropertyTypes>((schema: Schema) => {
         return schema.required();
@@ -200,6 +216,11 @@ export function Unit(name: string): TypedPropertyDecorator<AllowedPropertyTypes>
     });
 }
 
+/**
+ * Adds the provided values into the allowed whitelist for property
+ * and marks them as the only valid values allowed.
+ * @param values The only valid values this property can accept.
+ */
 export function Valid(...values: any[]): TypedPropertyDecorator<AllowedPropertyTypes> {
     return constraintDecorator<AllowedPropertyTypes>((schema: Schema) => {
         return schema.valid(values);
