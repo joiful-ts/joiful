@@ -42,6 +42,10 @@ export interface AnyClass {
     new(...args: any[]): any;
 }
 
+export interface ClassOf<T> {
+    new(...args: any[]): T;
+}
+
 export type StringKey<T> = Extract<keyof T, string>;
 export type StringOrSymbolKey<T> = Extract<keyof T, string | symbol>;
 
