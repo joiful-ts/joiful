@@ -8,7 +8,7 @@ export class Validator {
     ) {
     }
 
-    validate<T>(target: T, options?: ValidationOptions): ValidationResult<T> {
+    validate<T>(target: T, options?: ValidationOptions): ValidationResult<Partial<T>> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
@@ -19,7 +19,7 @@ export class Validator {
         target: TInput,
         clz: ClassOf<TExpected>,
         options?: ValidationOptions,
-    ): ValidationResult<TInput & Partial<TExpected>> {
+    ): ValidationResult<Partial<TInput> & Partial<TExpected>> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null objects");
         }
@@ -40,7 +40,7 @@ export class Validator {
         target: TInput[],
         clz: ClassOf<TExpected>,
         options?: ValidationOptions,
-    ): ValidationResult<Array<TInput & Partial<TExpected>>> {
+    ): ValidationResult<Array<Partial<TInput> & Partial<TExpected>>> {
         if (target === null || target === undefined) {
             throw new Error("Can't validate null arrays");
         }
@@ -52,7 +52,7 @@ export class Validator {
             options = this.defaultOptions;
         }
 
-        if (options) { // avoid strict null check issue in TypeScript
+        if (options) {
             return Joi.validate(target, arraySchema, options);
         } else {
             return Joi.validate(target, arraySchema);
