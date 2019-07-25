@@ -13,6 +13,10 @@ export type LabelProvider = ((propertyKey: string | Symbol, target: object) => s
 
 let globalLabelProvider: LabelProvider | undefined | null = undefined;
 
+/**
+ * Registers a callback which will be used to generate labels for all decorated properties.
+ * @param labelProvider Function which returns the label to use for a given property key and class.
+ */
 export function registerLabelProvider(labelProvider: LabelProvider | undefined | null) {
     globalLabelProvider = labelProvider;
 }
