@@ -32,18 +32,18 @@ export function Items(
 export function Items(...args: any[]): TypedPropertyDecorator<AllowedPropertyTypes> {
     const [firstArg] = args;
 
-    const itemSchemas: JoiModule.Schema[] = [];
+    const schemas: JoiModule.Schema[] = [];
 
     if (args.length === 1 && typeof firstArg === 'function') {
         const itemSchemaBuilder = firstArg as (joi: typeof JoiModule) => JoiModule.Schema | JoiModule.Schema[];
         const result = itemSchemaBuilder(Joi);
-        itemSchemas.push(...result instanceof Array ? result : [result]);
+        schemas.push(...result instanceof Array ? result : [result]);
     } else {
-        itemSchemas.push(...args);
+        schemas.push(...args);
     }
 
     return constraintDecorator<AllowedPropertyTypes>((schema: JoiModule.Schema) => {
-        return (schema as JoiModule.ArraySchema).items(itemSchemas);
+        return (schema as JoiModule.ArraySchema).items(schemas);
     });
 }
 
@@ -65,12 +65,34 @@ export function Min(limit: number): TypedPropertyDecorator<AllowedPropertyTypes>
     });
 }
 
+export function Ordered(
+    type: JoiModule.Schema,
+    // tslint:disable-next-line: trailing-comma
+    ...types: JoiModule.Schema[]
+): TypedPropertyDecorator<AllowedPropertyTypes>;
+
+export function Ordered(
+    itemsSchemaBuilder: (joi: typeof JoiModule) => JoiModule.Schema[],
+): TypedPropertyDecorator<AllowedPropertyTypes>;
+
 /**
  * List the types in sequence order for the array values..
  */
-export function Ordered(...types: JoiModule.Schema[]): TypedPropertyDecorator<AllowedPropertyTypes> {
+export function Ordered(...args: any[]): TypedPropertyDecorator<AllowedPropertyTypes> {
+    const [firstArg] = args;
+
+    const schemas: JoiModule.Schema[] = [];
+
+    if (args.length === 1 && typeof firstArg === 'function') {
+        const itemSchemaBuilder = firstArg as (joi: typeof JoiModule) => JoiModule.Schema[];
+        const result = itemSchemaBuilder(Joi);
+        schemas.push(...result);
+    } else {
+        schemas.push(...args);
+    }
+
     return constraintDecorator<AllowedPropertyTypes>((schema: JoiModule.Schema) => {
-        return (schema as JoiModule.ArraySchema).ordered(types);
+        return (schema as JoiModule.ArraySchema).ordered(schemas);
     });
 }
 
