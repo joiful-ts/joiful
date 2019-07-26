@@ -12,12 +12,20 @@ export interface ValidationResultFail<T> {
 
 export type ValidationResult<T> = ValidationResultPass<T> | ValidationResultFail<T>;
 
+/**
+ * Returns true if validation result passed validation.
+ * @param validationResult The validation result to test.
+ */
 export function isValidationPass<T>(
     validationResult: ValidationResult<T>,
 ): validationResult is ValidationResultPass<T> {
     return !validationResult.error;
 }
 
+/**
+ * Returns true if validation result failed validation.
+ * @param validationResult The validation result to test.
+ */
 export function isValidationFail<T>(
     validationResult: ValidationResult<T>,
 ): validationResult is ValidationResultFail<T> {
