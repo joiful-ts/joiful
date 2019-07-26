@@ -2,7 +2,14 @@ import '../metadataShim';
 import { registerJoi, WORKING_SCHEMA_KEY } from '../../../src/core';
 import * as Joi from 'joi';
 import { testConstraint, testConstraintWithPojos } from '../testUtil';
-import { DateSchema, Iso } from '../../../src/constraints/date';
+import { Validator } from '../../../src/Validator';
+import {
+    DateSchema,
+    Iso,
+    Max,
+    Min,
+    Timestamp,
+} from '../../../src/constraints/date';
 
 registerJoi(Joi);
 
@@ -84,5 +91,84 @@ describe('Date constraints', () => {
                 '2017-02-20T22:55:',
             ],
         );
+    });
+
+    describe('Max', () => {
+        const now = Date.now();
+
+        class AgeVerification {
+            @Max(now)
+            dateOfBirth?: Date;
+        }
+
+        testConstraintWithPojos(
+            () => AgeVerification,
+            [
+                { dateOfBirth: new Date(now) },
+                { dateOfBirth: new Date(now - 1) },
+            ],
+            [
+                { dateOfBirth: new Date(now + 1) },
+            ],
+        );
+    });
+
+    describe('Min', () => {
+        const MS_IN_YEAR = 1000 * 60 * 60 * 24 * 365;
+        const MAX_AGE_IN_YEARS = 130;
+        const MIN_DATE_OF_BIRTH_IN_MS = Date.now() - (MS_IN_YEAR * MAX_AGE_IN_YEARS);
+
+        class AgeVerification {
+            @Min(MIN_DATE_OF_BIRTH_IN_MS)
+            dateOfBirth?: Date;
+        }
+
+        testConstraintWithPojos(
+            () => AgeVerification,
+            [
+                { dateOfBirth: new Date(MIN_DATE_OF_BIRTH_IN_MS) },
+                { dateOfBirth: new Date(MIN_DATE_OF_BIRTH_IN_MS + 1) },
+                { dateOfBirth: new Date() },
+            ],
+            [
+                { dateOfBirth: new Date(MIN_DATE_OF_BIRTH_IN_MS - 1) },
+            ],
+        );
+    });
+
+    describe('Timestamp', () => {
+        describe('using javascript time (the default)', () => {
+            it('should coerce a numeric date to a JS Date', () => {
+                class AgeVerification {
+                    @Timestamp('javascript')
+                    dateOfBirth?: Date;
+                }
+
+                const SECONDS_IN_DAY = 60 * 60 * 24;
+                const MILLISECONDS_IN_DAY = SECONDS_IN_DAY * 1000;
+
+                const ageVerification = { dateOfBirth: MILLISECONDS_IN_DAY };
+                const validator = new Validator();
+                const result = validator.validateAsClass(ageVerification, AgeVerification);
+                expect(result.value.dateOfBirth).toBeInstanceOf(Date);
+                expect(result.value.dateOfBirth).toEqual(new Date(Date.UTC(1970, 0, 2)));
+            });
+        });
+
+        describe('using javascript time (the default)', () => {
+            it('should coerce a (numeric) unix timestamp to a JS Date', () => {
+                class AgeVerification {
+                    @Timestamp('unix')
+                    dateOfBirth?: Date;
+                }
+
+                const SECONDS_IN_DAY = 60 * 60 * 24;
+                const ageVerification = { dateOfBirth: SECONDS_IN_DAY };
+                const validator = new Validator();
+                const result = validator.validateAsClass(ageVerification, AgeVerification);
+                expect(result.value.dateOfBirth).toBeInstanceOf(Date);
+                expect(result.value.dateOfBirth).toEqual(new Date(Date.UTC(1970, 0, 2)));
+            });
+        });
     });
 });
