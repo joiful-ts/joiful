@@ -6,7 +6,7 @@ import { ValidationError } from 'joi';
 export function Validate(validator: Validator): MethodDecorator {
     return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
         const original = descriptor.value;
-        descriptor.value = function (...args: any[]) {
+        descriptor.value = function (this: any, ...args: any[]) {
             const types = Reflect.getMetadata('design:paramtypes', target, propertyKey);
             const failures: ValidationError[] = [];
             const newArgs: any[] = [];
@@ -27,7 +27,6 @@ export function Validate(validator: Validator): MethodDecorator {
             if (failures.length > 0) {
                 throw new MultipleValidationError(failures);
             } else {
-                // tslint:disable-next-line:no-invalid-this
                 return original.apply(this, newArgs);
             }
         };
