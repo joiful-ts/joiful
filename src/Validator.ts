@@ -2,6 +2,12 @@ import { Joi, getJoiSchema, AnyClass } from './core';
 import { ObjectSchema, ValidationOptions } from 'joi';
 import { ValidationResult } from './ValidationResult';
 
+export class InvalidTarget extends Error {
+    constructor(targetType: 'object' | 'array') {
+        super(`Can't validate null ${targetType}s`);
+    }
+}
+
 export class Validator {
     constructor(
         private defaultOptions?: ValidationOptions,
@@ -21,10 +27,9 @@ export class Validator {
         }
 
         const classSchema: ObjectSchema = getJoiSchema(clz);
-        if (!options) {
-            options = this.defaultOptions;
-        }
-        if (options !== undefined) { // avoid strict null check issue in TypeScript
+        options = options || this.defaultOptions;
+
+        if (options !== undefined) {
             return Joi.validate(target, classSchema, options);
         } else {
             return Joi.validate(target, classSchema);
@@ -38,10 +43,9 @@ export class Validator {
 
         const classSchema: ObjectSchema = getJoiSchema(clz);
         const arraySchema = Joi.array().items(classSchema);
-        if (!options) {
-            options = this.defaultOptions;
-        }
-        if (options !== undefined) { // avoid strict null check issue in TypeScript
+        options = options || this.defaultOptions;
+
+        if (options !== undefined) {
             return Joi.validate(target, arraySchema, options);
         } else {
             return Joi.validate(target, arraySchema);
