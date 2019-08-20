@@ -1,14 +1,14 @@
 import * as Joi from 'joi';
-import { createArrayPropertyDecorator, ArrayPropertyDecoratorOptions } from './modifiers/array';
-import { JoifulOptions } from './modifiers/common';
-import { createDatePropertyDecorator } from './modifiers/date';
-import { createFunctionPropertyDecorator } from './modifiers/function';
-import { createLazyPropertyDecorator } from './modifiers/lazy';
-import { createNumberPropertyDecorator } from './modifiers/number';
-import { createStringPropertyDecorator } from './modifiers/string';
+import { createArrayPropertyDecorator, ArrayPropertyDecoratorOptions } from './decorators/array';
+import { JoifulOptions } from './decorators/common';
+import { createDatePropertyDecorator } from './decorators/date';
+import { createFunctionPropertyDecorator } from './decorators/function';
+import { createLazyPropertyDecorator } from './decorators/lazy';
+import { createNumberPropertyDecorator } from './decorators/number';
+import { createStringPropertyDecorator } from './decorators/string';
 import { Validator, createValidatePropertyDecorator } from './validation';
-import { createObjectPropertyDecorator, ObjectPropertyDecoratorOptions } from './modifiers/object';
-import { createBooleanPropertyDecorator } from './modifiers/boolean';
+import { createObjectPropertyDecorator, ObjectPropertyDecoratorOptions } from './decorators/object';
+import { createBooleanPropertyDecorator } from './decorators/boolean';
 
 export class Joiful {
     constructor(options?: JoifulOptions) {
