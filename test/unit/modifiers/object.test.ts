@@ -1,4 +1,4 @@
-import { testConstraintWithPojos } from '../testUtil';
+import { testConstraint } from '../testUtil';
 import { Joiful } from '../../../src/joiful';
 
 describe('object', () => {
@@ -7,7 +7,7 @@ describe('object', () => {
     beforeEach(() => jf = new Joiful());
 
     describe('when not specifying object class and inferring class from property', () => {
-        testConstraintWithPojos(
+        testConstraint(
             () => {
                 class Address {
                     @jf.string()
@@ -64,7 +64,7 @@ describe('object', () => {
     });
 
     describe('when specifying object class', () => {
-        testConstraintWithPojos(
+        testConstraint(
             () => {
                 class Address {
                     @jf.string()
@@ -130,7 +130,7 @@ describe('object', () => {
         }
 
         describe('when using callback', () => {
-            testConstraintWithPojos(
+            testConstraint(
                 () => {
                     class Contact {
                         @jf.string().required()
@@ -177,7 +177,7 @@ describe('object', () => {
         });
 
         describe('when not using callback', () => {
-            testConstraintWithPojos(
+            testConstraint(
                 () => {
                     class Contact {
                         @jf.string().required()

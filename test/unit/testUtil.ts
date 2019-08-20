@@ -59,7 +59,7 @@ export interface AssertValidationOptions<T> {
     validator?: Validator;
 }
 
-export function testConstraintWithPojos<T>(
+export function testConstraint<T>(
     classFactory: () => { new(...args: any[]): T },
     valid: T[],
     invalid?: T[],
@@ -97,7 +97,7 @@ export interface TestConversionOptions<T> {
     invalid?: T[];
 }
 
-export function testConversionWithPojos<T>(options: TestConversionOptions<T>) {
+export function testConversion<T>(options: TestConversionOptions<T>) {
     const { getClass, conversions, valid, invalid } = options;
 
     it('should convert property using validator', () => {
