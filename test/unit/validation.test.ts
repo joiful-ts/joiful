@@ -1,4 +1,4 @@
-import { ValidationResult, isValidationPass, isValidationFail } from '../../src/ValidationResult';
+import { ValidationResult, isValidationPass, isValidationFail } from '../../src/validation';
 
 interface ResetPasswordForm {
     emailAddress?: string;

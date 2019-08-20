@@ -1,7 +1,13 @@
 import './testUtil';
-import { Min } from '../../src/constraints/number';
-import { Validator } from '../../src/Validator';
+import { Joiful } from '../../src/joiful';
+import { Validator } from '../../src/validation';
 import { getMergedWorkingSchemas, getWorkingSchema } from '../../src/core';
+
+let jf: Joiful;
+
+beforeEach(() => {
+    jf = new Joiful();
+});
 
 describe('Inheritance', () => {
     const validator = new Validator({
@@ -11,11 +17,11 @@ describe('Inheritance', () => {
 
     it('Working schemas in inheritance chains are correctly merged', () => {
         class ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             foo!: number;
         }
         class ChildClass extends ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             bar!: number;
         }
 
@@ -34,11 +40,11 @@ describe('Inheritance', () => {
 
     it("Inheriting classes apply both the parent's validations, and the child's validations", () => {
         class ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             foo!: number;
         }
         class ChildClass extends ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             bar!: number;
         }
 
@@ -50,12 +56,12 @@ describe('Inheritance', () => {
 
     it('Child validations do not apply when validating the parent class', () => {
         class ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             foo!: number;
         }
 
         class ChildClass extends ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             bar!: number;
         }
 
@@ -68,11 +74,11 @@ describe('Inheritance', () => {
 
     it("Child validations can override the parent's validations", () => {
         class ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             foo!: number;
         }
         class ChildClass extends ParentClass {
-            @Min(0)
+            @jf.number().min(0)
             foo!: number;
         }
 
@@ -83,15 +89,15 @@ describe('Inheritance', () => {
 
     it('Grandchild classes apply validations from parent and grandparent classes', () => {
         class ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             foo!: number;
         }
         class ChildClass extends ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             bar!: number;
         }
         class GrandchildClass extends ChildClass {
-            @Min(10)
+            @jf.number().min(10)
             baz!: number;
         }
 
@@ -103,7 +109,7 @@ describe('Inheritance', () => {
 
     it('Grandchild classes without any validations apply validations from the grandparent class', () => {
         class ParentClass {
-            @Min(10)
+            @jf.number().min(10)
             foo!: number;
         }
         class ChildClass extends ParentClass {

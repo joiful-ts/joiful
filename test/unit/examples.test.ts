@@ -1,18 +1,19 @@
 import './metadataShim';
 import './testUtil';
-import { getJoiSchema, registerJoi } from '../../src/core';
+import { getJoiSchema } from '../../src/core';
 import * as Joi from 'joi';
-import { Nested } from '../../src/Nested';
-import { Length, StringSchema } from '../../src/constraints/string';
-import { Keys, ObjectSchema } from '../../src/constraints/object';
-import { Lazy, Required } from '../../src/constraints/any';
-
-registerJoi(Joi);
+import { Joiful } from '../../src/main';
 
 describe('Examples', () => {
+    let jf: Joiful;
+
+    beforeEach(() => {
+        jf = new Joiful();
+    });
+
     it('class with methods', () => {
         class ClassToValidate {
-            @Length(5)
+            @jf.string().exactLength(5)
             public myProperty!: string;
 
             public myMethod() {
@@ -30,7 +31,7 @@ describe('Examples', () => {
 
     it('class with unvalidated properties', () => {
         class ClassToValidate {
-            @Length(5)
+            @jf.string().exactLength(5)
             public myProperty!: string;
 
             public myOtherProperty!: string;
@@ -47,7 +48,7 @@ describe('Examples', () => {
         class ClassToValidate {
             static STATIC_PROPERTY = 'bloop';
 
-            @Length(5)
+            @jf.string().exactLength(5)
             public myProperty!: string;
 
         }
@@ -60,37 +61,12 @@ describe('Examples', () => {
 
     it('nested class', () => {
         class InnerClass {
-            @StringSchema()
+            @jf.string()
             public innerProperty!: string;
         }
 
         class ClassToValidate {
-            @Nested()
-            public myProperty!: InnerClass;
-        }
-
-        const instance = new ClassToValidate();
-        instance.myProperty = {
-            innerProperty: 'abcde',
-        };
-
-        expect(instance).toBeValid();
-
-        instance.myProperty.innerProperty = <any>1234;
-        expect(instance).not.toBeValid();
-    });
-
-    it('a property with a class instance type and an object schema', () => {
-        class InnerClass {
-            @StringSchema()
-            public innerProperty!: string;
-        }
-
-        class ClassToValidate {
-            @Keys({
-                innerProperty: Joi.string(),
-            })
-            @ObjectSchema()
+            @jf.nested()
             public myProperty!: InnerClass;
         }
 
@@ -107,10 +83,10 @@ describe('Examples', () => {
 
     it('lazy evaluation (for recursive data structures)', () => {
         class TreeNode {
-            @Required()
+            @jf.string().required()
             tagName!: string;
 
-            @Lazy(() => Joi.array().items(getJoiSchema(TreeNode)))
+            @jf.lazy(() => Joi.array().items(getJoiSchema(TreeNode)))
             children!: TreeNode[];
         }
 

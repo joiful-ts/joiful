@@ -1,9 +1,9 @@
 import './metadataShim';
-import { Validator } from '../../src/Validator';
+import { Validator } from '../../src/validation';
 import { ValidationOptions } from 'joi';
 
 interface ToBeValidOptions {
-    clz?: { new(...args: any[]): any };
+    Class?: { new(...args: any[]): any };
     validator?: Validator;
 }
 
@@ -30,20 +30,21 @@ const tryToStringify = (value: any) => {
 expect.extend({
     toBeValid(candidate: any, options: ToBeValidOptions) {
         const validator = (options && options.validator) || new Validator();
-        const clz = options && options.clz;
-        const result = clz ?
-            validator.validateAsClass(candidate, clz) :
+        const Class = options && options.Class;
+        const result = Class ?
+            validator.validateAsClass(candidate, Class) :
             validator.validate(candidate);
 
         const pass = result.error === null;
         // tslint:disable-next-line:no-invalid-this
         const isNot = this.isNot;
+        const errorMessage = result.error && (result.error.message || result.error);
 
         const candidateAsString = tryToStringify(candidate);
 
         const message =
             `expected candidate to ${isNot ? 'fail' : 'pass'} validation` +
-            (!candidateAsString ? '' : `:\n\n  ${candidateAsString.replace(/\n/gm, '\n  ')}`);
+            (!candidateAsString ? '' : `:\n\n  ${candidateAsString.replace(/\n/gm, '\n  ')}\n\n${errorMessage}`.trim());
 
         return {
             pass,
@@ -53,98 +54,85 @@ expect.extend({
 });
 
 export interface AssertValidationOptions<T> {
-    clz?: { new(...args: any[]): T };
+    Class?: { new(...args: any[]): T };
     object: T;
     validator?: Validator;
-}
-
-export function testConstraint<T>(
-    classFactory: () => any,
-    valid: T[],
-    invalid: T[],
-    validationOptions?: ValidationOptions,
-) {
-    const validator = new Validator(validationOptions);
-
-    it('should validate successful candidates', () => {
-        const clz = classFactory();
-        for (let val of valid) {
-            let instance = new clz(val);
-            expect(instance).toBeValid({ validator });
-        }
-    });
-
-    it('should invalidate unsuccessful candidates', () => {
-        const clz = classFactory();
-        for (let val of invalid) {
-            let instance = new clz(val);
-            expect(instance).not.toBeValid({ validator });
-        }
-    });
 }
 
 export function testConstraintWithPojos<T>(
     classFactory: () => { new(...args: any[]): T },
     valid: T[],
-    invalid: T[],
+    invalid?: T[],
     validationOptions?: ValidationOptions,
 ) {
     const validator = new Validator(validationOptions);
 
     it('should validate successful candidates', () => {
         // tslint:disable-next-line: no-inferred-empty-object-type
-        const clz = classFactory();
+        const Class = classFactory();
         for (let val of valid) {
-            expect(val).toBeValid({ validator, clz });
+            expect(val).toBeValid({ validator, Class: Class });
         }
     });
 
-    it('should invalidate unsuccessful candidates', () => {
-        // tslint:disable-next-line: no-inferred-empty-object-type
-        const clz = classFactory();
-        for (let val of invalid) {
-            expect(val).not.toBeValid({ validator, clz });
-        }
-    });
+    if (invalid && invalid.length) {
+        it('should invalidate unsuccessful candidates', () => {
+            // tslint:disable-next-line: no-inferred-empty-object-type
+            const Class = classFactory();
+            for (let val of invalid) {
+                expect(val).not.toBeValid({ validator, Class: Class });
+            }
+        });
+    }
 }
 
-export function testConversion<T>(
-    classFactory: () => any,
-    getter: (object: any) => any,
-    converted: T[][],
-    unconverted: T[],
-) {
-    const clz = classFactory();
+type Converted<T> = {
+    [K in keyof T]?: any;
+};
 
-    it('should modify matching property', () => {
-        const validator = new Validator({
-            convert: true,
+export interface TestConversionOptions<T> {
+    getClass: () => { new(...args: any[]): T };
+    conversions: { input: T, output: Converted<T> }[];
+    valid?: T[];
+    invalid?: T[];
+}
+
+export function testConversionWithPojos<T>(options: TestConversionOptions<T>) {
+    const { getClass, conversions, valid, invalid } = options;
+
+    it('should convert property using validator', () => {
+        // tslint:disable-next-line: no-inferred-empty-object-type
+        const Class = getClass();
+        const validator = new Validator({ convert: true });
+
+        conversions.forEach(({ input, output }) => {
+            const result = validator.validateAsClass(input, Class);
+            expect(result.error).toBeFalsy();
+            expect(result.value).toEqual(output);
         });
-
-        for (const entry of converted) {
-            const input = entry[0];
-            const expected = entry[1];
-            const object = new clz(input);
-            const result = validator.validate(object);
-            expect(result).toHaveProperty('error');
-            expect(result.error).toBeNull();
-            expect(result).toHaveProperty('value');
-            expect(getter(result.value)).toEqual(expected);
-        }
     });
 
-    it('should not modify unmatching property', () => {
-        const validator = new Validator({
-            convert: true,
-        });
+    if (valid && valid.length) {
+        it('should not fail for candidates even when convert option is disabled in validator', () => {
+            // tslint:disable-next-line: no-inferred-empty-object-type
+            const Class = getClass();
+            const validator = new Validator({ convert: false });
 
-        for (const input of unconverted) {
-            const object = new clz(input);
-            const result = validator.validate(object);
-            expect(result).toHaveProperty('error');
-            expect(result.error).toBeNull();
-            expect(result).toHaveProperty('value');
-            expect(getter(result.value)).toEqual(input);
-        }
-    });
+            valid.forEach((input) => {
+                expect(input).toBeValid({ Class: Class, validator });
+            });
+        });
+    }
+
+    if (invalid && invalid.length) {
+        it('should fail for candidates when convert option is disabled in validator', () => {
+            // tslint:disable-next-line: no-inferred-empty-object-type
+            const Class = getClass();
+            const validator = new Validator({ convert: false });
+
+            invalid.forEach((input) => {
+                expect(input).not.toBeValid({ Class: Class, validator });
+            });
+        });
+    }
 }

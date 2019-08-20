@@ -1,26 +1,28 @@
 import './metadataShim';
-import { Validator } from '../../src/Validator';
-import { registerJoi } from '../../src/core';
-import * as Joi from 'joi';
-import { Length } from '../../src/constraints/string';
+import { Validator } from '../../src/validation';
+import { Joiful } from '../../src/joiful';
 
-registerJoi(Joi);
+describe('messages', () => {
+    let jf: Joiful;
 
-describe('Messages', () => {
+    beforeEach(() => {
+        jf = new Joiful();
+    });
+
     it('default message', () => {
         let validator = new Validator();
 
-        class ClassToValidate {
-            @Length(5)
-            public myProperty!: string;
+        class VerificationCode {
+            @jf.string().exactLength(6)
+            public code!: string;
         }
 
-        let instance = new ClassToValidate();
-        instance.myProperty = 'abc';
+        let instance = new VerificationCode();
+        instance.code = 'abc';
 
         let result = validator.validate(instance);
         expect(result).toHaveProperty('error');
         expect(result.error).not.toBeNull();
-        expect(result.error!.details[0].message).toEqual('"myProperty" length must be 5 characters long');
+        expect(result.error!.details[0].message).toEqual('"code" length must be 6 characters long');
     });
 });

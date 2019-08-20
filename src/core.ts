@@ -123,21 +123,21 @@ export function getMergedWorkingSchemas(target: object): WorkingSchema {
     return workingSchema;
 }
 
-export function getJoiSchema(clz: AnyClass): ObjectSchema {
-    let joiSchema: ObjectSchema | undefined = Reflect.getOwnMetadata(SCHEMA_KEY, clz.prototype);
+export function getJoiSchema(Class: AnyClass): ObjectSchema {
+    let joiSchema: ObjectSchema | undefined = Reflect.getOwnMetadata(SCHEMA_KEY, Class.prototype);
     if (joiSchema) {
         return joiSchema;
     } else {
-        let workingSchema: WorkingSchema = getMergedWorkingSchemas(clz.prototype);
+        let workingSchema: WorkingSchema = getMergedWorkingSchemas(Class.prototype);
         if (!workingSchema) {
             throw new ConstraintDefinitionError(
-                `Class "${(clz && (<any>clz).name) ? (<any>clz).name : clz}" doesn't have a schema. ` +
+                `Class "${(Class && (<any>Class).name) ? (<any>Class).name : Class}" doesn't have a schema. ` +
                 'You may need to manually specify the base type schema, ' +
                 'set the property type to a class, or use "Any()".',
             );
         }
         joiSchema = Joi.object().keys(workingSchema);
-        Reflect.defineMetadata(SCHEMA_KEY, joiSchema, clz.prototype);
+        Reflect.defineMetadata(SCHEMA_KEY, joiSchema, Class.prototype);
         return joiSchema;
     }
 }
