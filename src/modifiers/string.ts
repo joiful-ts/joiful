@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import { TypedPropertyDecorator } from '../core';
-import { ModifierProviders } from './common';
+import { ModifierProviders, JoifulOptions, createPropertyDecorator } from './common';
 import { AnySchemaModifiers, getAnySchemaModifierProviders } from './any';
 import { EmailOptions } from 'joi';
 
@@ -177,3 +177,11 @@ export interface StringSchemaDecorator extends
     StringSchemaModifiers,
     TypedPropertyDecorator<string> {
 }
+
+export const createStringPropertyDecorator = (joifulOptions: JoifulOptions) => (
+    createPropertyDecorator<string, StringSchemaModifiers>()(
+        ({ joi }) => joi.string(),
+        getStringSchemaModifierProviders,
+        joifulOptions,
+    )
+);

@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import { TypedPropertyDecorator } from '../core';
-import { ModifierProviders } from './common';
+import { ModifierProviders, createPropertyDecorator, JoifulOptions } from './common';
 import { AnySchemaModifiers, getAnySchemaModifierProviders } from './any';
 
 export interface DateSchemaModifiers extends AnySchemaModifiers {
@@ -43,3 +43,11 @@ export interface DateSchemaDecorator extends
     DateSchemaModifiers,
     TypedPropertyDecorator<Date> {
 }
+
+export const createDatePropertyDecorator = (joifulOptions: JoifulOptions) => (
+    createPropertyDecorator<Date, DateSchemaModifiers>()(
+        ({ joi }) => joi.date(),
+        getDateSchemaModifierProviders,
+        joifulOptions,
+    )
+);

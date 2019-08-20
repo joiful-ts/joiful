@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
-import { TypedPropertyDecorator } from '../core';
-import { ModifierProviders } from './common';
+import { TypedPropertyDecorator, AnyClass, getJoiSchema } from '../core';
+import { ModifierProviders, JoifulOptions, createPropertyDecorator } from './common';
 import { AnySchemaModifiers, getAnySchemaModifierProviders } from './any';
 
 type AllowedPropertyTypes = any[];
@@ -116,3 +116,29 @@ export interface ArraySchemaDecorator extends
     ArraySchemaModifiers,
     TypedPropertyDecorator<AllowedPropertyTypes> {
 }
+
+export interface ArrayPropertyDecoratorOptions {
+    elementClass?: AnyClass;
+}
+
+export const createArrayPropertyDecorator = (
+    options: ArrayPropertyDecoratorOptions | undefined,
+    joifulOptions: JoifulOptions,
+) => {
+    return createPropertyDecorator<Array<any>, ArraySchemaModifiers>()(
+        ({ joi }) => {
+            let schema = joi.array();
+
+            const elementClass = (options && options.elementClass);
+
+            if (elementClass) {
+                const elementSchema = getJoiSchema(elementClass);
+                schema = schema.items(elementSchema);
+            }
+
+            return schema;
+        },
+        getArraySchemaModifierProviders,
+        joifulOptions,
+    );
+};

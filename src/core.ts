@@ -45,10 +45,6 @@ export interface AnyClass {
 export type StringKey<T> = Extract<keyof T, string>;
 export type StringOrSymbolKey<T> = Extract<keyof T, string | symbol>;
 
-export type Nullable<T> = {
-    [K in keyof T]: T[K] | null;
-};
-
 /**
  * If a given type extends the desired type, return the given type. Otherwise, return the desired type.
  * So, you can do stuff like this:

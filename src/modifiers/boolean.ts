@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import { TypedPropertyDecorator } from '../core';
-import { ModifierProviders } from './common';
+import { ModifierProviders, JoifulOptions, createPropertyDecorator } from './common';
 import { AnySchemaModifiers, getAnySchemaModifierProviders } from './any';
 
 export interface BooleanSchemaModifiers extends AnySchemaModifiers {
@@ -43,3 +43,11 @@ export interface BooleanSchemaDecorator extends
     BooleanSchemaModifiers,
     TypedPropertyDecorator<boolean> {
 }
+
+export const createBooleanPropertyDecorator = (joifulOptions: JoifulOptions) => (
+    createPropertyDecorator<Boolean, BooleanSchemaModifiers>()(
+        ({ joi }) => joi.boolean(),
+        getBooleanSchemaModifierProviders,
+        joifulOptions,
+    )
+);

@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import { TypedPropertyDecorator } from '../core';
-import { ModifierProviders } from './common';
+import { ModifierProviders, createPropertyDecorator, JoifulOptions } from './common';
 import { AnySchemaModifiers, getAnySchemaModifierProviders } from './any';
 
 export interface FunctionSchemaModifiers extends AnySchemaModifiers {
@@ -37,3 +37,11 @@ export interface FunctionSchemaDecorator extends
     FunctionSchemaModifiers,
     TypedPropertyDecorator<Function> {
 }
+
+export const createFunctionPropertyDecorator = (joifulOptions: JoifulOptions) => (
+    createPropertyDecorator<Function, FunctionSchemaModifiers>()(
+        ({ joi }) => joi.func(),
+        getFunctionSchemaModifierProviders,
+        joifulOptions,
+    )
+);

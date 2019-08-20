@@ -1,6 +1,8 @@
 import * as Joi from 'joi';
 import { TypedPropertyDecorator, MapAllowUnions, StringOrSymbolKey, updateSchema } from '../core';
 
+export const getJoi = (options: JoifulOptions | undefined) => (options && options.joi) || Joi;
+
 export class NotImplemented extends Error {
     constructor(feature: string) {
         super(`${feature} is not implemented`);
@@ -36,10 +38,11 @@ export type ModifierProviders<
     };
 
 export interface GetBaseSchemaFunction<TSchema, TAllowedTypes> {
-    <TClass extends MapAllowUnions<TClass, TKey, TAllowedTypes>, TKey extends StringOrSymbolKey<TClass>>(
+    <TClass extends MapAllowUnions<TClass, TKey, TAllowedTypes>, TKey extends StringOrSymbolKey<TClass>>(options: {
+        joi: typeof Joi,
         target: TClass,
         propertyKey: TKey,
-    ): TSchema;
+    }): TSchema;
 }
 
 function forEachModifierProvider<TSchema extends Joi.Schema>(
@@ -69,14 +72,17 @@ export type PropertyDecorator<TAllowedTypes, TSchemaModifiers> = (
 export const createPropertyDecorator = <TAllowedTypes, TSchemaModifiers>() => (
     <TSchema extends Joi.Schema>(
         getBaseSchema: GetBaseSchemaFunction<TSchema, TAllowedTypes>,
-        modifierProviders: ModifierProviders<TSchema, TSchemaModifiers>,
+        getModifierProviders: (getJoi: () => typeof Joi) => ModifierProviders<TSchema, TSchemaModifiers>,
         options: JoifulOptions,
     ) => {
         let schema: TSchema | undefined;
         let modifiersToApply: ((context: DecoratorContext<TSchema>) => TSchema)[] = [];
+        const modifierProviders = getModifierProviders(() => getJoi(options));
 
         const decoratorUntyped: TypedPropertyDecorator<TAllowedTypes> = (target, propertyKey) => {
-            schema = getBaseSchema(target, propertyKey);
+            const joi = getJoi(options);
+
+            schema = getBaseSchema({ joi, target, propertyKey });
 
             if (options.labelProvider) {
                 const label = options.labelProvider(propertyKey, target);

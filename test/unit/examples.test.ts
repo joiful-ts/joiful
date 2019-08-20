@@ -66,7 +66,7 @@ describe('Examples', () => {
         }
 
         class ClassToValidate {
-            @jf.nested()
+            @jf.object()
             public myProperty!: InnerClass;
         }
 

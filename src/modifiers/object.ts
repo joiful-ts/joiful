@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
-import { TypedPropertyDecorator } from '../core';
-import { ModifierProviders } from './common';
+import { TypedPropertyDecorator, getJoiSchema, AnyClass } from '../core';
+import { ModifierProviders, JoifulOptions, createPropertyDecorator } from './common';
 import { AnySchemaModifiers, getAnySchemaModifierProviders } from './any';
 
 export interface ObjectSchemaModifiers extends AnySchemaModifiers {
@@ -23,3 +23,28 @@ export interface ObjectSchemaDecorator extends
     ObjectSchemaModifiers,
     TypedPropertyDecorator<boolean> {
 }
+
+export interface ObjectPropertyDecoratorOptions {
+    objectClass?: AnyClass;
+}
+
+export const createObjectPropertyDecorator = (
+    options: ObjectPropertyDecoratorOptions | undefined,
+    joifulOptions: JoifulOptions,
+) => (
+        createPropertyDecorator<object, ObjectSchemaModifiers>()(
+            ({ joi, target, propertyKey }) => {
+                const elementType = (options && options.objectClass) ?
+                    options.objectClass :
+                    Reflect.getMetadata('design:type', target, propertyKey);
+
+                const schema = (elementType && elementType !== Object) ?
+                    getJoiSchema(elementType) :
+                    joi.object();
+
+                return schema;
+            },
+            getObjectSchemaModifierProviders,
+            joifulOptions,
+        )
+    );
