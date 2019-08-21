@@ -1,5 +1,3 @@
-import './metadataShim';
-import './testUtil';
 import { getJoiSchema } from '../../src/core';
 import * as Joi from 'joi';
 import { lazy, object, string } from '../../src';

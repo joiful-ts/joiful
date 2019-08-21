@@ -1,4 +1,3 @@
-import './metadataShim';
 import { Validator } from '../../src/validation';
 import { Joiful } from '../../src/joiful';
 

@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "typeRoots": [
+            "./@types",
+            "../node_modules/@types"
+        ]
+    },
+    "extends": "../tsconfig.json",
+    "include": [
+        "./helpers/setup.ts",
+        "./unit/**/*.test.ts"
+    ]
+}
