@@ -1,36 +1,32 @@
 import { testConstraint } from '../testUtil';
-import { Joiful } from '../../../src/joiful';
+import { joi, object, string } from '../../../src';
 
 describe('object', () => {
-    let jf: Joiful;
-
-    beforeEach(() => jf = new Joiful());
-
     describe('when not specifying object class and inferring class from property', () => {
         testConstraint(
             () => {
                 class Address {
-                    @jf.string()
+                    @string()
                     line1?: string;
 
-                    @jf.string()
+                    @string()
                     line2?: string;
 
-                    @jf.string().required()
+                    @string().required()
                     city!: string;
 
-                    @jf.string().required()
+                    @string().required()
                     state!: string;
 
-                    @jf.string().required()
+                    @string().required()
                     country!: string;
                 }
 
                 class Contact {
-                    @jf.string().required()
+                    @string().required()
                     name!: string;
 
-                    @jf.object().optional()
+                    @object().optional()
                     address?: Address;
                 }
 
@@ -67,27 +63,27 @@ describe('object', () => {
         testConstraint(
             () => {
                 class Address {
-                    @jf.string()
+                    @string()
                     line1?: string;
 
-                    @jf.string()
+                    @string()
                     line2?: string;
 
-                    @jf.string().required()
+                    @string().required()
                     city!: string;
 
-                    @jf.string().required()
+                    @string().required()
                     state!: string;
 
-                    @jf.string().required()
+                    @string().required()
                     country!: string;
                 }
 
                 class Contact {
-                    @jf.string().required()
+                    @string().required()
                     name!: string;
 
-                    @jf.object({ objectClass: Address }).optional()
+                    @object({ objectClass: Address }).optional()
                     address?: Address;
                 }
 
@@ -133,11 +129,10 @@ describe('object', () => {
             testConstraint(
                 () => {
                     class Contact {
-                        @jf.string().required()
+                        @string().required()
                         name!: string;
 
-                        @jf
-                            .object()
+                        @object()
                             .keys((joi) => ({
                                 city: joi.string().required(),
                                 state: joi.string().required(),
@@ -180,15 +175,14 @@ describe('object', () => {
             testConstraint(
                 () => {
                     class Contact {
-                        @jf.string().required()
+                        @string().required()
                         name!: string;
 
-                        @jf
-                            .object()
+                        @object()
                             .keys({
-                                city: jf.joi.string().required(),
-                                state: jf.joi.string().required(),
-                                country: jf.joi.string().required(),
+                                city: joi.string().required(),
+                                state: joi.string().required(),
+                                country: joi.string().required(),
                             })
                             .optional()
                         address?: Address;

@@ -2,18 +2,12 @@ import './metadataShim';
 import './testUtil';
 import { getJoiSchema } from '../../src/core';
 import * as Joi from 'joi';
-import { Joiful } from '../../src/main';
+import { lazy, object, string } from '../../src';
 
 describe('Examples', () => {
-    let jf: Joiful;
-
-    beforeEach(() => {
-        jf = new Joiful();
-    });
-
     it('class with methods', () => {
         class ClassToValidate {
-            @jf.string().exactLength(5)
+            @string().exactLength(5)
             public myProperty!: string;
 
             public myMethod() {
@@ -31,7 +25,7 @@ describe('Examples', () => {
 
     it('class with unvalidated properties', () => {
         class ClassToValidate {
-            @jf.string().exactLength(5)
+            @string().exactLength(5)
             public myProperty!: string;
 
             public myOtherProperty!: string;
@@ -48,7 +42,7 @@ describe('Examples', () => {
         class ClassToValidate {
             static STATIC_PROPERTY = 'bloop';
 
-            @jf.string().exactLength(5)
+            @string().exactLength(5)
             public myProperty!: string;
 
         }
@@ -61,12 +55,12 @@ describe('Examples', () => {
 
     it('nested class', () => {
         class InnerClass {
-            @jf.string()
+            @string()
             public innerProperty!: string;
         }
 
         class ClassToValidate {
-            @jf.object()
+            @object()
             public myProperty!: InnerClass;
         }
 
@@ -83,10 +77,10 @@ describe('Examples', () => {
 
     it('lazy evaluation (for recursive data structures)', () => {
         class TreeNode {
-            @jf.string().required()
+            @string().required()
             tagName!: string;
 
-            @jf.lazy(() => Joi.array().items(getJoiSchema(TreeNode)))
+            @lazy(() => Joi.array().items(getJoiSchema(TreeNode)))
             children!: TreeNode[];
         }
 

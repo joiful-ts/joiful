@@ -6,6 +6,6 @@
     },
     "files": [
         "src/build.ts",
-        "src/main.ts"
+        "src/index.ts"
     ]
 }

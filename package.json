@@ -23,8 +23,8 @@
         "npm": ">=3.10.10",
         "yarn": ">=1.13.0"
     },
-    "main": "dist/main.js",
-    "types": "dist/main.d.ts",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "build": "rimraf publish && tsc -p tsconfig.build.json && node publish/build.js",
         "check": "tsc -p tsconfig.all.json --noEmit && yarn run lint && yarn test",
