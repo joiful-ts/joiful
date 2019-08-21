@@ -1,7 +1,0 @@
-*
-!README.md
-!package.json
-!**/*.js
-!**/*.d.ts
-build.js
-build.d.ts
