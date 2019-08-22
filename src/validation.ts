@@ -1,4 +1,4 @@
-import { getJoiSchema, AnyClass, WORKING_SCHEMA_KEY } from './core';
+import { getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
 import * as Joi from 'joi';
 
 export class MultipleValidationError extends Error {
@@ -43,46 +43,59 @@ export function isValidationFail<T>(
     return !!validationResult.error;
 }
 
+export class CannotValidateNil extends Error {
+    constructor() {
+        super('Cannot validate null or undefined');
+    }
+}
+
 export class Validator {
     constructor(
         private defaultOptions?: Joi.ValidationOptions,
     ) {
     }
 
-    validate<T>(target: T, options?: Joi.ValidationOptions): ValidationResult<T> {
+    validate<T extends {} | null | undefined>(target: T, options?: Joi.ValidationOptions): ValidationResult<T> {
         if (target === null || target === undefined) {
-            throw new Error("Can't validate null objects");
+            throw new CannotValidateNil();
         }
         return this.validateAsClass(target, target.constructor as AnyClass, options);
     }
 
-    validateAsClass<T>(target: T, Class: AnyClass, options?: Joi.ValidationOptions): ValidationResult<T> {
+    validateAsClass<
+        TClass extends Constructor<any>,
+        TInstance = TClass extends Constructor<infer TInstance> ? TInstance : never
+    >(
+        target: Partial<TInstance> | null | undefined,
+        Class: TClass,
+        options: Joi.ValidationOptions | undefined = this.defaultOptions,
+    ): ValidationResult<TInstance> {
         if (target === null || target === undefined) {
-            throw new Error("Can't validate null objects");
+            throw new CannotValidateNil();
         }
 
         const classSchema: Joi.ObjectSchema = getJoiSchema(Class);
-        if (!options) {
-            options = this.defaultOptions;
-        }
-        if (options !== undefined) {
-            return Joi.validate(target, classSchema, options);
+
+        if (options) {
+            return Joi.validate(target, classSchema, options) as ValidationResult<TInstance>;
         } else {
-            return Joi.validate(target, classSchema);
+            return Joi.validate(target, classSchema) as ValidationResult<TInstance>;
         }
     }
 
-    validateArrayAsClass<T>(target: T[], Class: AnyClass, options?: Joi.ValidationOptions): ValidationResult<T[]> {
+    validateArrayAsClass<T>(
+        target: T[],
+        Class: Constructor<T>,
+        options: Joi.ValidationOptions | undefined = this.defaultOptions,
+    ): ValidationResult<T[]> {
         if (target === null || target === undefined) {
-            throw new Error("Can't validate null arrays");
+            throw new CannotValidateNil();
         }
 
         const classSchema: Joi.ObjectSchema = getJoiSchema(Class);
         const arraySchema = Joi.array().items(classSchema);
-        if (!options) {
-            options = this.defaultOptions;
-        }
-        if (options !== undefined) {
+
+        if (options) {
             return Joi.validate(target, arraySchema, options);
         } else {
             return Joi.validate(target, arraySchema);

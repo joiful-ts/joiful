@@ -38,9 +38,11 @@ export function ensureSchemaNotAlreadyDefined(schema: Schema | undefined | null,
     }
 }
 
-export interface AnyClass {
-    new(...args: any[]): any;
+export interface Constructor<T> {
+    new(...args: any[]): T;
 }
+
+export type AnyClass = Constructor<any>;
 
 export type StringKey<T> = Extract<keyof T, string>;
 export type StringOrSymbolKey<T> = Extract<keyof T, string | symbol>;

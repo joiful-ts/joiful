@@ -1,25 +1,58 @@
 import * as Joi from 'joi';
-import { ModifierProviders, NotImplemented } from './common';
+import { createPropertyDecorator, JoifulOptions, ModifierProviders, NotImplemented } from './common';
+import { TypedPropertyDecorator } from '../core';
 
 export interface AnySchemaModifiers {
     /**
-     * Whitelists a value
+     * Whitelists values.
+     * Note that this list of allowed values is in addition to any other permitted values.
+     * To create an exclusive list of values, use the `Valid` decorator.
+     * @param values Values to be whitelisted.
      */
     allow(value: any, ...values: any[]): this;
+
+    /**
+     * Adds the provided values into the allowed whitelist for property
+     * and marks them as the only valid values allowed.
+     * @param values The only valid values this property can accept.
+     */
     valid(value: any, ...values: any[]): this;
     valid(values: any[]): this;
+
+    /**
+     * Adds the provided values into the allowed whitelist for property
+     * and marks them as the only valid values allowed.
+     * @param values The only valid values this property can accept.
+     */
     only(value: any, ...values: any[]): this;
     only(values: any[]): this;
+
+    /**
+     * Adds the provided values into the allowed whitelist for property
+     * and marks them as the only valid values allowed.
+     * @param values The only valid values this property can accept.
+     */
     equal(value: any, ...values: any[]): this;
     equal(values: any[]): this;
 
     /**
-     * Blacklists a value
+     * Blacklists values for this property.
+     * @param values Values to be blacklisted.
      */
     invalid(value: any, ...values: any[]): this;
     invalid(values: any[]): this;
+
+    /**
+     * Blacklists values for this property.
+     * @param values Values to be blacklisted.
+     */
     disallow(value: any, ...values: any[]): this;
     disallow(values: any[]): this;
+
+    /**
+     * Blacklists values for this property.
+     * @param values Values to be blacklisted.
+     */
     not(value: any, ...values: any[]): this;
     not(values: any[]): this;
 
@@ -57,6 +90,7 @@ export interface AnySchemaModifiers {
     /**
      * Annotates the key
      */
+    tags(tag: string, ...tags: string[]): this;
     tags(tags: string | string[]): this;
 
     /**
@@ -156,7 +190,8 @@ export function getAnySchemaModifierProviders<TSchema extends Joi.Schema>(getJoi
 
         notes: (notes: string | string[]) => ({ schema }) => schema.notes(notes as any) as TSchema,
 
-        tags: (tags: string | string[]) => ({ schema }) => schema.tags(tags as any) as TSchema,
+        tags: (tag: string | string[], ...tags: string[]) => ({ schema }) =>
+            schema.tags(tag instanceof Array ? [...tag, ...tags] : [tag, ...tags]) as TSchema,
 
         meta: (meta: Object) => ({ schema }) => schema.meta(meta) as TSchema,
 
@@ -187,3 +222,16 @@ export function getAnySchemaModifierProviders<TSchema extends Joi.Schema>(getJoi
     };
     return result;
 }
+
+export interface AnySchemaDecorator extends
+    AnySchemaModifiers,
+    TypedPropertyDecorator<any> {
+}
+
+export const createAnyPropertyDecorator = (joifulOptions: JoifulOptions) => (
+    createPropertyDecorator<any, AnySchemaModifiers>()(
+        ({ joi }) => joi.any(),
+        getAnySchemaModifierProviders,
+        joifulOptions,
+    )
+);
