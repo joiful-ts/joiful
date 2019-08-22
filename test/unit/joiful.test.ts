@@ -71,16 +71,18 @@ describe('joiful', () => {
         );
 
         describe('and specifying a label provider', () => {
-            jf = new Joiful({
-                labelProvider: (propertyKey) => Case.sentence(`${propertyKey}`),
+            beforeEach(() => {
+                jf = new Joiful({
+                    labelProvider: (propertyKey) => Case.sentence(`${propertyKey}`),
+                });
             });
 
-            class MarketingForm {
-                @jf.boolean().required()
-                signUpForSpam!: boolean;
-            }
-
             it('should use the label provider to generate property labels', () => {
+                class MarketingForm {
+                    @jf.boolean().required()
+                    signUpForSpam!: boolean;
+                }
+
                 const validator = new Validator();
                 const result = validator.validateAsClass({}, MarketingForm);
 
@@ -89,12 +91,33 @@ describe('joiful', () => {
                 expect(result.error!.message).not.toContain('signUpForSpam');
             });
 
-            class AnotherMarketingForm {
-                @boolean().required()
-                signUpForSpam!: boolean;
-            }
+            it('should allow explicit label calls to override automatically generated labels', () => {
+                class MarketingForm {
+                    @jf.boolean().required()
+                    signUpForSpam!: boolean;
+
+                    @jf.boolean().required().label('Free candy')
+                    allowSellingOfMyData!: boolean;
+                }
+
+                const validator = new Validator({ abortEarly: false });
+                const result = validator.validateAsClass({}, MarketingForm);
+
+                expect(result.error).toBeTruthy();
+
+                expect(result.error!.message).toContain('Sign up for spam');
+                expect(result.error!.message).not.toContain('signUpForSpam');
+
+                expect(result.error!.message).toContain('Free candy');
+                expect(result.error!.message).not.toContain('allowSellingOfMyData');
+            });
 
             it('should not effect labels of classes decorated using Joiful default instance decorators', () => {
+                class AnotherMarketingForm {
+                    @boolean().required()
+                    signUpForSpam!: boolean;
+                }
+
                 const validator = new Validator();
                 const result = validator.validateAsClass({}, AnotherMarketingForm);
 
