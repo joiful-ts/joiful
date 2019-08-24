@@ -1,5 +1,29 @@
+import * as Joi from 'joi';
 import * as jf from '../../src';
-import { getJoiSchema } from '../../src/core';
+import {
+    getJoiSchema,
+    getJoiVersion,
+    JOI_VERSION,
+    checkJoiIsCompatible,
+    IncompatibleJoiVersion,
+    parseVersionString,
+} from '../../src/core';
+import { getJoifulDependencyVersion } from './testUtil';
+
+describe('checkJoiIsCompatible', () => {
+    it('should not error if version of joi passed in matches expected major version', () => {
+        checkJoiIsCompatible(Joi);
+    });
+
+    it('should error if version of joi passed in is different to major version of joi used by joiful', () => {
+        expect(() => checkJoiIsCompatible({ version: '-1.0.0' } as any as typeof Joi))
+            .toThrowError(new IncompatibleJoiVersion({ major: '-1', minor: '0', patch: '0' }));
+    });
+
+    it('should not error if no joi instance is passed in', () => {
+        checkJoiIsCompatible(undefined);
+    });
+});
 
 describe('getJoiSchema', () => {
     it('should return the Joi schema to use for a decorated class', () => {
@@ -42,5 +66,65 @@ describe('getJoiSchema', () => {
         });
 
         expect(JSON.stringify(getJoiSchema(Cat, jf.joi))).toEqual(JSON.stringify(expectedSchema));
+    });
+});
+
+describe('getJoiVersion', () => {
+    const mockJoi = (version: string | undefined) => ({ version }) as any as typeof Joi;
+
+    it('should return the version of joi', () => {
+        expect(getJoiVersion(mockJoi('1.2.3'))).toEqual({
+            major: '1',
+            minor: '2',
+            patch: '3',
+        });
+
+        expect(getJoiVersion(mockJoi('1.2'))).toEqual({
+            major: '1',
+            minor: '2',
+            patch: '',
+        });
+    });
+
+    it('should not error if joi not defined', () => {
+        expect(getJoiVersion(mockJoi(undefined))).toEqual({
+            major: '?',
+            minor: '?',
+            patch: '?',
+        });
+
+        expect(getJoiVersion(undefined)).toEqual({
+            major: '?',
+            minor: '?',
+            patch: '?',
+        });
+    });
+});
+
+describe('JOI_VERSION', () => {
+    it('should match the version of joi referenced in Joifuls package dependencies', async () => {
+        const expectedJoiVersion = await getJoifulDependencyVersion('joi');
+        expect(expectedJoiVersion.major).toBeTruthy();
+
+        const actualJoiVersion = JOI_VERSION;
+        expect(actualJoiVersion).toEqual(expectedJoiVersion);
+    });
+});
+
+describe('parseVersionString', () => {
+    it('should parse a version string and return it as object', () => {
+        expect(parseVersionString('1.2.3')).toEqual({
+            major: '1',
+            minor: '2',
+            patch: '3',
+        });
+    });
+
+    it('should handle blank versions', () => {
+        expect(parseVersionString('')).toEqual({
+            major: '',
+            minor: '',
+            patch: '',
+        });
     });
 });

@@ -1,12 +1,10 @@
 import * as Joi from 'joi';
-import { Joiful } from './joiful';
+
+export const getJoi = (options: { joi?: typeof Joi } | undefined) => (options && options.joi) || Joi;
 
 export const WORKING_SCHEMA_KEY = 'tsdv:working-schema';
 export const SCHEMA_KEY = 'tsdv:schema';
-
-export const defaultInstance = new Joiful();
-
-export const getJoi = (options: { joi?: typeof Joi } | undefined) => (options && options.joi) || defaultInstance.joi;
+export const JOI_VERSION = getJoiVersion(Joi);
 
 export type WorkingSchema = { [index: string]: Joi.Schema };
 
@@ -108,4 +106,39 @@ export function updateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(
 ) {
     const classSchema = getWorkingSchema(target);
     classSchema[String(propertyKey)] = schema;
+}
+
+export interface Version {
+    major: string;
+    minor: string;
+    patch: string;
+}
+
+export function parseVersionString(version: string) {
+    const [major, minor, patch] = (version).split('.');
+    return {
+        major: major || '',
+        minor: minor || '',
+        patch: patch || '',
+    };
+}
+
+export function getJoiVersion(joi: typeof Joi | undefined): Version {
+    const versionString = ((joi || {}) as any)['version'] || '?.?.?';
+    return parseVersionString(versionString);
+}
+
+export class IncompatibleJoiVersion extends Error {
+    constructor(actualVersion: Version) {
+        super(`Cannot use Joi v${actualVersion} with Joiful. Joiful requires Joi v${JOI_VERSION.major}.x.x`);
+    }
+}
+
+export function checkJoiIsCompatible(joi: typeof Joi | undefined) {
+    if (joi) {
+        const actualVersion = getJoiVersion(joi);
+        if (JOI_VERSION.major !== actualVersion.major) {
+            throw new IncompatibleJoiVersion(actualVersion);
+        }
+    }
 }

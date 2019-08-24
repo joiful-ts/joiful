@@ -1,13 +1,15 @@
 import * as Joi from 'joi';
+import { rootPath } from 'get-root-path';
+import * as path from 'path';
+import * as fs from 'fs';
 import { Validator } from '../../src/validation';
-import { ValidationOptions } from 'joi';
-import { AnyClass, getJoiSchema, getJoi } from '../../src/core';
+import { AnyClass, getJoiSchema, getJoi, parseVersionString } from '../../src/core';
 
 export function testConstraint<T>(
     classFactory: () => { new(...args: any[]): T },
     valid: T[],
     invalid?: T[],
-    validationOptions?: ValidationOptions,
+    validationOptions?: Joi.ValidationOptions,
 ) {
     const validator = new Validator(validationOptions);
 
@@ -88,4 +90,29 @@ export function assertClassSchemaEquals(
     const schema = getJoiSchema(options.Class, joi);
     const expectedSchema = joi.object().keys(options.expectedSchemaMap);
     expect(schema).toEqual(expectedSchema);
+}
+
+interface PackageDependencies {
+    [name: string]: string;
+}
+
+interface PackageJson {
+    peerDependencies?: PackageDependencies;
+    dependencies?: PackageDependencies;
+    devDependencies?: PackageDependencies;
+}
+
+export async function getJoifulDependencyVersion(dependencyName: string) {
+    const joifulPackageFileName = path.join(rootPath, 'package.json');
+    const joifulPackageJson: PackageJson = await new Promise(
+        (resolve, reject) => fs.readFile(
+            joifulPackageFileName, 'utf-8', (err, content) => err ? reject(err) : resolve(JSON.parse(content)),
+        ),
+    );
+    const allDependencies: PackageDependencies = {
+        ...joifulPackageJson.peerDependencies,
+        ...joifulPackageJson.dependencies,
+        ...joifulPackageJson.devDependencies,
+    };
+    return parseVersionString(allDependencies[dependencyName]);
 }

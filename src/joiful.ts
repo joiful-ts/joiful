@@ -10,16 +10,20 @@ import { createNumberPropertyDecorator } from './decorators/number';
 import { createObjectPropertyDecorator, ObjectPropertyDecoratorOptions } from './decorators/object';
 import { createStringPropertyDecorator } from './decorators/string';
 import { Validator, createValidatePropertyDecorator } from './validation';
+import { checkJoiIsCompatible, getJoi } from './core';
 
 export class Joiful {
     constructor(options?: JoifulOptions) {
+        if (options && options.joi) {
+            checkJoiIsCompatible(options.joi);
+        }
         this.options = options || {};
     }
 
     private readonly options: JoifulOptions;
 
     get joi() {
-        return (this.options && this.options.joi) || Joi;
+        return getJoi(this.options);
     }
 
     /**

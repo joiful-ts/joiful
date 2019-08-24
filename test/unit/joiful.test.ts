@@ -1,7 +1,9 @@
+import * as Joi from 'joi';
 import { testConstraint } from './testUtil';
 import { Joiful, string, boolean } from '../../src';
 import { Validator, MultipleValidationError } from '../../src/validation';
 import * as Case from 'case';
+import { IncompatibleJoiVersion } from '../../src/core';
 
 describe('joiful', () => {
     describe('when using the default instance of Joiful', () => {
@@ -70,6 +72,17 @@ describe('joiful', () => {
             ],
         );
 
+        it('should error if joi version does not match the major version of joi expected by joiful', () => {
+            const createJoiful = () => {
+                const jf = new Joiful({
+                    joi: { version: '-1.0.0' } as any as typeof Joi,
+                });
+                return jf;
+            };
+
+            expect(createJoiful).toThrowError(new IncompatibleJoiVersion({ major: '-1', minor: '0', patch: '0' }));
+        });
+
         describe('and specifying a label provider', () => {
             beforeEach(() => {
                 jf = new Joiful({
@@ -125,64 +138,84 @@ describe('joiful', () => {
                 expect(result.error!.message).not.toContain('Sign up for spam');
                 expect(result.error!.message).toContain('signUpForSpam');
             });
+
+            it('should not generate labels if output of label provider is not a string', () => {
+                jf = new Joiful({
+                    labelProvider: () => undefined,
+                });
+
+                const getForm = () => {
+                    class MarketingForm {
+                        @jf.boolean().required()
+                        signUpForSpam!: boolean;
+                    }
+                    return MarketingForm;
+                };
+
+                const validator = new Validator();
+                const result = validator.validateAsClass({}, getForm());
+
+                expect(result.error).toBeTruthy();
+                expect(result.error!.message).toContain('signUpForSpam');
+            });
         });
     });
+});
 
-    describe('validate', () => {
-        let jf: Joiful;
+describe('validate', () => {
+    let jf: Joiful;
 
-        beforeEach(() => jf = new Joiful());
+    beforeEach(() => jf = new Joiful());
 
-        it('automatically validates arguments passed into a method', () => {
-            class Passcode {
-                @jf.string().alphanum().exactLength(6)
-                code!: string;
+    it('automatically validates arguments passed into a method', () => {
+        class Passcode {
+            @jf.string().alphanum().exactLength(6)
+            code!: string;
+        }
+
+        class PasscodeChecker {
+            @jf.validate()
+            check(passcode: Passcode, basicArg: number) {
+                expect(passcode).not.toBeNull();
+                expect(basicArg).not.toBeNull();
             }
+        }
 
-            class PasscodeChecker {
-                @jf.validate()
-                check(passcode: Passcode, basicArg: number) {
-                    expect(passcode).not.toBeNull();
-                    expect(basicArg).not.toBeNull();
-                }
+        const passcode = new Passcode();
+        passcode.code = 'abc';
+
+        const checker = new PasscodeChecker();
+        expect(() => checker.check(passcode, 5)).toThrow(MultipleValidationError);
+
+        passcode.code = 'abcdef';
+        checker.check(passcode, 5);
+    });
+
+    it('can use a custom validator', () => {
+        class Passcode {
+            @jf.string().alphanum().exactLength(6)
+            code!: string;
+        }
+
+        const validator = new Validator();
+        jest.spyOn(validator, 'validateAsClass').mockImplementation((value: any) => ({
+            error: null,
+            value,
+        }));
+
+        class PasscodeChecker {
+            @jf.validate({ validator })
+            check(passcode: Passcode, basicArg: number) {
+                expect(passcode).not.toBeNull();
+                expect(basicArg).not.toBeNull();
             }
+        }
 
-            const passcode = new Passcode();
-            passcode.code = 'abc';
+        const passcode = { code: 'abcdef' };
 
-            const checker = new PasscodeChecker();
-            expect(() => checker.check(passcode, 5)).toThrow(MultipleValidationError);
+        const checker = new PasscodeChecker();
+        checker.check(passcode, 5);
 
-            passcode.code = 'abcdef';
-            checker.check(passcode, 5);
-        });
-
-        it('can use a custom validator', () => {
-            class Passcode {
-                @jf.string().alphanum().exactLength(6)
-                code!: string;
-            }
-
-            const validator = new Validator();
-            jest.spyOn(validator, 'validateAsClass').mockImplementation((value: any) => ({
-                error: null,
-                value,
-            }));
-
-            class PasscodeChecker {
-                @jf.validate({ validator })
-                check(passcode: Passcode, basicArg: number) {
-                    expect(passcode).not.toBeNull();
-                    expect(basicArg).not.toBeNull();
-                }
-            }
-
-            const passcode = { code: 'abcdef' };
-
-            const checker = new PasscodeChecker();
-            checker.check(passcode, 5);
-
-            expect(validator.validateAsClass).toHaveBeenCalledWith(passcode, Passcode);
-        });
+        expect(validator.validateAsClass).toHaveBeenCalledWith(passcode, Passcode);
     });
 });
