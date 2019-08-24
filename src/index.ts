@@ -1,11 +1,12 @@
 import { Joiful } from './joiful';
 
-export { Validator, MultipleValidationError } from './validation';
+export { Validator, MultipleValidationError, ValidationResult, isValidationPass, isValidationFail } from './validation';
 export { Joiful } from './joiful';
 
 const defaultInstance = new Joiful();
 
 const {
+    any,
     array,
     boolean,
     date,
@@ -19,6 +20,7 @@ const {
 } = defaultInstance;
 
 export {
+    any,
     array,
     boolean,
     date,

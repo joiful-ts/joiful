@@ -1,8 +1,38 @@
+import * as Joi from 'joi';
 import { testConstraint } from '../testUtil';
 import * as jf from '../../../src';
 import { getJoiSchema } from '../../../src/core';
+import { Validator, isValidationPass } from '../../../src/validation';
+import { NotImplemented } from '../../../src/decorators/common';
 
 describe('any', () => {
+    testConstraint(
+        () => {
+            class KeyValuePair {
+                @jf.string().required()
+                key!: string;
+
+                @jf.any().required()
+                value!: any;
+            }
+            return KeyValuePair;
+        },
+        [
+            {
+                key: 'NODE_ENV',
+                value: 'production',
+            },
+            {
+                key: 'INSTANCE_COUNT',
+                value: 5,
+            },
+            {
+                key: 'DEBUG_ENABLED',
+                value: false,
+            },
+        ],
+    );
+
     describe('allow', () => {
         testConstraint(
             () => {
@@ -82,6 +112,76 @@ describe('any', () => {
         });
     });
 
+    describe('empty', () => {
+        testConstraint(
+            () => {
+                class Person {
+                    @jf.string().required()
+                    name!: string;
+                }
+                return Person;
+            },
+            [
+                { name: 'Joe' },
+                { name: ' ' },
+            ],
+            [
+                {},
+            ],
+        );
+
+        testConstraint(
+            () => {
+                class Person {
+                    @jf.string().empty(' ').required()
+                    name!: string;
+                }
+                return Person;
+            },
+            [
+                { name: 'Joe' },
+            ],
+            [
+                {},
+                { name: ' ' },
+            ],
+        );
+    });
+
+    describe('error', () => {
+        it('should provide a custom error when validation fails', () => {
+            class DomainNameRegistration {
+                @jf.string().error(new Error('Computer says no'))
+                domainName!: string;
+            }
+
+            const validator = new Validator();
+            const valid = validator.validateAsClass({ domainName: 'hotmums.gov' }, DomainNameRegistration);
+
+            expect(isValidationPass(valid)).toBe(true);
+
+            const invalid = validator.validateAsClass({ domainName: 1 }, DomainNameRegistration);
+            expect(invalid.error).toEqual(new Error('Computer says no'));
+        });
+
+        it('should throw NotImplementedError if joi does not support custom errors', () => {
+            const disableCustomErrorsForSchema = ({ schema }: { schema: Joi.Schema }) => {
+                const { error, ...newSchema } = schema;
+                return newSchema;
+            };
+
+            function getClass() {
+                class DomainNameRegistration {
+                    @jf.string().custom(disableCustomErrorsForSchema).error(new Error('Computer says no'))
+                    domainName!: string;
+                }
+                return DomainNameRegistration;
+            }
+
+            expect(getClass).toThrowError(new NotImplemented('Joi.error'));
+        });
+    });
+
     describe('example', () => {
         it('should annotate property with example value', () => {
             const exampleCatName = 'Sir. Meowsalot The 2nd';
@@ -128,37 +228,45 @@ describe('any', () => {
         );
     });
 
-    describe('invalid', () => {
-        testConstraint(
-            () => {
-                class SignUpForm {
-                    @jf.string()
-                    username?: string;
+    function describeInvalidTest(alias: 'invalid' | 'disallow' | 'not') {
+        describe(alias, () => {
+            type Invalid = ReturnType<typeof jf.string>['invalid'];
 
-                    @jf.string().invalid('password', 'Password')
-                    password?: string;
-                }
+            testConstraint(
+                () => {
+                    class SignUpForm {
+                        @jf.string()
+                        username?: string;
 
-                return SignUpForm;
-            },
-            [
-                {
-                    username: 'hugh@hackman.com',
-                    password: '$w0rdF1$h',
+                        @(jf.string()[alias] as Invalid)('password', 'Password')
+                        password?: string;
+                    }
+
+                    return SignUpForm;
                 },
-            ],
-            [
-                {
-                    username: 'bob@example.com',
-                    password: 'password',
-                },
-                {
-                    username: 'bob@example.com',
-                    password: 'Password',
-                },
-            ],
-        );
-    });
+                [
+                    {
+                        username: 'hugh@hackman.com',
+                        password: '$w0rdF1$h',
+                    },
+                ],
+                [
+                    {
+                        username: 'bob@example.com',
+                        password: 'password',
+                    },
+                    {
+                        username: 'bob@example.com',
+                        password: 'Password',
+                    },
+                ],
+            );
+        });
+    }
+
+    describeInvalidTest('invalid');
+    describeInvalidTest('disallow');
+    describeInvalidTest('not');
 
     describe('label', () => {
         class LoginForm {
@@ -364,46 +472,54 @@ describe('any', () => {
         });
     });
 
-    describe('valid', () => {
-        const sauces = ['tomato', 'barbeque', 'bechamel'] as const;
-        type Sauce = typeof sauces[number];
+    function describeValidTest(alias: 'valid' | 'only' | 'equal') {
+        describe(alias, () => {
+            const sauces = ['tomato', 'barbeque', 'bechamel'] as const;
+            type Sauce = typeof sauces[number];
 
-        testConstraint(
-            () => {
-                class PizzaSauceSelection {
-                    @jf.string().valid(sauces)
-                    sauce!: Sauce;
-                }
-                return PizzaSauceSelection;
-            },
-            [
-                {},
-                { sauce: 'tomato' },
-                { sauce: 'barbeque' },
-                { sauce: 'bechamel' },
-            ],
-            [
-                { sauce: 'mayonaise' },
-            ],
-        );
+            type Valid = ReturnType<typeof jf.string>['valid'];
 
-        testConstraint(
-            () => {
-                class PizzaSauceSelection {
-                    @jf.string().valid(...sauces)
-                    sauce!: Sauce;
-                }
-                return PizzaSauceSelection;
-            },
-            [
-                {},
-                { sauce: 'tomato' },
-                { sauce: 'barbeque' },
-                { sauce: 'bechamel' },
-            ],
-            [
-                { sauce: 'mayonaise' },
-            ],
-        );
-    });
+            testConstraint(
+                () => {
+                    class PizzaSauceSelection {
+                        @(jf.string()[alias] as Valid)(sauces)
+                        sauce!: Sauce;
+                    }
+                    return PizzaSauceSelection;
+                },
+                [
+                    {},
+                    { sauce: 'tomato' },
+                    { sauce: 'barbeque' },
+                    { sauce: 'bechamel' },
+                ],
+                [
+                    { sauce: 'mayonaise' },
+                ],
+            );
+
+            testConstraint(
+                () => {
+                    class PizzaSauceSelection {
+                        @(jf.string()[alias] as Valid)(...sauces)
+                        sauce!: Sauce;
+                    }
+                    return PizzaSauceSelection;
+                },
+                [
+                    {},
+                    { sauce: 'tomato' },
+                    { sauce: 'barbeque' },
+                    { sauce: 'bechamel' },
+                ],
+                [
+                    { sauce: 'mayonaise' },
+                ],
+            );
+        });
+    }
+
+    describeValidTest('valid');
+    describeValidTest('only');
+    describeValidTest('equal');
 });

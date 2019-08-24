@@ -165,7 +165,7 @@ export interface AnySchemaModifiers {
     /**
      * Allows specify schemas directly via Joi's schema api.
      */
-    custom: (schemaBuilder: (options: { schema: Joi.Schema, joi: typeof Joi }) => Joi.Schema) => Joi.Schema;
+    custom: (schemaBuilder: (options: { schema: Joi.Schema, joi: typeof Joi }) => Joi.Schema) => this;
 }
 
 export function getAnySchemaModifierProviders<TSchema extends Joi.Schema>(getJoi: () => typeof Joi) {
@@ -209,7 +209,7 @@ export function getAnySchemaModifierProviders<TSchema extends Joi.Schema>(getJoi
 
         raw: (isRaw = true) => ({ schema }) => schema.raw(isRaw) as TSchema,
 
-        empty: ({ schema: existingSchema }) => (schema?: any) => existingSchema.empty(schema) as TSchema,
+        empty: (schema?: any) => ({ schema: existingSchema }) => existingSchema.empty(schema) as TSchema,
 
         error: (err: Error | Joi.ValidationErrorFunction) => ({ schema }) => {
             if (!schema.error) {

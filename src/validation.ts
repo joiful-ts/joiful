@@ -43,7 +43,7 @@ export function isValidationFail<T>(
     return !!validationResult.error;
 }
 
-export class CannotValidateNil extends Error {
+export class InvalidValidationTarget extends Error {
     constructor() {
         super('Cannot validate null or undefined');
     }
@@ -55,13 +55,24 @@ export class Validator {
     ) {
     }
 
+    /**
+     * Validates an instance of a decorated class.
+     * @param target Instance of decorated class to validate.
+     * @param options Optional validation options to use.
+     */
     validate<T extends {} | null | undefined>(target: T, options?: Joi.ValidationOptions): ValidationResult<T> {
         if (target === null || target === undefined) {
-            throw new CannotValidateNil();
+            throw new InvalidValidationTarget();
         }
         return this.validateAsClass(target, target.constructor as AnyClass, options);
     }
 
+    /**
+     * Validates a plain old javascript object against a decorated class.
+     * @param target Object to validate.
+     * @param clz Decorated class to validate against.
+     * @param options Optional validation options to use.
+     */
     validateAsClass<
         TClass extends Constructor<any>,
         TInstance = TClass extends Constructor<infer TInstance> ? TInstance : never
@@ -71,7 +82,7 @@ export class Validator {
         options: Joi.ValidationOptions | undefined = this.defaultOptions,
     ): ValidationResult<TInstance> {
         if (target === null || target === undefined) {
-            throw new CannotValidateNil();
+            throw new InvalidValidationTarget();
         }
 
         const classSchema: Joi.ObjectSchema = getJoiSchema(Class);
@@ -83,13 +94,19 @@ export class Validator {
         }
     }
 
+    /**
+     * Validates an array of plain old javascript objects against a decorated class.
+     * @param target Objects to validate.
+     * @param clz Decorated class to validate against.
+     * @param options Optional validation options to use.
+     */
     validateArrayAsClass<T>(
         target: T[],
         Class: Constructor<T>,
         options: Joi.ValidationOptions | undefined = this.defaultOptions,
     ): ValidationResult<T[]> {
         if (target === null || target === undefined) {
-            throw new CannotValidateNil();
+            throw new InvalidValidationTarget();
         }
 
         const classSchema: Joi.ObjectSchema = getJoiSchema(Class);

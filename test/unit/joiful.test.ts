@@ -133,30 +133,56 @@ describe('joiful', () => {
 
         beforeEach(() => jf = new Joiful());
 
-        it('decorates a target method', () => {
-            const validator = new Validator();
-
-            class Verification {
+        it('automatically validates arguments passed into a method', () => {
+            class Passcode {
                 @jf.string().alphanum().exactLength(6)
                 code!: string;
             }
 
-            class VerificationChecker {
-                @jf.validate({ validator })
-                check(verification: Verification, basicArg: number) {
-                    expect(verification).not.toBeNull();
+            class PasscodeChecker {
+                @jf.validate()
+                check(passcode: Passcode, basicArg: number) {
+                    expect(passcode).not.toBeNull();
                     expect(basicArg).not.toBeNull();
                 }
             }
 
-            const verification = new Verification();
-            verification.code = 'abc';
+            const passcode = new Passcode();
+            passcode.code = 'abc';
 
-            const checker = new VerificationChecker();
-            expect(() => checker.check(verification, 5)).toThrow(MultipleValidationError);
+            const checker = new PasscodeChecker();
+            expect(() => checker.check(passcode, 5)).toThrow(MultipleValidationError);
 
-            verification.code = 'abcdef';
-            checker.check(verification, 5);
+            passcode.code = 'abcdef';
+            checker.check(passcode, 5);
+        });
+
+        it('can use a custom validator', () => {
+            class Passcode {
+                @jf.string().alphanum().exactLength(6)
+                code!: string;
+            }
+
+            const validator = new Validator();
+            jest.spyOn(validator, 'validateAsClass').mockImplementation((value: any) => ({
+                error: null,
+                value,
+            }));
+
+            class PasscodeChecker {
+                @jf.validate({ validator })
+                check(passcode: Passcode, basicArg: number) {
+                    expect(passcode).not.toBeNull();
+                    expect(basicArg).not.toBeNull();
+                }
+            }
+
+            const passcode = { code: 'abcdef' };
+
+            const checker = new PasscodeChecker();
+            checker.check(passcode, 5);
+
+            expect(validator.validateAsClass).toHaveBeenCalledWith(passcode, Passcode);
         });
     });
 });

@@ -21,12 +21,6 @@ export interface StringSchemaModifiers extends AnySchemaModifiers {
     email(options?: EmailOptions): this;
 
     /**
-     * Considers anything that matches the schema to be empty (`undefined`).
-     * @param value The value to consider empty.
-     */
-    empty(value: any): this;
-
-    /**
      * Specifies the exact string length required.
      * @param length The required string length.
      * @param encoding If specified, the string length is calculated in bytes using the provided encoding.
@@ -151,7 +145,6 @@ export function getStringSchemaModifierProviders(getJoi: () => typeof Joi) {
         alphanum: () => ({ schema }) => schema.alphanum(),
         creditCard: () => ({ schema }) => schema.creditCard(),
         email: (options?: Joi.EmailOptions) => ({ schema }) => schema.email(options),
-        empty: (value: any) => ({ schema }) => schema.empty(value),
         exactLength: (length: number) => ({ schema }) => schema.length(length),
         guid: (options?: Joi.GuidOptions) => ({ schema }) => schema.guid(options),
         hex: () => ({ schema }) => schema.hex(),
