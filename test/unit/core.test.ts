@@ -1,15 +1,46 @@
-import { Schema } from 'joi';
-import { ensureSchemaNotAlreadyDefined, ConstraintDefinitionError } from '../../src/core';
+import * as jf from '../../src';
+import { getJoiSchema } from '../../src/core';
 
-describe('ensureSchemaNotAlreadyDefined', () => {
-    it('should throw an error if the schema is defined', () => {
-        const func = () => ensureSchemaNotAlreadyDefined({} as Schema, 'emailAddress');
-        const expected = new ConstraintDefinitionError('A validation schema already exists for property: emailAddress');
-        expect(func).toThrow(expected);
+describe('getJoiSchema', () => {
+    it('should return the Joi schema to use for a decorated class', () => {
+        class Cat {
+            @jf.string()
+            name!: string;
+        }
+
+        expect(getJoiSchema(Cat, jf.joi)).toEqual(jf.joi.object().keys({
+            name: jf.joi.string(),
+        }));
+
+        class Dog {
+            name!: string;
+        }
+
+        expect(getJoiSchema(Dog, jf.joi)).toEqual(jf.joi.object().keys({}));
     });
 
-    it('should not throw an error if the schema is not defined', () => {
-        const func = () => ensureSchemaNotAlreadyDefined(undefined, 'emailAddress');
-        expect(func).not.toThrow();
+    it('should support inheritance in classes', () => {
+        class Animal {
+            @jf.string()
+            name!: string;
+        }
+
+        class Mammal extends Animal {
+            @jf.number().min(2)
+            nippleCount!: number;
+        }
+
+        class Cat extends Mammal {
+            @jf.number().min(1).max(5)
+            fluffinessIndex!: number;
+        }
+
+        const expectedSchema = jf.joi.object().keys({
+            name: jf.joi.string(),
+            nippleCount: jf.joi.number().min(2),
+            fluffinessIndex: jf.joi.number().min(1).max(5),
+        });
+
+        expect(JSON.stringify(getJoiSchema(Cat, jf.joi))).toEqual(JSON.stringify(expectedSchema));
     });
 });

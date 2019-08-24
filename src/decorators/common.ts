@@ -1,7 +1,5 @@
 import * as Joi from 'joi';
-import { TypedPropertyDecorator, MapAllowUnions, StringOrSymbolKey, updateSchema } from '../core';
-
-export const getJoi = (options: JoifulOptions | undefined) => (options && options.joi) || Joi;
+import { getJoi, TypedPropertyDecorator, MapAllowUnions, StringOrSymbolKey, updateSchema } from '../core';
 
 export class NotImplemented extends Error {
     constructor(feature: string) {

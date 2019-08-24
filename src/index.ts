@@ -1,9 +1,7 @@
-import { Joiful } from './joiful';
+import { defaultInstance } from './core';
 
 export { Validator, MultipleValidationError, ValidationResult, isValidationPass, isValidationFail } from './validation';
 export { Joiful } from './joiful';
-
-const defaultInstance = new Joiful();
 
 const {
     any,

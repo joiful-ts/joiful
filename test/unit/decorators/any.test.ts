@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { testConstraint } from '../testUtil';
+import { testConstraint, assertClassSchemaEquals } from '../testUtil';
 import * as jf from '../../../src';
 import { getJoiSchema } from '../../../src/core';
 import { Validator, isValidationPass } from '../../../src/validation';
@@ -104,7 +104,7 @@ describe('any', () => {
                 pineapple?: boolean;
             }
 
-            const metadata = getJoiSchema(PizzaOrder);
+            const metadata = getJoiSchema(PizzaOrder, jf.joi);
             const expected = jf.joi.object().keys({
                 pineapple: jf.joi.boolean().description(pineappleDescription),
             });
@@ -191,7 +191,7 @@ describe('any', () => {
                 catName?: string;
             }
 
-            const metadata = getJoiSchema(CatAdoptionForm);
+            const metadata = getJoiSchema(CatAdoptionForm, jf.joi);
             const expected = jf.joi.object().keys({
                 catName: jf.joi.string().example(exampleCatName),
             });
@@ -281,13 +281,14 @@ describe('any', () => {
         }
 
         it('should associate a label with the property', () => {
-            const metadata = getJoiSchema(LoginForm);
-            const expected = jf.joi.object().keys({
-                username: jf.joi.string().label('Username'),
-                password: jf.joi.string().label('Password'),
-                rememberMe: jf.joi.boolean().label('Keep me logged in'),
+            assertClassSchemaEquals({
+                Class: LoginForm,
+                expectedSchemaMap: {
+                    username: jf.joi.string().label('Username'),
+                    password: jf.joi.string().label('Password'),
+                    rememberMe: jf.joi.boolean().label('Keep me logged in'),
+                },
             });
-            expect(metadata).toEqual(expected);
         });
     });
 
@@ -298,11 +299,12 @@ describe('any', () => {
         }
 
         it('should associate a label with the property', () => {
-            const metadata = getJoiSchema(User);
-            const expected = jf.joi.object().keys({
-                name: jf.joi.string().meta('some metadata'),
+            assertClassSchemaEquals({
+                Class: User,
+                expectedSchemaMap: {
+                    name: jf.joi.string().meta('some metadata'),
+                },
             });
-            expect(metadata).toEqual(expected);
         });
     });
 
@@ -313,11 +315,12 @@ describe('any', () => {
         }
 
         it('should associate notes with the property', () => {
-            const metadata = getJoiSchema(User);
-            const expected = jf.joi.object().keys({
-                name: jf.joi.string().notes('some notes'),
+            assertClassSchemaEquals({
+                Class: User,
+                expectedSchemaMap: {
+                    name: jf.joi.string().notes('some notes'),
+                },
             });
-            expect(metadata).toEqual(expected);
         });
     });
 
@@ -350,11 +353,12 @@ describe('any', () => {
         }
 
         it('should override validation options for the property', () => {
-            const metadata = getJoiSchema(User);
-            const expected = jf.joi.object().keys({
-                name: jf.joi.string().options({ presence: 'required' }),
+            assertClassSchemaEquals({
+                Class: User,
+                expectedSchemaMap: {
+                    name: jf.joi.string().options({ presence: 'required' }),
+                },
             });
-            expect(metadata).toEqual(expected);
         });
     });
 
@@ -447,13 +451,14 @@ describe('any', () => {
                 password!: string;
             }
 
-            const metadata = getJoiSchema(User);
-            const expected = jf.joi.object().keys({
-                id: jf.joi.string().tags('identity'),
-                emailAddress: jf.joi.string().tags(['identity', 'authentication']),
-                password: jf.joi.string().tags('authentication'),
+            assertClassSchemaEquals({
+                Class: User,
+                expectedSchemaMap: {
+                    id: jf.joi.string().tags('identity'),
+                    emailAddress: jf.joi.string().tags(['identity', 'authentication']),
+                    password: jf.joi.string().tags('authentication'),
+                },
             });
-            expect(metadata).toEqual(expected);
         });
     });
 
@@ -464,11 +469,12 @@ describe('any', () => {
                 radius!: number;
             }
 
-            const metadata = getJoiSchema(Circle);
-            const expected = jf.joi.object().keys({
-                radius: jf.joi.number().unit('millimetres'),
+            assertClassSchemaEquals({
+                Class: Circle,
+                expectedSchemaMap: {
+                    radius: jf.joi.number().unit('millimetres'),
+                },
             });
-            expect(metadata).toEqual(expected);
         });
     });
 

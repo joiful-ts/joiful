@@ -1,5 +1,7 @@
+import * as Joi from 'joi';
 import { Validator } from '../../src/validation';
 import { ValidationOptions } from 'joi';
+import { AnyClass, getJoiSchema, getJoi } from '../../src/core';
 
 export function testConstraint<T>(
     classFactory: () => { new(...args: any[]): T },
@@ -77,4 +79,13 @@ export function testConversion<T>(options: TestConversionOptions<T>) {
             });
         });
     }
+}
+
+export function assertClassSchemaEquals(
+    options: { Class: AnyClass, expectedSchemaMap: Joi.SchemaMap, joi?: typeof Joi },
+) {
+    const joi = getJoi(options);
+    const schema = getJoiSchema(options.Class, joi);
+    const expectedSchema = joi.object().keys(options.expectedSchemaMap);
+    expect(schema).toEqual(expectedSchema);
 }

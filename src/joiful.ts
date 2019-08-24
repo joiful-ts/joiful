@@ -56,7 +56,7 @@ export class Joiful {
      *   @jf.string().required()
      *   title: string;
      *
-     *   @jf.lazy((joi) => joi.array().items(getJoiSchema(TreeNode)))
+     *   @jf.lazy((joi) => joi.array().items(getJoiSchema(TreeNode, joi)))
      *   children: TreeNode[];
      * }
      */

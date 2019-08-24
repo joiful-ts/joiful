@@ -1,4 +1,4 @@
-import { getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
+import { getJoi, getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
 import * as Joi from 'joi';
 
 export class MultipleValidationError extends Error {
@@ -49,9 +49,13 @@ export class InvalidValidationTarget extends Error {
     }
 }
 
+export interface ValidationOptions extends Joi.ValidationOptions {
+    joi?: typeof Joi;
+}
+
 export class Validator {
     constructor(
-        private defaultOptions?: Joi.ValidationOptions,
+        private defaultOptions?: ValidationOptions,
     ) {
     }
 
@@ -60,7 +64,7 @@ export class Validator {
      * @param target Instance of decorated class to validate.
      * @param options Optional validation options to use.
      */
-    validate<T extends {} | null | undefined>(target: T, options?: Joi.ValidationOptions): ValidationResult<T> {
+    validate<T extends {} | null | undefined>(target: T, options?: ValidationOptions): ValidationResult<T> {
         if (target === null || target === undefined) {
             throw new InvalidValidationTarget();
         }
@@ -79,13 +83,14 @@ export class Validator {
     >(
         target: Partial<TInstance> | null | undefined,
         Class: TClass,
-        options: Joi.ValidationOptions | undefined = this.defaultOptions,
+        options: ValidationOptions | undefined = this.defaultOptions,
     ): ValidationResult<TInstance> {
         if (target === null || target === undefined) {
             throw new InvalidValidationTarget();
         }
 
-        const classSchema: Joi.ObjectSchema = getJoiSchema(Class);
+        const joi = getJoi(options);
+        const classSchema: Joi.ObjectSchema = getJoiSchema(Class, joi);
 
         if (options) {
             return Joi.validate(target, classSchema, options) as ValidationResult<TInstance>;
@@ -103,13 +108,14 @@ export class Validator {
     validateArrayAsClass<T>(
         target: T[],
         Class: Constructor<T>,
-        options: Joi.ValidationOptions | undefined = this.defaultOptions,
+        options: ValidationOptions | undefined = this.defaultOptions,
     ): ValidationResult<T[]> {
         if (target === null || target === undefined) {
             throw new InvalidValidationTarget();
         }
 
-        const classSchema: Joi.ObjectSchema = getJoiSchema(Class);
+        const joi = getJoi(options);
+        const classSchema: Joi.ObjectSchema = getJoiSchema(Class, joi);
         const arraySchema = Joi.array().items(classSchema);
 
         if (options) {

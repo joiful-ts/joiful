@@ -132,7 +132,7 @@ export const createArrayPropertyDecorator = (
             const elementClass = (options && options.elementClass);
 
             if (elementClass) {
-                const elementSchema = getJoiSchema(elementClass);
+                const elementSchema = getJoiSchema(elementClass, joi);
                 schema = schema.items(elementSchema);
             }
 
