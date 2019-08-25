@@ -44,10 +44,10 @@ module.exports = {
     // An object that configures minimum threshold enforcement for coverage results
     coverageThreshold: {
         "global": {
-            "branches": 0,
-            "functions": 0,
-            "lines": 0,
-            "statements": 0
+            "branches": 100,
+            "functions": 100,
+            "lines": 100,
+            "statements": 100
         }
     },
 
@@ -66,7 +66,7 @@ module.exports = {
     // A set of global variables that need to be available in all test environments
     globals: {
         "ts-jest": {
-            "tsConfig": "tsconfig.json"
+            "tsConfig": "./test/tsconfig.json"
         }
     },
 
@@ -128,10 +128,14 @@ module.exports = {
     // runner: "jest-runner",
 
     // The paths to modules that run some code to configure or set up the testing environment before each test
-    // setupFiles: [],
+    setupFiles: [
+        "reflect-metadata"
+    ],
 
     // The path to a module that runs some code to configure or set up the testing framework before each test
-    // setupTestFrameworkScriptFile: null,
+    setupFilesAfterEnv: [
+        "./test/helpers/setup.ts"
+    ],
 
     // A list of paths to snapshot serializer modules Jest should use for snapshot testing
     // snapshotSerializers: [],

@@ -1,53 +1,21 @@
-import { Schema, ObjectSchema } from 'joi';
-import * as joi from 'joi';
+import * as Joi from 'joi';
+
+export const getJoi = (options: { joi?: typeof Joi } | undefined = {}) => options.joi || Joi;
 
 export const WORKING_SCHEMA_KEY = 'tsdv:working-schema';
 export const SCHEMA_KEY = 'tsdv:schema';
-export let Joi = joi;
+export const JOI_VERSION = getJoiVersion(Joi);
 
-export function registerJoi(customJoi: typeof joi) {
-    Joi = customJoi;
+export type WorkingSchema = { [index: string]: Joi.Schema };
+
+export interface Constructor<T> {
+    new(...args: any[]): T;
 }
 
-export class ConstraintDefinitionError extends Error {
-    name = 'ConstraintDefinitionError';
-
-    constructor(public message: string) {
-        super(message);
-
-        Object.setPrototypeOf(this, ConstraintDefinitionError.prototype);
-    }
-}
-
-export class ValidationSchemaNotFound extends ConstraintDefinitionError {
-    name = 'ValidationSchemaNotFound';
-
-    constructor(propertyKey: string | Symbol) {
-        super(
-            'No validation schema exists, nor could it be inferred from the design:type metadata, ' +
-            `for property "${String(propertyKey)}". Please decorate the property with a type schema.`,
-        );
-    }
-}
-
-export type WorkingSchema = { [index: string]: Schema };
-
-export function ensureSchemaNotAlreadyDefined(schema: Schema | undefined | null, propertyKey: string | symbol) {
-    if (schema) {
-        throw new ConstraintDefinitionError(`A validation schema already exists for property: ${String(propertyKey)}`);
-    }
-}
-
-export interface AnyClass {
-    new(...args: any[]): any;
-}
+export type AnyClass = Constructor<any>;
 
 export type StringKey<T> = Extract<keyof T, string>;
 export type StringOrSymbolKey<T> = Extract<keyof T, string | symbol>;
-
-export type Nullable<T> = {
-    [K in keyof T]: T[K] | null;
-};
 
 /**
  * If a given type extends the desired type, return the given type. Otherwise, return the desired type.
@@ -100,10 +68,6 @@ export type TypedPropertyDecorator<TPropertyType> = (
     ) => void
 );
 
-function getDesignType<TClass, TKey extends StringOrSymbolKey<TClass>>(target: TClass, targetKey: TKey): any {
-    return Reflect.getMetadata('design:type', target, String(targetKey));
-}
-
 export function getWorkingSchema<TClass>(target: TClass): WorkingSchema {
     let workingSchema: WorkingSchema = Reflect.getOwnMetadata(WORKING_SCHEMA_KEY, target);
     if (!workingSchema) {
@@ -123,146 +87,58 @@ export function getMergedWorkingSchemas(target: object): WorkingSchema {
     return workingSchema;
 }
 
-export function getJoiSchema(clz: AnyClass): ObjectSchema {
-    let joiSchema: ObjectSchema | undefined = Reflect.getOwnMetadata(SCHEMA_KEY, clz.prototype);
+export function getJoiSchema(Class: AnyClass, joi: typeof Joi): Joi.ObjectSchema {
+    let joiSchema: Joi.ObjectSchema | undefined = Reflect.getOwnMetadata(SCHEMA_KEY, Class.prototype);
     if (joiSchema) {
         return joiSchema;
     } else {
-        let workingSchema: WorkingSchema = getMergedWorkingSchemas(clz.prototype);
-        if (!workingSchema) {
-            throw new ConstraintDefinitionError(
-                `Class "${(clz && (<any>clz).name) ? (<any>clz).name : clz}" doesn't have a schema. ` +
-                'You may need to manually specify the base type schema, ' +
-                'set the property type to a class, or use "Any()".',
-            );
-        }
-        joiSchema = Joi.object().keys(workingSchema);
-        Reflect.defineMetadata(SCHEMA_KEY, joiSchema, clz.prototype);
+        let workingSchema: WorkingSchema = getMergedWorkingSchemas(Class.prototype);
+        joiSchema = joi.object().keys(workingSchema);
+        Reflect.defineMetadata(SCHEMA_KEY, joiSchema, Class.prototype);
         return joiSchema;
     }
-}
-
-export function getPropertySchema<TClass, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey) {
-    const classSchema = getWorkingSchema(target);
-    return classSchema[String(propertyKey)];
 }
 
 export function updateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(
     target: TClass,
     propertyKey: TKey,
-    schema: Schema,
+    schema: Joi.Schema,
 ) {
     const classSchema = getWorkingSchema(target);
     classSchema[String(propertyKey)] = schema;
 }
 
-export function getAndUpdateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(
-    target: TClass,
-    propertyKey: TKey,
-    updateFunction: (schema: Schema) => Schema,
-) {
-    let schema = getPropertySchema(target, propertyKey);
-    if (!schema) {
-        schema = guessTypeSchema(target, propertyKey);
-    }
-    schema = updateFunction(schema);
-    updateSchema(target, propertyKey, schema);
+export interface Version {
+    major: string;
+    minor: string;
+    patch: string;
 }
 
-export function constraintDecorator<
-    TPropertyType
->(updateFunction: (schema: Schema) => Schema): TypedPropertyDecorator<TPropertyType> {
-    return <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(
-        target: TClass,
-        propertyKey: TKey,
-    ) => {
-        getAndUpdateSchema(target, propertyKey, updateFunction);
+export function parseVersionString(version: string) {
+    const [major, minor, patch] = (version).split('.');
+    return {
+        major: major || '',
+        minor: minor || '',
+        patch: patch || '',
     };
 }
 
-export function constraintDecoratorWithPeers<TPropertyType, TClassForPeers>(
-    peers: StringOrSymbolKey<TClassForPeers>[],
-    updateFunction: (schema: Schema) => Schema,
-): TypedPropertyDecorator<TPropertyType> {
-    return (
-        <
-            TClass extends MapAllowUnions<TClass, TKey, TPropertyType>,
-            TKey extends StringOrSymbolKey<TClass>
-        >(target: TClass, propertyKey: TKey) => {
-            verifyPeers(target as unknown as TClassForPeers, peers); // TODO: fix this dodgy cast
-            getAndUpdateSchema(target, propertyKey, updateFunction);
-        }
-    );
+export function getJoiVersion(joi: typeof Joi | undefined): Version {
+    const versionString = ((joi || {}) as any)['version'] || '?.?.?';
+    return parseVersionString(versionString);
 }
 
-export function typeConstraintDecorator<
-    TPropertyType,
-    >(typeSchema: (Joi: typeof joi) => Schema) {
-    return <TClass extends MapAllowUnions<TClass, TKey, TPropertyType>, TKey extends StringOrSymbolKey<TClass>>(
-        target: TClass,
-        propertyKey: TKey,
-    ): void => {
-        let schema = getPropertySchema(target, propertyKey);
-        ensureSchemaNotAlreadyDefined(schema, propertyKey);
-        schema = typeSchema(Joi);
-        updateSchema(target, propertyKey, schema);
-    };
+export class IncompatibleJoiVersion extends Error {
+    constructor(actualVersion: Version) {
+        super(`Cannot use Joi v${actualVersion} with Joiful. Joiful requires Joi v${JOI_VERSION.major}.x.x`);
+    }
 }
 
-function guessTypeSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(target: TClass, propertyKey: TKey): Schema {
-    let propertyType = getDesignType(target, propertyKey);
-    let schema: Schema | undefined = undefined;
-    switch (propertyType) {
-        case Array:
-            schema = Joi.array();
-            break;
-        case Boolean:
-            schema = Joi.boolean();
-            break;
-        case Date:
-            schema = Joi.date();
-            break;
-        case Function:
-            schema = Joi.func();
-            break;
-        case Number:
-            schema = Joi.number();
-            break;
-        case Object:
-            // We don't guess the type for "Object" types, because these can represent unions like "number | null".
-            // To use an object schema, you must explicitly decorate the property with ObjectSchema().
-            // schema = Joi.object();
-            break;
-        case String:
-            schema = Joi.string();
-            break;
-        default:
-            break;
-    }
-    if (schema === undefined) {
-        throw new ValidationSchemaNotFound(propertyKey);
-    }
-    return schema;
-}
-
-export function verifyPeers<TClass>(target: TClass, peers: StringOrSymbolKey<TClass>[]) {
-    // Verify that the properties actually exist on the class.
-    let notFound: StringOrSymbolKey<TClass>[] = [];
-    for (let peer of peers) {
-        let type = getDesignType(target, peer);
-        if (type === undefined) {
-            notFound.push(peer);
-
+export function checkJoiIsCompatible(joi: typeof Joi | undefined) {
+    if (joi) {
+        const actualVersion = getJoiVersion(joi);
+        if (JOI_VERSION.major !== actualVersion.major) {
+            throw new IncompatibleJoiVersion(actualVersion);
         }
-    }
-    if (notFound.length > 0) {
-        let peersString = notFound.map((v: string | symbol) => `"${String(v)}"`).join(', ');
-        let msg: string;
-        if (notFound.length == 1) {
-            msg = `Peer/property ${peersString} does not exist.`;
-        } else {
-            msg = `Peers/properties ${peersString} do not exist.`;
-        }
-        throw new ConstraintDefinitionError(msg);
     }
 }

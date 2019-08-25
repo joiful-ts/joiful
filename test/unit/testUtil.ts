@@ -1,150 +1,118 @@
-import './metadataShim';
-import { Validator } from '../../src/Validator';
-import { ValidationOptions } from 'joi';
-
-interface ToBeValidOptions {
-    clz?: { new(...args: any[]): any };
-    validator?: Validator;
-}
-
-declare global {
-    namespace jest {
-        interface Matchers<R> {
-            toBeValid(options?: ToBeValidOptions): void;
-        }
-
-        interface Expect {
-            toBeValid(options?: ToBeValidOptions): void;
-        }
-    }
-}
-
-const tryToStringify = (value: any) => {
-    try {
-        return JSON.stringify(value, null, '  ');
-    } catch (err) {
-        return null;
-    }
-};
-
-expect.extend({
-    toBeValid(candidate: any, options: ToBeValidOptions) {
-        const validator = (options && options.validator) || new Validator();
-        const clz = options && options.clz;
-        const result = clz ?
-            validator.validateAsClass(candidate, clz) :
-            validator.validate(candidate);
-
-        const pass = result.error === null;
-        // tslint:disable-next-line:no-invalid-this
-        const isNot = this.isNot;
-
-        const candidateAsString = tryToStringify(candidate);
-
-        const message =
-            `expected candidate to ${isNot ? 'fail' : 'pass'} validation` +
-            (!candidateAsString ? '' : `:\n\n  ${candidateAsString.replace(/\n/gm, '\n  ')}`);
-
-        return {
-            pass,
-            message: () => message,
-        };
-    },
-});
-
-export interface AssertValidationOptions<T> {
-    clz?: { new(...args: any[]): T };
-    object: T;
-    validator?: Validator;
-}
+import * as Joi from 'joi';
+import { rootPath } from 'get-root-path';
+import * as path from 'path';
+import * as fs from 'fs';
+import { Validator } from '../../src/validation';
+import { AnyClass, getJoiSchema, getJoi, parseVersionString } from '../../src/core';
 
 export function testConstraint<T>(
-    classFactory: () => any,
-    valid: T[],
-    invalid: T[],
-    validationOptions?: ValidationOptions,
-) {
-    const validator = new Validator(validationOptions);
-
-    it('should validate successful candidates', () => {
-        const clz = classFactory();
-        for (let val of valid) {
-            let instance = new clz(val);
-            expect(instance).toBeValid({ validator });
-        }
-    });
-
-    it('should invalidate unsuccessful candidates', () => {
-        const clz = classFactory();
-        for (let val of invalid) {
-            let instance = new clz(val);
-            expect(instance).not.toBeValid({ validator });
-        }
-    });
-}
-
-export function testConstraintWithPojos<T>(
     classFactory: () => { new(...args: any[]): T },
     valid: T[],
-    invalid: T[],
-    validationOptions?: ValidationOptions,
+    invalid?: T[],
+    validationOptions?: Joi.ValidationOptions,
 ) {
     const validator = new Validator(validationOptions);
 
     it('should validate successful candidates', () => {
         // tslint:disable-next-line: no-inferred-empty-object-type
-        const clz = classFactory();
+        const Class = classFactory();
         for (let val of valid) {
-            expect(val).toBeValid({ validator, clz });
+            expect(val).toBeValid({ validator, Class: Class });
         }
     });
 
-    it('should invalidate unsuccessful candidates', () => {
-        // tslint:disable-next-line: no-inferred-empty-object-type
-        const clz = classFactory();
-        for (let val of invalid) {
-            expect(val).not.toBeValid({ validator, clz });
-        }
-    });
+    if (invalid && invalid.length) {
+        it('should invalidate unsuccessful candidates', () => {
+            // tslint:disable-next-line: no-inferred-empty-object-type
+            const Class = classFactory();
+            for (let val of invalid) {
+                expect(val).not.toBeValid({ validator, Class: Class });
+            }
+        });
+    }
 }
 
-export function testConversion<T>(
-    classFactory: () => any,
-    getter: (object: any) => any,
-    converted: T[][],
-    unconverted: T[],
+type Converted<T> = {
+    [K in keyof T]?: any;
+};
+
+export interface TestConversionOptions<T> {
+    getClass: () => { new(...args: any[]): T };
+    conversions: { input: T, output: Converted<T> }[];
+    valid?: T[];
+    invalid?: T[];
+}
+
+export function testConversion<T>(options: TestConversionOptions<T>) {
+    const { getClass, conversions, valid, invalid } = options;
+
+    it('should convert property using validator', () => {
+        // tslint:disable-next-line: no-inferred-empty-object-type
+        const Class = getClass();
+        const validator = new Validator({ convert: true });
+
+        conversions.forEach(({ input, output }) => {
+            const result = validator.validateAsClass(input, Class);
+            expect(result.error).toBeFalsy();
+            expect(result.value).toEqual(output);
+        });
+    });
+
+    if (valid && valid.length) {
+        it('should not fail for candidates even when convert option is disabled in validator', () => {
+            // tslint:disable-next-line: no-inferred-empty-object-type
+            const Class = getClass();
+            const validator = new Validator({ convert: false });
+
+            valid.forEach((input) => {
+                expect(input).toBeValid({ Class: Class, validator });
+            });
+        });
+    }
+
+    if (invalid && invalid.length) {
+        it('should fail for candidates when convert option is disabled in validator', () => {
+            // tslint:disable-next-line: no-inferred-empty-object-type
+            const Class = getClass();
+            const validator = new Validator({ convert: false });
+
+            invalid.forEach((input) => {
+                expect(input).not.toBeValid({ Class: Class, validator });
+            });
+        });
+    }
+}
+
+export function assertClassSchemaEquals(
+    options: { Class: AnyClass, expectedSchemaMap: Joi.SchemaMap, joi?: typeof Joi },
 ) {
-    const clz = classFactory();
+    const joi = getJoi(options);
+    const schema = getJoiSchema(options.Class, joi);
+    const expectedSchema = joi.object().keys(options.expectedSchemaMap);
+    expect(schema).toEqual(expectedSchema);
+}
 
-    it('should modify matching property', () => {
-        const validator = new Validator({
-            convert: true,
-        });
+interface PackageDependencies {
+    [name: string]: string;
+}
 
-        for (const entry of converted) {
-            const input = entry[0];
-            const expected = entry[1];
-            const object = new clz(input);
-            const result = validator.validate(object);
-            expect(result).toHaveProperty('error');
-            expect(result.error).toBeNull();
-            expect(result).toHaveProperty('value');
-            expect(getter(result.value)).toEqual(expected);
-        }
-    });
+interface PackageJson {
+    peerDependencies?: PackageDependencies;
+    dependencies?: PackageDependencies;
+    devDependencies?: PackageDependencies;
+}
 
-    it('should not modify unmatching property', () => {
-        const validator = new Validator({
-            convert: true,
-        });
-
-        for (const input of unconverted) {
-            const object = new clz(input);
-            const result = validator.validate(object);
-            expect(result).toHaveProperty('error');
-            expect(result.error).toBeNull();
-            expect(result).toHaveProperty('value');
-            expect(getter(result.value)).toEqual(input);
-        }
-    });
+export async function getJoifulDependencyVersion(dependencyName: string) {
+    const joifulPackageFileName = path.join(rootPath, 'package.json');
+    const joifulPackageJson: PackageJson = await new Promise(
+        (resolve, reject) => fs.readFile(
+            joifulPackageFileName, 'utf-8', (err, content) => err ? reject(err) : resolve(JSON.parse(content)),
+        ),
+    );
+    const allDependencies: PackageDependencies = {
+        ...joifulPackageJson.peerDependencies,
+        ...joifulPackageJson.dependencies,
+        ...joifulPackageJson.devDependencies,
+    };
+    return parseVersionString(allDependencies[dependencyName]);
 }
