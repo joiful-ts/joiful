@@ -301,9 +301,10 @@
   dependencies:
     "@types/jest-diff" "*"
 
-"@types/joi@10.4.1":
-  version "10.4.1"
-  resolved "https://registry.yarnpkg.com/@types/joi/-/joi-10.4.1.tgz#30e987649cede8d2a78829489857e969a81e1e99"
+"@types/joi@14.3.3":
+  version "14.3.3"
+  resolved "https://registry.yarnpkg.com/@types/joi/-/joi-14.3.3.tgz#f251aa8150fc0b6a7ce9feab21802a28473de335"
+  integrity sha512-6gAT/UkIzYb7zZulAbcof3lFxpiD5EI6xBeTvkL1wYN12pnFQ+y/+xl9BvnVgxkmaIDN89xWhGZLD9CvuOtZ9g==
 
 "@types/node@6.0.63":
   version "6.0.63"
