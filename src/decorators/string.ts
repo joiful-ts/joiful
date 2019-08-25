@@ -1,8 +1,8 @@
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { TypedPropertyDecorator } from '../core';
 import { ModifierProviders, JoifulOptions, createPropertyDecorator } from './common';
 import { AnySchemaModifiers, getAnySchemaModifierProviders } from './any';
-import { EmailOptions } from 'joi';
+import { EmailOptions } from '@hapi/joi';
 
 export interface StringSchemaModifiers extends AnySchemaModifiers {
     /**

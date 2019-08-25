@@ -63,9 +63,9 @@ describe('string', () => {
             [
                 { emailAddress: 'monkey@see.com' },
                 { emailAddress: 'howdy+there@pardner.co.kr' },
-                { emailAddress: 'monkey@do' },
             ],
             [
+                { emailAddress: 'monkey@do' },
                 { emailAddress: '' },
                 { emailAddress: '123.com' },
             ],
@@ -239,12 +239,11 @@ describe('string', () => {
                 },
                 [
                     { ipAddress: '127.0.0.1/24' },
+                    { ipAddress: '2001:db8:abcd:8000::/50' },
                 ],
                 [
                     { ipAddress: '127.0.0.1' },
                     { ipAddress: '2001:0db8:0000:0000:0000:ff00:0042:8329' },
-                    { ipAddress: '2001:db8:abcd:8000::/50' },
-                    { ipAddress: '2001:db8:abcd:8000::/50' },
                 ],
             );
         });

@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { rootPath } from 'get-root-path';
 import * as path from 'path';
 import * as fs from 'fs';

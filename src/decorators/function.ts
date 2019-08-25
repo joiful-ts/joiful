@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { TypedPropertyDecorator } from '../core';
 import { ModifierProviders, createPropertyDecorator, JoifulOptions } from './common';
 import { AnySchemaModifiers, getAnySchemaModifierProviders } from './any';

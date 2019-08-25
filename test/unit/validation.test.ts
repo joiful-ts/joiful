@@ -28,7 +28,7 @@ describe('ValidationResult', () => {
                     {
                         message: "'email' is not a valid email",
                         type: 'email',
-                        path: 'emailAddress',
+                        path: ['emailAddress'],
                     },
                 ],
                 annotate: () => '',

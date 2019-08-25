@@ -1,5 +1,5 @@
 import { getJoiSchema } from '../../src/core';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { joi, lazy, object, string } from '../../src';
 import { testConstraint } from './testUtil';
 

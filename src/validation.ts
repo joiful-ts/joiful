@@ -1,5 +1,5 @@
 import { getJoi, getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 
 export class MultipleValidationError extends Error {
     constructor(
@@ -96,7 +96,10 @@ export class Validator {
             joi.validate(target, classSchema, options) :
             joi.validate(target, classSchema);
 
-        return result as ValidationResult<TInstance>;
+        return {
+            ...result,
+            value: result.value as TInstance,
+        };
     }
 
     /**
@@ -125,7 +128,10 @@ export class Validator {
             joi.validate(target, arraySchema, options) :
             joi.validate(target, arraySchema);
 
-        return result as ValidationResult<TInstance[]>;
+        return {
+            ...result,
+            value: result.value as TInstance[],
+        };
     }
 }
 

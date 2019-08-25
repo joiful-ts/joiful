@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { testConstraint, assertClassSchemaEquals } from '../testUtil';
 import * as jf from '../../../src';
 import { getJoiSchema } from '../../../src/core';
@@ -167,7 +167,7 @@ describe('any', () => {
         it('should throw NotImplementedError if joi does not support custom errors', () => {
             const disableCustomErrorsForSchema = ({ schema }: { schema: Joi.Schema }) => {
                 const { error, ...newSchema } = schema;
-                return newSchema;
+                return newSchema as Joi.Schema;
             };
 
             function getClass() {
@@ -294,7 +294,7 @@ describe('any', () => {
 
     describe('meta', () => {
         class User {
-            @jf.string().meta('some metadata')
+            @jf.string().meta({ value: 'some metadata' })
             name?: string;
         }
 
@@ -302,7 +302,7 @@ describe('any', () => {
             assertClassSchemaEquals({
                 Class: User,
                 expectedSchemaMap: {
-                    name: jf.joi.string().meta('some metadata'),
+                    name: jf.joi.string().meta({ value: 'some metadata' }),
                 },
             });
         });
