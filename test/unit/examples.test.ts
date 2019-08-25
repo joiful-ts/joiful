@@ -1,6 +1,7 @@
 import { getJoiSchema } from '../../src/core';
 import * as Joi from 'joi';
 import { joi, lazy, object, string } from '../../src';
+import { testConstraint } from './testUtil';
 
 describe('Examples', () => {
     it('class with methods', () => {
@@ -92,5 +93,40 @@ describe('Examples', () => {
         ];
 
         expect(instance).toBeValid();
+    });
+
+    describe('creating your own reusable decorators', () => {
+        // Remember you may need to create your own decroators in a separate
+        // file to where they are being used, to ensure that they exist before
+        // they are ran against your class. In the example below we get around
+        // that trap by creating our class in a function, so the decorators
+        // execution is delayed until the function gets called
+
+        const password = () => string()
+            .min(8)
+            .regex(/[a-z]/)
+            .regex(/[A-Z]/)
+            .regex(/[0-9]/)
+            .required();
+
+        testConstraint(
+            () => {
+                class SetPasswordForm {
+                    @password()
+                    password!: string;
+                }
+                return SetPasswordForm;
+            },
+            [
+                { password: 'Password123' },
+            ],
+            [
+                {},
+                { password: 'password123' },
+                { password: 'PASSWORD123' },
+                { password: 'Password' },
+                { password: 'Pass123' },
+            ],
+        );
     });
 });
