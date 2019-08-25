@@ -1,6 +1,6 @@
 import { getJoiSchema } from '../../src/core';
 import * as Joi from 'joi';
-import { lazy, object, string } from '../../src';
+import { joi, lazy, object, string } from '../../src';
 
 describe('Examples', () => {
     it('class with methods', () => {
@@ -78,7 +78,7 @@ describe('Examples', () => {
             @string().required()
             tagName!: string;
 
-            @lazy(() => Joi.array().items(getJoiSchema(TreeNode)))
+            @lazy(() => Joi.array().items(getJoiSchema(TreeNode, joi)))
             children!: TreeNode[];
         }
 
