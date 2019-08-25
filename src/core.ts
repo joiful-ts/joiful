@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-export const getJoi = (options: { joi?: typeof Joi } | undefined) => (options && options.joi) || Joi;
+export const getJoi = (options: { joi?: typeof Joi } | undefined = {}) => options.joi || Joi;
 
 export const WORKING_SCHEMA_KEY = 'tsdv:working-schema';
 export const SCHEMA_KEY = 'tsdv:schema';

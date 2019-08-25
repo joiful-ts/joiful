@@ -92,11 +92,11 @@ export class Validator {
         const joi = getJoi(options);
         const classSchema: Joi.ObjectSchema = getJoiSchema(Class, joi);
 
-        if (options) {
-            return Joi.validate(target, classSchema, options) as ValidationResult<TInstance>;
-        } else {
-            return Joi.validate(target, classSchema) as ValidationResult<TInstance>;
-        }
+        const result = options ?
+            joi.validate(target, classSchema, options) :
+            joi.validate(target, classSchema);
+
+        return result as ValidationResult<TInstance>;
     }
 
     /**
@@ -105,24 +105,27 @@ export class Validator {
      * @param clz Decorated class to validate against.
      * @param options Optional validation options to use.
      */
-    validateArrayAsClass<T>(
-        target: T[],
-        Class: Constructor<T>,
+    validateArrayAsClass<
+        TClass extends Constructor<any>,
+        TInstance = TClass extends Constructor<infer TInstance> ? TInstance : never
+    >(
+        target: Partial<TInstance>[],
+        Class: TClass,
         options: ValidationOptions | undefined = this.defaultOptions,
-    ): ValidationResult<T[]> {
+    ): ValidationResult<TInstance[]> {
         if (target === null || target === undefined) {
             throw new InvalidValidationTarget();
         }
 
         const joi = getJoi(options);
         const classSchema: Joi.ObjectSchema = getJoiSchema(Class, joi);
-        const arraySchema = Joi.array().items(classSchema);
+        const arraySchema = joi.array().items(classSchema);
 
-        if (options) {
-            return Joi.validate(target, arraySchema, options);
-        } else {
-            return Joi.validate(target, arraySchema);
-        }
+        const result = options ?
+            joi.validate(target, arraySchema, options) :
+            joi.validate(target, arraySchema);
+
+        return result as ValidationResult<TInstance[]>;
     }
 }
 

@@ -13,14 +13,9 @@ import { Validator, createValidatePropertyDecorator } from './validation';
 import { checkJoiIsCompatible, getJoi } from './core';
 
 export class Joiful {
-    constructor(options?: JoifulOptions) {
-        if (options && options.joi) {
-            checkJoiIsCompatible(options.joi);
-        }
-        this.options = options || {};
+    constructor(private readonly options: JoifulOptions = {}) {
+        checkJoiIsCompatible(options.joi);
     }
-
-    private readonly options: JoifulOptions;
 
     get joi() {
         return getJoi(this.options);
