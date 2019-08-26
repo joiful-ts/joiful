@@ -1,9 +1,13 @@
 import { Joiful } from './joiful';
+import { Validator } from './validation';
 
 export { Validator, MultipleValidationError, ValidationResult, isValidationPass, isValidationFail } from './validation';
 export { Joiful } from './joiful';
 
 export const DEFAULT_INSTANCE = new Joiful();
+
+const DEFAULT_VALIDATOR = new Validator();
+const { validate, validateAsClass, validateArrayAsClass } = DEFAULT_VALIDATOR;
 
 const {
     any,
@@ -16,7 +20,7 @@ const {
     number,
     object,
     string,
-    validate,
+    validateParams,
 } = DEFAULT_INSTANCE;
 
 export {
@@ -31,4 +35,7 @@ export {
     object,
     string,
     validate,
+    validateAsClass,
+    validateArrayAsClass,
+    validateParams,
 };

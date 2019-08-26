@@ -64,7 +64,7 @@ export class Validator {
      * @param target Instance of decorated class to validate.
      * @param options Optional validation options to use.
      */
-    validate<T extends {} | null | undefined>(target: T, options?: ValidationOptions): ValidationResult<T> {
+    validate = <T extends {} | null | undefined>(target: T, options?: ValidationOptions): ValidationResult<T> => {
         if (target === null || target === undefined) {
             throw new InvalidValidationTarget();
         }
@@ -77,14 +77,14 @@ export class Validator {
      * @param clz Decorated class to validate against.
      * @param options Optional validation options to use.
      */
-    validateAsClass<
+    validateAsClass = <
         TClass extends Constructor<any>,
         TInstance = TClass extends Constructor<infer TInstance> ? TInstance : never
     >(
         target: Partial<TInstance> | null | undefined,
         Class: TClass,
         options: ValidationOptions | undefined = this.defaultOptions,
-    ): ValidationResult<TInstance> {
+    ): ValidationResult<TInstance> => {
         if (target === null || target === undefined) {
             throw new InvalidValidationTarget();
         }
@@ -108,14 +108,14 @@ export class Validator {
      * @param clz Decorated class to validate against.
      * @param options Optional validation options to use.
      */
-    validateArrayAsClass<
+    validateArrayAsClass = <
         TClass extends Constructor<any>,
         TInstance = TClass extends Constructor<infer TInstance> ? TInstance : never
     >(
         target: Partial<TInstance>[],
         Class: TClass,
         options: ValidationOptions | undefined = this.defaultOptions,
-    ): ValidationResult<TInstance[]> {
+    ): ValidationResult<TInstance[]> => {
         if (target === null || target === undefined) {
             throw new InvalidValidationTarget();
         }
