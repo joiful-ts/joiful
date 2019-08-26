@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import * as jf from '../../src';
 import {
     getJoiSchema,
@@ -9,6 +9,7 @@ import {
     parseVersionString,
 } from '../../src/core';
 import { getJoifulDependencyVersion } from './testUtil';
+import { stringify } from 'flatted';
 
 describe('checkJoiIsCompatible', () => {
     it('should not error if version of joi passed in matches expected major version', () => {
@@ -65,7 +66,7 @@ describe('getJoiSchema', () => {
             fluffinessIndex: jf.joi.number().min(1).max(5),
         });
 
-        expect(JSON.stringify(getJoiSchema(Cat, jf.joi))).toEqual(JSON.stringify(expectedSchema));
+        expect(stringify(getJoiSchema(Cat, jf.joi))).toEqual(stringify(expectedSchema));
     });
 });
 
@@ -73,6 +74,12 @@ describe('getJoiVersion', () => {
     const mockJoi = (version: string | undefined) => ({ version }) as any as typeof Joi;
 
     it('should return the version of joi', () => {
+        expect(getJoiVersion(Joi)).not.toEqual({
+            major: '?',
+            minor: '?',
+            patch: '?',
+        });
+
         expect(getJoiVersion(mockJoi('1.2.3'))).toEqual({
             major: '1',
             minor: '2',
@@ -103,7 +110,7 @@ describe('getJoiVersion', () => {
 
 describe('JOI_VERSION', () => {
     it('should match the version of joi referenced in Joifuls package dependencies', async () => {
-        const expectedJoiVersion = await getJoifulDependencyVersion('joi');
+        const expectedJoiVersion = await getJoifulDependencyVersion('@hapi/joi');
         expect(expectedJoiVersion.major).toBeTruthy();
 
         const actualJoiVersion = JOI_VERSION;

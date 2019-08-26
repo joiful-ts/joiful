@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 
 export const getJoi = (options: { joi?: typeof Joi } | undefined = {}) => options.joi || Joi;
 

@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { testConstraint } from './testUtil';
 import { Joiful, string, boolean } from '../../src';
 import { Validator, MultipleValidationError } from '../../src/validation';
