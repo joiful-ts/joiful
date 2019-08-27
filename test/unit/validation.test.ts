@@ -1,4 +1,13 @@
-import { string, Validator, ValidationResult, isValidationPass, isValidationFail } from '../../src';
+import {
+    string,
+    validate,
+    validateAsClass,
+    validateArrayAsClass,
+    Validator,
+    ValidationResult,
+    isValidationPass,
+    isValidationFail,
+} from '../../src';
 import { InvalidValidationTarget } from '../../src/validation';
 
 interface ResetPasswordForm {
@@ -58,7 +67,7 @@ describe('ValidationResult', () => {
     });
 });
 
-describe('Validator', () => {
+describe('Validation', () => {
     class Login {
         @string()
         emailAddress?: string;
@@ -67,15 +76,18 @@ describe('Validator', () => {
         password?: string;
     }
 
+    let login: Login;
+
+    beforeEach(() => {
+        login = new Login();
+        login.emailAddress = 'joe@example.com';
+    });
+
     describe('Validator', () => {
         let validator: Validator;
-        let login: Login;
 
         beforeEach(() => {
             validator = new Validator();
-
-            login = new Login();
-            login.emailAddress = 'joe@example.com';
         });
 
         describe('constructor', () => {
@@ -149,4 +161,61 @@ describe('Validator', () => {
             });
         });
     });
+
+    describe('validate', () => {
+        it('should validate an instance of a decorated class', () => {
+            const result = validate(login);
+            expect(result.value).toEqual(login);
+            expect(result.error).toBe(null);
+        });
+
+        it('should optionally accept validation options to use', () => {
+            const result = validate(login, { presence: 'required' });
+            expect(result.value).toEqual(login);
+            expect(result.error).toBeTruthy();
+        });
+
+        it('should error when trying to validate null', () => {
+            expect(() => validate(null)).toThrowError(new InvalidValidationTarget());
+        });
+    });
+
+    describe('validateAsClass', () => {
+        it('should accept a plain old javascript object to validate', () => {
+            const result = validateAsClass({ ...login }, Login);
+            expect(result.value).toEqual(login);
+            expect(result.error).toBe(null);
+        });
+
+        it('should optionally accept validation options to use', () => {
+            const result = validateAsClass({ ...login }, Login, { presence: 'required' });
+            expect(result.value).toEqual(login);
+            expect(result.error).toBeTruthy();
+        });
+
+        it('should error when trying to validate null', () => {
+            expect(() => validateAsClass(null, Login)).toThrowError(new InvalidValidationTarget());
+        });
+    });
+
+    describe('validateArrayAsClass', () => {
+        it('should accept an array of plain old javascript objects to validate', () => {
+            const result = validateArrayAsClass([{ ...login }], Login);
+            expect(result.value).toEqual([login]);
+            expect(result.error).toBe(null);
+        });
+
+        it('should optionally accept validation options to use', () => {
+            const result = validateArrayAsClass([{ ...login }], Login, { presence: 'required' });
+            expect(result.value).toEqual([login]);
+            expect(result.error).toBeTruthy();
+        });
+
+        it('should error when trying to validate null', () => {
+            expect(
+                () => validateArrayAsClass(null as any, Login),
+            ).toThrowError(new InvalidValidationTarget());
+        });
+    });
 });
+

@@ -1,10 +1,6 @@
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { copyFile, mkdirp, readFile, writeFile } from 'fs-extra';
+import { dirname, join } from 'path';
 import { rootPath } from 'get-root-path';
-
-function copyFile(inPath: string, outPath: string) {
-    writeFileSync(outPath, readFileSync(inPath));
-}
 
 interface Dependencies {
     [name: string]: string;
@@ -31,14 +27,14 @@ interface PackageJson {
     tags: string;
 }
 
-function readRootPackageJson(): PackageJson {
-    return JSON.parse(readFileSync(join(rootPath, 'package.json'), 'utf8'));
+async function readRootPackageJson(): Promise<PackageJson> {
+    return JSON.parse(await readFile(join(rootPath, 'package.json'), 'utf8'));
 }
 
-function packageForDistribution() {
+async function packageForDistribution() {
     const distPath = join(rootPath, 'dist');
 
-    const packageJson = readRootPackageJson();
+    const packageJson = await readRootPackageJson();
 
     // Make it publishable
     delete packageJson.private;
@@ -50,17 +46,25 @@ function packageForDistribution() {
     delete packageJson.devDependencies;
 
     // Write it out to the dist directory
-    writeFileSync(join(distPath, 'package.json'), JSON.stringify(packageJson, null, 2));
+    await writeFile(join(distPath, 'package.json'), JSON.stringify(packageJson, null, 2));
 
     // Copy some other files to publish
     const filesToCopy = [
         'README.md',
+        // 'images/logo.png',
     ];
-    filesToCopy.forEach((fileToCopy) => {
-        copyFile(join(rootPath, fileToCopy), join(distPath, fileToCopy));
-    });
+    await Promise.all(
+        filesToCopy.map(async (relativePath) => {
+            const absoluteSourceFileName = join(rootPath, relativePath);
+            const absoluteDestFileName = join(distPath, relativePath);
+            await mkdirp(dirname(absoluteDestFileName));
+            await copyFile(absoluteSourceFileName, absoluteDestFileName);
+        }),
+    );
 }
 
 if (require.main === module) {
-    packageForDistribution();
+    packageForDistribution()
+        .then(() => process.stdout.write('Package complete\n'))
+        .catch((err) => process.stdout.write(`Package failed: ${err.message || err}\n`));
 }

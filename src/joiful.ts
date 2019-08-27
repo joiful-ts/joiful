@@ -78,7 +78,7 @@ export class Joiful {
     string = () => createStringPropertyDecorator(this.options);
 
     /**
-     * Method decorator that validates that parameters passed into the method.
+     * Method decorator that validates the parameters passed into the method.
      */
-    validate = (options?: { validator?: Validator }) => createValidatePropertyDecorator(options);
+    validateParams = (options?: { validator?: Validator }) => createValidatePropertyDecorator(options);
 }

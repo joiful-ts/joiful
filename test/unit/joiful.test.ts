@@ -174,7 +174,7 @@ describe('validate', () => {
         }
 
         class PasscodeChecker {
-            @jf.validate()
+            @jf.validateParams()
             check(passcode: Passcode, basicArg: number) {
                 expect(passcode).not.toBeNull();
                 expect(basicArg).not.toBeNull();
@@ -204,7 +204,7 @@ describe('validate', () => {
         }));
 
         class PasscodeChecker {
-            @jf.validate({ validator })
+            @jf.validateParams({ validator })
             check(passcode: Passcode, basicArg: number) {
                 expect(passcode).not.toBeNull();
                 expect(basicArg).not.toBeNull();
