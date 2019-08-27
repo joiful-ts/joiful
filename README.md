@@ -3,6 +3,7 @@
 
 [![npm version](https://badge.fury.io/js/joiful.svg)](https://badge.fury.io/js/joiful)
 [![CircleCI](https://circleci.com/gh/joiful-ts/joiful.svg?style=shield)](https://circleci.com/gh/joiful-ts/joiful)
+[![codecov](https://codecov.io/gh/joiful-ts/joiful/branch/master/graph/badge.svg)](https://codecov.io/gh/joiful-ts/joiful)
 
 This lib allows you to apply Joi validation constraints on class properties, by using decorators.
 
