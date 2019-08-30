@@ -41,7 +41,8 @@
         "check": "yarn run build && yarn run lint && yarn test",
         "clean": "rimraf ./dist",
         "lint": "tslint -c ./tslint.json --project ./tsconfig.json --format stylish",
-        "ship-it": "yarn run check && yarn run build && cd ./dist && yarn publish && cd .. && yarn run clean",
+        "release": "git checkout master && git pull origin master && yarn run check && standard-version && ts-node ./support/updatePackageVersion.ts",
+        "ship-it": "git push --follow-tags origin master && cd ./dist && yarn publish && cd .. && yarn run clean",
         "test": "jest",
         "watch": "tsc -p tsconfig.all.json -w --noEmit"
     },
@@ -50,6 +51,8 @@
         "@types/hapi__joi": "15.0.3"
     },
     "devDependencies": {
+        "@commitlint/cli": "8.1.0",
+        "@commitlint/prompt-cli": "8.1.0",
         "@types/fs-extra": "8.0.0",
         "@types/jest": "24.0.11",
         "@types/node": "6.0.63",
@@ -61,8 +64,10 @@
         "get-root-path": "2.0.2",
         "husky": "2.3.0",
         "jest": "24.7.1",
+        "lodash": "^4.17.2",
         "reflect-metadata": "0.1.13",
         "rimraf": "3.0.0",
+        "standard-version": "7.0.0",
         "ts-jest": "24.0.2",
         "ts-node": "8.3.0",
         "tslint": "5.16.0",
