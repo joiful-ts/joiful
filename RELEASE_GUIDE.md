@@ -4,12 +4,16 @@ Publishing a new release is done manually, not via CI. Do not change the package
 
 Follow these steps:
 
-1. Create a new release:
+1. Create feature / bug fix PR
+    - **Do not manually change version or change log in PR**
+    - Merge PR into master
+
+2. Create a new release:
 
     `yarn run release`
 
     This will:
-    - Checkout master
+    - Checkout `master`
     - Pull down the latest code
     - Build
     - Run linter
@@ -19,7 +23,7 @@ Follow these steps:
       - Will look through commits since previous release and increment patch, minor or major version based on commit messages.
     - Commit changes
 
-2. Publish:
+3. Publish:
 
     `yarn run ship-it`
 
