@@ -10,13 +10,22 @@
         "Ben <codeandcats@gmail.com> (https://github.com/codeandcats)",
         "Laurence Dougal Myers <laurencedougalmyers@gmail.com>"
     ],
-    "tags": [
+    "keywords": [
+        "class",
+        "constrain",
+        "constraint",
+        "declarative",
         "decorator",
+        "decorators",
         "joi",
+        "model",
         "schema",
+        "tsdv",
+        "tsdv-joi",
         "typescript",
-        "typescript-validator",
+        "validate",
         "validator",
+        "validators",
         "validation"
     ],
     "engines": {
