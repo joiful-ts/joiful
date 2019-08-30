@@ -52,7 +52,7 @@
         "get-root-path": "2.0.2",
         "husky": "2.3.0",
         "jest": "24.7.1",
-        "reflect-metadata": "0.1.9",
+        "reflect-metadata": "0.1.13",
         "rimraf": "2.6.0",
         "ts-jest": "24.0.2",
         "ts-node": "8.3.0",
