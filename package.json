@@ -56,7 +56,7 @@
         "@types/fs-extra": "8.0.0",
         "@types/jest": "24.0.11",
         "@types/node": "6.0.63",
-        "@types/reflect-metadata": "0.0.5",
+        "@types/reflect-metadata": "0.1.0",
         "@types/rimraf": "0.0.28",
         "case": "1.6.2",
         "flatted": "2.0.1",
