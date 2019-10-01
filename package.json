@@ -70,7 +70,7 @@
         "standard-version": "7.0.0",
         "ts-jest": "24.0.2",
         "ts-node": "8.3.0",
-        "tslint": "5.16.0",
+        "tslint": "5.20.0",
         "typescript": "3.5.3",
         "typestrict": "1.0.2"
     }
