@@ -63,7 +63,7 @@
         "fs-extra": "8.1.0",
         "get-root-path": "2.0.2",
         "husky": "2.3.0",
-        "jest": "24.7.1",
+        "jest": "24.9.0",
         "lodash": "^4.17.2",
         "reflect-metadata": "0.1.13",
         "rimraf": "3.0.0",
