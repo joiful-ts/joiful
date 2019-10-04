@@ -329,7 +329,7 @@ describe('any', () => {
             () => {
                 class User {
                     @jf.string()
-                    emailAddress!: string;
+                    emailAddress?: string;
 
                     @jf.date().optional()
                     dateOfBirth?: Date;
@@ -391,7 +391,7 @@ describe('any', () => {
             () => {
                 class User {
                     @jf.string().required()
-                    emailAddress!: string;
+                    emailAddress?: string;
 
                     @jf.date()
                     dateOfBirth?: Date;
