@@ -69,6 +69,14 @@ describe('array', () => {
                     name: 'The Faketrix',
                     actors: [1, 2, 3],
                 },
+                {
+                    name: 'The Faketrix',
+                    actors: [
+                        'Laurence Fishberg',
+                        'Keanu Wick',
+                        'Carrie-Anne More',
+                    ],
+                },
             ],
         );
     });
