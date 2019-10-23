@@ -40,19 +40,19 @@ You must enable experimental decorators and metadata in your TypeScript configur
 import * as jf from "joiful";
 
 class SignUp {
-    @(jf.string().required())
+    @jf.string().required()
     username: string;
 
-    @(jf
+    @jf
         .string()
         .required()
-        .min(8))
+        .min(8)
     password: string;
 
     @jf.date()
     dateOfBirth: Date;
 
-    @(jf.boolean().required())
+    @jf.boolean().required()
     subscribedToNewsletter: boolean;
 }
 
