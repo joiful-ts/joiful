@@ -1,6 +1,6 @@
 {
     "name": "joiful",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "description": "TypeScript Declarative Validation. Decorate your class properties to validate them using Joi.",
     "license": "MIT",
     "repository": "https://github.com/joiful-ts/joiful",
