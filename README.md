@@ -117,6 +117,54 @@ class SimpleTodoList {
 }
 ```
 
+To validate an array of objects that have their own joiful validation:
+
+```typescript
+class Actor {
+    @string().required()
+    name!: string;
+}
+
+class Movie {
+    @string().required()
+    name!: string;
+
+    @array({ elementClass: Actor }).required()
+    actors!: Actor[];
+}
+```
+
+## Validating object properties
+
+To validate an object subproperty that has its own joiful validation:
+
+```typescript
+class Address {
+    @string()
+    line1?: string;
+
+    @string()
+    line2?: string;
+
+    @string().required()
+    city!: string;
+
+    @string().required()
+    state!: string;
+
+    @string().required()
+    country!: string;
+}
+
+class Contact {
+    @string().required()
+    name!: string;
+
+    @object().optional()
+    address?: Address;
+}
+```
+
 ## Got a question?
 
 The joiful API is designed to closely match the joi API. One exception is validating the length of a `string`, `array`, etc, which is performed using `.exactLength(n)` rather than `.length(n)`. If you're familiar with the joi API, you should find joiful very easy to pickup.
