@@ -40,19 +40,19 @@ You must enable experimental decorators and metadata in your TypeScript configur
 import * as jf from "joiful";
 
 class SignUp {
-    @jf.string().required()
+    @(jf.string().required())
     username: string;
 
-    @jf
+    @(jf
         .string()
         .required()
-        .min(8)
+        .min(8))
     password: string;
 
     @jf.date()
     dateOfBirth: Date;
 
-    @jf.boolean().required()
+    @(jf.boolean().required())
     subscribedToNewsletter: boolean;
 }
 
@@ -108,11 +108,26 @@ class ChangePassword {
 }
 ```
 
+## Validating array properties
+
+```typescript
+class SimpleTodoList {
+    @jf.array().items((joi) => joi.string())
+    todos?: string[];
+}
+```
+
+## Got a question?
+
+The joiful API is designed to closely match the joi API. One exception is validating the length of a `string`, `array`, etc, which is performed using `.exactLength(n)` rather than `.length(n)`. If you're familiar with the joi API, you should find joiful very easy to pickup.
+
+If there's something you're not sure of you can see how it's done by looking at the unit tests. There is 100% coverage so most likely you'll find your scenario there. Otherwise feel free to [open an issue](https://github.com/joiful-ts/joiful/issues).
+
 ## Contributing
 
 Got an issue or a feature request? [Log it](https://github.com/joiful-ts/joiful/issues).
 
-[Pull-requests](https://github.com/joiful-ts/joiful/pulls) are also welcome.
+[Pull-requests](https://github.com/joiful-ts/joiful/pulls) are also very welcome.
 
 ## Alternatives
 
