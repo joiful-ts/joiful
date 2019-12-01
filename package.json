@@ -68,7 +68,7 @@
         "lodash": "4.17.15",
         "reflect-metadata": "0.1.13",
         "rimraf": "3.0.0",
-        "standard-version": "7.0.0",
+        "standard-version": "7.0.1",
         "ts-jest": "24.1.0",
         "ts-node": "8.4.1",
         "tslint": "5.20.1",
