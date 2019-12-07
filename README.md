@@ -1,11 +1,16 @@
-# joiful
+<p align="center" style="margin-top: 30px">
+    <img width="500" src="https://raw.githubusercontent.com/joiful-ts/joiful/master/img/logo-icon-with-text-800x245.png">
+    <h2 align="center" style="margin-top: 0px; padding-top: 0">TypeScript Declarative Validation for Joi</h2>
+</p>
 
-#### TypeScript Declarative Validation for Joi
+<br />
 
 [![npm version](https://badge.fury.io/js/joiful.svg)](https://badge.fury.io/js/joiful)
 [![CircleCI](https://circleci.com/gh/joiful-ts/joiful.svg?style=shield)](https://circleci.com/gh/joiful-ts/joiful)
 [![codecov](https://codecov.io/gh/joiful-ts/joiful/branch/master/graph/badge.svg)](https://codecov.io/gh/joiful-ts/joiful)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=joiful-ts/joiful)](https://dependabot.com)
+
+## Why Joiful?
 
 This lib allows you to apply Joi validation constraints on class properties, by using decorators.
 
@@ -40,19 +45,19 @@ You must enable experimental decorators and metadata in your TypeScript configur
 import * as jf from "joiful";
 
 class SignUp {
-    @jf.string().required()
+    @(jf.string().required())
     username: string;
 
-    @jf
+    @(jf
         .string()
         .required()
-        .min(8)
+        .min(8))
     password: string;
 
     @jf.date()
     dateOfBirth: Date;
 
-    @jf.boolean().required()
+    @(jf.boolean().required())
     subscribedToNewsletter: boolean;
 }
 
@@ -112,7 +117,7 @@ class ChangePassword {
 
 ```typescript
 class SimpleTodoList {
-    @jf.array().items((joi) => joi.string())
+    @(jf.array().items(joi => joi.string()))
     todos?: string[];
 }
 ```
@@ -121,15 +126,15 @@ To validate an array of objects that have their own joiful validation:
 
 ```typescript
 class Actor {
-    @string().required()
+    @(string().required())
     name!: string;
 }
 
 class Movie {
-    @string().required()
+    @(string().required())
     name!: string;
 
-    @array({ elementClass: Actor }).required()
+    @(array({ elementClass: Actor }).required())
     actors!: Actor[];
 }
 ```
@@ -146,21 +151,21 @@ class Address {
     @string()
     line2?: string;
 
-    @string().required()
+    @(string().required())
     city!: string;
 
-    @string().required()
+    @(string().required())
     state!: string;
 
-    @string().required()
+    @(string().required())
     country!: string;
 }
 
 class Contact {
-    @string().required()
+    @(string().required())
     name!: string;
 
-    @object().optional()
+    @(object().optional())
     address?: Address;
 }
 ```
