@@ -1,6 +1,8 @@
-<p align="center" style="margin-top: 30px">
+<br />
+
+<p align="center">
     <img width="500" src="https://raw.githubusercontent.com/joiful-ts/joiful/master/img/logo-icon-with-text-800x245.png">
-    <h2 align="center" style="margin-top: 0px; padding-top: 0">TypeScript Declarative Validation for Joi</h2>
+    <h3 align="center" style="margin-top: 0px; padding-top: 0">TypeScript Declarative Validation for Joi</h3>
 </p>
 
 <br />
