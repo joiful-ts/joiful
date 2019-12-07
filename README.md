@@ -34,38 +34,38 @@ You must enable experimental decorators and metadata in your TypeScript configur
 
 ```json
 {
-    "compilerOptions": {
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
-    }
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  }
 }
 ```
 
 ## Basic Usage
 
 ```typescript
-import * as jf from "joiful";
+import * as jf from 'joiful';
 
 class SignUp {
-    @(jf.string().required())
-    username: string;
+  @jf.string().required()
+  username: string;
 
-    @(jf
-        .string()
-        .required()
-        .min(8))
-    password: string;
+  @jf
+    .string()
+    .required()
+    .min(8)
+  password: string;
 
-    @jf.date()
-    dateOfBirth: Date;
+  @jf.date()
+  dateOfBirth: Date;
 
-    @(jf.boolean().required())
-    subscribedToNewsletter: boolean;
+  @jf.boolean().required()
+  subscribedToNewsletter: boolean;
 }
 
 const signUp = new SignUp();
-signUp.username = "rick.sanchez";
-signUp.password = "wubbalubbadubdub";
+signUp.username = 'rick.sanchez';
+signUp.password = 'wubbalubbadubdub';
 
 const { error } = jf.validate(signUp);
 
@@ -78,8 +78,8 @@ Don't like creating instances of classes? Don't worry, you don't have to. You ca
 
 ```typescript
 const signUp = {
-    username: "rick.sanchez",
-    password: "wubbalubbadubdub"
+  username: 'rick.sanchez',
+  password: 'wubbalubbadubdub',
 };
 
 const result = jf.validateAsClass(signUp, SignUp);
@@ -92,26 +92,26 @@ Want to create your own shorthand versions of decorators? Simply create a functi
 `customDecorators.ts`
 
 ```typescript
-import * as jf from "joiful";
+import * as jf from 'joiful';
 
 const password = () =>
-    jf
-        .string()
-        .min(8)
-        .regex(/[a-z]/)
-        .regex(/[A-Z]/)
-        .regex(/[0-9]/)
-        .required();
+  jf
+    .string()
+    .min(8)
+    .regex(/[a-z]/)
+    .regex(/[A-Z]/)
+    .regex(/[0-9]/)
+    .required();
 ```
 
 `changePassword.ts`
 
 ```typescript
-import { password } from "./customDecorators";
+import { password } from './customDecorators';
 
 class ChangePassword {
-    @password()
-    newPassword: string;
+  @password()
+  newPassword: string;
 }
 ```
 
@@ -119,8 +119,8 @@ class ChangePassword {
 
 ```typescript
 class SimpleTodoList {
-    @(jf.array().items(joi => joi.string()))
-    todos?: string[];
+  @jf.array().items(joi => joi.string())
+  todos?: string[];
 }
 ```
 
@@ -128,16 +128,16 @@ To validate an array of objects that have their own joiful validation:
 
 ```typescript
 class Actor {
-    @(string().required())
-    name!: string;
+  @string().required()
+  name!: string;
 }
 
 class Movie {
-    @(string().required())
-    name!: string;
+  @string().required()
+  name!: string;
 
-    @(array({ elementClass: Actor }).required())
-    actors!: Actor[];
+  @array({ elementClass: Actor }).required()
+  actors!: Actor[];
 }
 ```
 
@@ -147,28 +147,28 @@ To validate an object subproperty that has its own joiful validation:
 
 ```typescript
 class Address {
-    @string()
-    line1?: string;
+  @string()
+  line1?: string;
 
-    @string()
-    line2?: string;
+  @string()
+  line2?: string;
 
-    @(string().required())
-    city!: string;
+  @string().required()
+  city!: string;
 
-    @(string().required())
-    state!: string;
+  @string().required()
+  state!: string;
 
-    @(string().required())
-    country!: string;
+  @string().required()
+  country!: string;
 }
 
 class Contact {
-    @(string().required())
-    name!: string;
+  @string().required()
+  name!: string;
 
-    @(object().optional())
-    address?: Address;
+  @object().optional()
+  address?: Address;
 }
 ```
 
@@ -186,6 +186,6 @@ Got an issue or a feature request? [Log it](https://github.com/joiful-ts/joiful/
 
 ## Alternatives
 
--   [class-validator](https://github.com/typestack/class-validator): usable in both Node.js and the browser. Mostly designed for validating string values. Can't validate plain objects, only class instances.
--   [joi-extract-type](https://github.com/TCMiranda/joi-extract-type): provides native type extraction from Joi Schemas. Augments the Joi type definitions.
--   [typesafe-joi](https://github.com/hjkcai/typesafe-joi): automatically infers type information of validated objects, via the standard Joi schema API.
+- [class-validator](https://github.com/typestack/class-validator): usable in both Node.js and the browser. Mostly designed for validating string values. Can't validate plain objects, only class instances.
+- [joi-extract-type](https://github.com/TCMiranda/joi-extract-type): provides native type extraction from Joi Schemas. Augments the Joi type definitions.
+- [typesafe-joi](https://github.com/hjkcai/typesafe-joi): automatically infers type information of validated objects, via the standard Joi schema API.
