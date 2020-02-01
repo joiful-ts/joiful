@@ -47,7 +47,7 @@
         "watch": "tsc -p tsconfig.all.json -w --noEmit"
     },
     "dependencies": {
-        "@hapi/joi": "15.1.1",
+        "@hapi/joi": "17.1.0",
         "@types/hapi__joi": "15.0.3"
     },
     "devDependencies": {
