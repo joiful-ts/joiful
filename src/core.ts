@@ -100,6 +100,10 @@ export function getJoiSchema(Class: AnyClass, joi: typeof Joi): Joi.ObjectSchema
     }
 }
 
+export function hasWorkingSchema(Class: AnyClass): boolean {
+    return Reflect.hasOwnMetadata(WORKING_SCHEMA_KEY, Class.prototype);
+}
+
 export function updateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(
     target: TClass,
     propertyKey: TKey,

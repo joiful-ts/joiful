@@ -1,6 +1,6 @@
 import * as Joi from '@hapi/joi';
 import { testConstraint } from './testUtil';
-import { Joiful, string, boolean } from '../../src';
+import { Joiful, string, boolean, hasWorkingSchema } from '../../src';
 import { Validator, MultipleValidationError } from '../../src/validation';
 import * as Case from 'case';
 import { IncompatibleJoiVersion } from '../../src/core';
@@ -35,6 +35,24 @@ describe('joiful', () => {
                 { emailAddress: 'email@example.com', password: 'nope' },
             ],
         );
+
+        it('should have Working Schema', () => {
+            class Message {
+                @string()
+                    .required()
+                text!: string;
+            }
+            const result = hasWorkingSchema(Message);
+            expect(result).toBeTruthy();
+        });
+
+        it('should not have Working Schema', () => {
+            class Message {
+                text!: string;
+            }
+            const result = hasWorkingSchema(Message);
+            expect(result).toBeFalsy();
+        });
     });
 
     describe('when constructing an isolated instance of Joiful', () => {
@@ -157,6 +175,23 @@ describe('joiful', () => {
 
                 expect(result.error).toBeTruthy();
                 expect(result.error!.message).toContain('signUpForSpam');
+            });
+
+            it('should have Working Schema', () => {
+                class Message {
+                    @jf.string().required()
+                    text!: string;
+                }
+                const result = hasWorkingSchema(Message);
+                expect(result).toBeTruthy();
+            });
+
+            it('should not have Working Schema', () => {
+                class Message {
+                    text!: string;
+                }
+                const result = hasWorkingSchema(Message);
+                expect(result).toBeFalsy();
             });
         });
     });

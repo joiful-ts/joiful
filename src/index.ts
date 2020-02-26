@@ -4,6 +4,8 @@ import { Validator } from './validation';
 export { Validator, MultipleValidationError, ValidationResult, isValidationPass, isValidationFail } from './validation';
 export { Joiful } from './joiful';
 
+export { hasWorkingSchema } from './core';
+
 export const DEFAULT_INSTANCE = new Joiful();
 
 const DEFAULT_VALIDATOR = new Validator();
