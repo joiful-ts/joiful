@@ -36,12 +36,14 @@ describe('getJoiSchema', () => {
         expect(getJoiSchema(Cat, jf.joi)).toEqual(jf.joi.object().keys({
             name: jf.joi.string(),
         }));
+    });
 
+    it('should return no schema when class is not decorated', () => {
         class Dog {
             name!: string;
         }
 
-        expect(getJoiSchema(Dog, jf.joi)).toEqual(jf.joi.object().keys({}));
+        expect(getJoiSchema(Dog, jf.joi)).toBeUndefined();
     });
 
     it('should support inheritance in classes', () => {

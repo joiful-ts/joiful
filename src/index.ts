@@ -21,6 +21,8 @@ const {
     object,
     string,
     validateParams,
+    getSchema,
+    hasSchema,
 } = DEFAULT_INSTANCE;
 
 export {
@@ -38,4 +40,6 @@ export {
     validateAsClass,
     validateArrayAsClass,
     validateParams,
+    getSchema,
+    hasSchema,
 };

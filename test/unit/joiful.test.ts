@@ -159,6 +159,42 @@ describe('joiful', () => {
                 expect(result.error!.message).toContain('signUpForSpam');
             });
         });
+
+        it('should provide method to get the Joi schema for a class', () => {
+            class ForgotPassword {
+                emailAddress?: string;
+            }
+
+            expect(jf.getSchema(ForgotPassword)).toBe(undefined);
+
+            class Login {
+                @jf.string().email().required()
+                emailAddress?: string;
+
+                @jf.string().min(8).required()
+                password?: string;
+            }
+
+            expect(jf.getSchema(Login)).toBeTruthy();
+        });
+
+        it('should provide method to test if class has a schema', () => {
+            class ForgotPassword {
+                emailAddress?: string;
+            }
+
+            expect(jf.hasSchema(ForgotPassword)).toBe(false);
+
+            class Login {
+                @jf.string().email().required()
+                emailAddress?: string;
+
+                @jf.string().min(8).required()
+                password?: string;
+            }
+
+            expect(jf.hasSchema(Login)).toBe(true);
+        });
     });
 });
 

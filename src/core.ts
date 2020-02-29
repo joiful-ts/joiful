@@ -69,44 +69,57 @@ export type TypedPropertyDecorator<TPropertyType> = (
     ) => void
 );
 
-export function getWorkingSchema<TClass>(target: TClass): WorkingSchema {
+export function getWorkingSchema<TClass>(target: TClass): WorkingSchema | undefined {
     let workingSchema: WorkingSchema = Reflect.getOwnMetadata(WORKING_SCHEMA_KEY, target);
-    if (!workingSchema) {
-        workingSchema = {};
-        Reflect.defineMetadata(WORKING_SCHEMA_KEY, workingSchema, target);
-    }
     return workingSchema;
 }
 
-export function getMergedWorkingSchemas(target: object): WorkingSchema {
-    const workingSchema = {};
+export function getMergedWorkingSchemas(target: object): WorkingSchema | undefined {
     const parentPrototype = Object.getPrototypeOf(target);
-    if (!!(parentPrototype && parentPrototype.constructor !== Object)) {
-        Object.assign(workingSchema, getMergedWorkingSchemas(parentPrototype));
+    const parentSchema = (
+        parentPrototype &&
+        (parentPrototype.constructor !== Object) &&
+        getMergedWorkingSchemas(parentPrototype)
+    );
+
+    const workingSchema = getWorkingSchema(target);
+
+    if (workingSchema || parentSchema) {
+        return {
+            ...parentSchema,
+            ...workingSchema,
+        };
     }
-    Object.assign(workingSchema, getWorkingSchema(target));
-    return workingSchema;
+
+    return undefined;
 }
 
-export function getJoiSchema(Class: AnyClass, joi: typeof Joi): Joi.ObjectSchema {
-    let joiSchema: Joi.ObjectSchema | undefined = Reflect.getOwnMetadata(SCHEMA_KEY, Class.prototype);
-    if (joiSchema) {
-        return joiSchema;
-    } else {
-        let workingSchema: WorkingSchema = getMergedWorkingSchemas(Class.prototype);
-        joiSchema = joi.object().keys(workingSchema);
-        Reflect.defineMetadata(SCHEMA_KEY, joiSchema, Class.prototype);
-        return joiSchema;
+export function getJoiSchema(Class: AnyClass, joi: typeof Joi): Joi.ObjectSchema | undefined {
+    const isSchemaDefined = Reflect.hasOwnMetadata(SCHEMA_KEY, Class.prototype);
+    if (isSchemaDefined) {
+        return Reflect.getOwnMetadata(SCHEMA_KEY, Class.prototype);
     }
+
+    let workingSchema = getMergedWorkingSchemas(Class.prototype);
+    const joiSchema: Joi.ObjectSchema | undefined = (
+        workingSchema ? joi.object().keys(workingSchema) : undefined
+    );
+    Reflect.defineMetadata(SCHEMA_KEY, joiSchema, Class.prototype);
+
+    return joiSchema;
 }
 
-export function updateSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(
+export function updateWorkingSchema<TClass, TKey extends StringOrSymbolKey<TClass>>(
     target: TClass,
     propertyKey: TKey,
     schema: Joi.Schema,
 ) {
-    const classSchema = getWorkingSchema(target);
-    classSchema[String(propertyKey)] = schema;
+    let workingSchema = getWorkingSchema(target);
+    if (!workingSchema) {
+        workingSchema = {};
+        Reflect.defineMetadata(WORKING_SCHEMA_KEY, workingSchema, target);
+    }
+    workingSchema[String(propertyKey)] = schema;
 }
 
 export interface Version {

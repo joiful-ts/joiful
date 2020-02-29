@@ -9,7 +9,7 @@ describe('lazy', () => {
                 @string()
                 title!: string;
 
-                @lazy(({ joi }) => joi.array().items(getJoiSchema(TreeNode, joi))).optional()
+                @lazy(({ joi }) => joi.array().items(getJoiSchema(TreeNode, joi)!)).optional()
                 children?: TreeNode[];
             }
             return TreeNode;
