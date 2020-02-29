@@ -2,6 +2,7 @@ import './testUtil';
 import { Joiful } from '../../src/joiful';
 import { Validator } from '../../src/validation';
 import { getMergedWorkingSchemas, getWorkingSchema } from '../../src/core';
+import { notNil } from './testUtil';
 
 let jf: Joiful;
 
@@ -25,15 +26,15 @@ describe('Inheritance', () => {
             bar!: number;
         }
 
-        const parentSchemaUnmerged = getWorkingSchema(ParentClass.prototype);
+        const parentSchemaUnmerged = notNil(getWorkingSchema(ParentClass.prototype));
         expect(parentSchemaUnmerged.foo).toBeDefined();
         expect(parentSchemaUnmerged.bar).toBeUndefined();
 
-        const parentSchema = getMergedWorkingSchemas(ParentClass.prototype);
+        const parentSchema = notNil(getMergedWorkingSchemas(ParentClass.prototype));
         expect(parentSchema.foo).toBeDefined();
         expect(parentSchema.bar).toBeUndefined();
 
-        const childSchema = getMergedWorkingSchemas(ChildClass.prototype);
+        const childSchema = notNil(getMergedWorkingSchemas(ChildClass.prototype));
         expect(childSchema.foo).toBeDefined();
         expect(childSchema.bar).toBeDefined();
     });

@@ -79,7 +79,7 @@ describe('Examples', () => {
             @string().required()
             tagName!: string;
 
-            @lazy(() => Joi.array().items(getJoiSchema(TreeNode, joi)))
+            @lazy(() => Joi.array().items(getJoiSchema(TreeNode, joi)!))
             children!: TreeNode[];
         }
 

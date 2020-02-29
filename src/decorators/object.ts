@@ -38,9 +38,9 @@ export const createObjectPropertyDecorator = (
                     options.objectClass :
                     Reflect.getMetadata('design:type', target, propertyKey);
 
-                const schema = (elementType && elementType !== Object) ?
-                    getJoiSchema(elementType, joi) :
-                    joi.object();
+                const schema = (
+                    (elementType && elementType !== Object) && getJoiSchema(elementType, joi)
+                 ) || joi.object();
 
                 return schema;
             },

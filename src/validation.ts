@@ -1,6 +1,15 @@
 import { getJoi, getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
 import * as Joi from '@hapi/joi';
 
+export class NoValidationSchemaForClassError extends Error {
+    constructor(Class: AnyClass) {
+        const className = Class && Class.name || '';
+        const classNameText = className ? ` ${className}` : '';
+        const message = `No validation schema was found for class${classNameText}. Did you forget to decorate the class?`;
+        super(message);
+    }
+}
+
 export class MultipleValidationError extends Error {
     constructor(
         public readonly errors: Joi.ValidationError[],
@@ -90,9 +99,15 @@ export class Validator {
         }
 
         const joi = getJoi(options);
-        const classSchema: Joi.ObjectSchema = getJoiSchema(Class, joi);
+        const classSchema = getJoiSchema(Class, joi);
 
-        const result = options ?
+        let result: Joi.ValidationResult<Partial<TInstance>>;
+
+        if (!classSchema) {
+            throw new NoValidationSchemaForClassError(Class);
+        }
+
+        result = options ?
             joi.validate(target, classSchema, options) :
             joi.validate(target, classSchema);
 
@@ -121,7 +136,10 @@ export class Validator {
         }
 
         const joi = getJoi(options);
-        const classSchema: Joi.ObjectSchema = getJoiSchema(Class, joi);
+        const classSchema = getJoiSchema(Class, joi);
+        if (!classSchema) {
+            throw new NoValidationSchemaForClassError(Class);
+        }
         const arraySchema = joi.array().items(classSchema);
 
         const result = options ?

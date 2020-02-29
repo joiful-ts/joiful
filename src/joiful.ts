@@ -10,7 +10,7 @@ import { createNumberPropertyDecorator } from './decorators/number';
 import { createObjectPropertyDecorator, ObjectPropertyDecoratorOptions } from './decorators/object';
 import { createStringPropertyDecorator } from './decorators/string';
 import { Validator, createValidatePropertyDecorator } from './validation';
-import { checkJoiIsCompatible, getJoi } from './core';
+import { AnyClass, checkJoiIsCompatible, getJoi, getJoiSchema } from './core';
 
 export class Joiful {
     constructor(private readonly options: JoifulOptions = {}) {
@@ -81,4 +81,16 @@ export class Joiful {
      * Method decorator that validates the parameters passed into the method.
      */
     validateParams = (options?: { validator?: Validator }) => createValidatePropertyDecorator(options);
+
+    /**
+     * Returns the Joi schema associated with a class or undefined if there isn't one.
+     */
+    getSchema = (Class: AnyClass): Joi.ObjectSchema | undefined => {
+        return getJoiSchema(Class, this.joi);
+    }
+
+    /**
+     * Returns whether the given class has a Joi schema associated with it
+     */
+    hasSchema = (Class: AnyClass) => Boolean(this.getSchema(Class));
 }

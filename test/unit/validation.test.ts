@@ -8,7 +8,7 @@ import {
     isValidationPass,
     isValidationFail,
 } from '../../src';
-import { InvalidValidationTarget } from '../../src/validation';
+import { InvalidValidationTarget, NoValidationSchemaForClassError } from '../../src/validation';
 
 interface ResetPasswordForm {
     emailAddress?: string;
@@ -139,6 +139,19 @@ describe('Validation', () => {
             it('should error when trying to validate null', () => {
                 expect(() => validator.validateAsClass(null, Login)).toThrowError(new InvalidValidationTarget());
             });
+
+            it('should error when class does not have an associated schema', () => {
+                class AgeForm {
+                    age?: number;
+                }
+                const validate = () => validator.validateAsClass(
+                    {
+                        name: 'Joe',
+                    },
+                    AgeForm,
+                );
+                expect(validate).toThrowError(new NoValidationSchemaForClassError(AgeForm));
+            });
         });
 
         describe('validateArrayAsClass', () => {
@@ -158,6 +171,19 @@ describe('Validation', () => {
                 expect(
                     () => validator.validateArrayAsClass(null as any, Login),
                 ).toThrowError(new InvalidValidationTarget());
+            });
+
+            it('should error when items class does not have an associated schema', () => {
+                class AgeForm {
+                    age?: number;
+                }
+                const validate = () => validator.validateArrayAsClass(
+                    [{
+                        name: 'Joe',
+                    }],
+                    AgeForm,
+                );
+                expect(validate).toThrowError(new NoValidationSchemaForClassError(AgeForm));
             });
         });
     });
@@ -219,3 +245,21 @@ describe('Validation', () => {
     });
 });
 
+describe('NoValidationSchemaForClassError', () => {
+    it('should have a helpful message', () => {
+        expect(new NoValidationSchemaForClassError(class {
+            emailAddress?: string;
+        }).message).toEqual(
+            'No validation schema was found for class. Did you forget to decorate the class?',
+        );
+    });
+
+    it('should have a helpful message including classname if it has one', () => {
+        class ForgotPassword {
+            emailAddress?: string;
+        }
+        expect(new NoValidationSchemaForClassError(ForgotPassword).message).toEqual(
+            'No validation schema was found for class ForgotPassword. Did you forget to decorate the class?',
+        );
+    });
+});

@@ -1,5 +1,5 @@
 import * as Joi from '@hapi/joi';
-import { getJoi, TypedPropertyDecorator, MapAllowUnions, StringOrSymbolKey, updateSchema } from '../core';
+import { getJoi, TypedPropertyDecorator, MapAllowUnions, StringOrSymbolKey, updateWorkingSchema } from '../core';
 
 export class NotImplemented extends Error {
     constructor(feature: string) {
@@ -93,7 +93,7 @@ export const createPropertyDecorator = <TAllowedTypes, TSchemaModifiers>() => (
                 schema = modifierToApply({ schema: schema!, options });
             });
 
-            updateSchema(target, propertyKey, schema);
+            updateWorkingSchema(target, propertyKey, schema);
         };
 
         const decorator = decoratorUntyped as PropertyDecorator<TAllowedTypes, TSchemaModifiers>;

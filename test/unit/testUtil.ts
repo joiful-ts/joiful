@@ -5,6 +5,13 @@ import * as fs from 'fs';
 import { Validator } from '../../src/validation';
 import { AnyClass, getJoiSchema, getJoi, parseVersionString } from '../../src/core';
 
+export function notNil<T>(value: T): Exclude<T, null | undefined> {
+    if (value === null || value === undefined) {
+        throw new Error('Unexpected nil value');
+    }
+    return value as Exclude<T, null | undefined>;
+}
+
 export function testConstraint<T>(
     classFactory: () => { new(...args: any[]): T },
     valid: T[],
