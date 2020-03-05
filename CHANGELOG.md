@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/joiful-ts/joiful/compare/v1.1.9...v2.0.0) (2020-03-05)
+
+
+### Features
+
+* add getSchema & hasSchema functions ([3e9f9f5](https://github.com/joiful-ts/joiful/commit/3e9f9f5f4638d84666db0c7de5c6883686ed9307))
+
 ### [1.1.9](https://github.com/joiful-ts/joiful/compare/v1.1.8...v1.1.9) (2019-12-07)
 
 ### [1.1.8](https://github.com/joiful-ts/joiful/compare/v1.1.7...v1.1.8) (2019-12-07)
