@@ -1,3 +1,4 @@
+import * as Joi from '@hapi/joi';
 import {
     string,
     validate,
@@ -103,6 +104,15 @@ describe('Validation', () => {
                 expect(result.value).toEqual(login);
                 expect(result.error).toBeTruthy();
             });
+
+            it('should support a custom instance of Joi', () => {
+                validator = new Validator({
+                    joi: Joi,
+                });
+                const result = validator.validate(login);
+                expect(result.value).toEqual(login);
+                expect(result.error).toBe(null);
+            });
         });
 
         describe('validate', () => {
@@ -116,6 +126,14 @@ describe('Validation', () => {
                 const result = validator.validate(login, { presence: 'required' });
                 expect(result.value).toEqual(login);
                 expect(result.error).toBeTruthy();
+            });
+
+            it('should support a custom instance of Joi', () => {
+                const result = validator.validate(login, {
+                    joi: Joi,
+                });
+                expect(result.value).toEqual(login);
+                expect(result.error).toBe(null);
             });
 
             it('should error when trying to validate null', () => {
@@ -134,6 +152,14 @@ describe('Validation', () => {
                 const result = validator.validateAsClass({ ...login }, Login, { presence: 'required' });
                 expect(result.value).toEqual(login);
                 expect(result.error).toBeTruthy();
+            });
+
+            it('should support a custom instance of Joi', () => {
+                const result = validator.validateAsClass({ ...login }, Login, {
+                    joi: Joi,
+                });
+                expect(result.value).toEqual(login);
+                expect(result.error).toBe(null);
             });
 
             it('should error when trying to validate null', () => {
@@ -165,6 +191,14 @@ describe('Validation', () => {
                 const result = validator.validateArrayAsClass([{ ...login }], Login, { presence: 'required' });
                 expect(result.value).toEqual([login]);
                 expect(result.error).toBeTruthy();
+            });
+
+            it('should support a custom instance of Joi', () => {
+                const result = validator.validateArrayAsClass([{ ...login }], Login, {
+                    joi: Joi,
+                });
+                expect(result.value).toEqual([login]);
+                expect(result.error).toBe(null);
             });
 
             it('should error when trying to validate null', () => {
@@ -201,6 +235,14 @@ describe('Validation', () => {
             expect(result.error).toBeTruthy();
         });
 
+        it('should support a custom instance of Joi', () => {
+            const result = validate(login, {
+                joi: Joi,
+            });
+            expect(result.value).toEqual(login);
+            expect(result.error).toBe(null);
+        });
+
         it('should error when trying to validate null', () => {
             expect(() => validate(null)).toThrowError(new InvalidValidationTarget());
         });
@@ -219,6 +261,14 @@ describe('Validation', () => {
             expect(result.error).toBeTruthy();
         });
 
+        it('should support a custom instance of Joi', () => {
+            const result = validateAsClass({ ...login }, Login, {
+                joi: Joi,
+            });
+            expect(result.value).toEqual(login);
+            expect(result.error).toBe(null);
+        });
+
         it('should error when trying to validate null', () => {
             expect(() => validateAsClass(null, Login)).toThrowError(new InvalidValidationTarget());
         });
@@ -235,6 +285,14 @@ describe('Validation', () => {
             const result = validateArrayAsClass([{ ...login }], Login, { presence: 'required' });
             expect(result.value).toEqual([login]);
             expect(result.error).toBeTruthy();
+        });
+
+        it('should support a custom instance of Joi', () => {
+            const result = validateArrayAsClass([{ ...login }], Login, {
+                joi: Joi,
+            });
+            expect(result.value).toEqual([login]);
+            expect(result.error).toBe(null);
         });
 
         it('should error when trying to validate null', () => {

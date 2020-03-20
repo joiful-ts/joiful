@@ -1,4 +1,4 @@
-import { getJoi, getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
+import { getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
 import * as Joi from '@hapi/joi';
 
 export class NoValidationSchemaForClassError extends Error {
@@ -69,9 +69,23 @@ export class Validator {
     }
 
     /**
+     * Issue #117: Joi's `validate()` method dies when we pass it our own validation options, so we need to strip it
+     *  out.
+     * @url https://github.com/joiful-ts/joiful/issues/117
+     */
+    protected rectifyOptions(options: ValidationOptions | undefined): [typeof Joi, Joi.ValidationOptions?] {
+        if (!options) {
+            return [Joi, undefined];
+        } else {
+            const { joi, ...rest } = options;
+            return [joi || Joi, rest];
+        }
+    }
+
+    /**
      * Validates an instance of a decorated class.
      * @param target Instance of decorated class to validate.
-     * @param options Optional validation options to use.
+     * @param options Optional validation options to use. These override any default options.
      */
     validate = <T extends {} | null | undefined>(target: T, options?: ValidationOptions): ValidationResult<T> => {
         if (target === null || target === undefined) {
@@ -84,7 +98,7 @@ export class Validator {
      * Validates a plain old javascript object against a decorated class.
      * @param target Object to validate.
      * @param clz Decorated class to validate against.
-     * @param options Optional validation options to use.
+     * @param options Optional validation options to use. These override any default options.
      */
     validateAsClass = <
         TClass extends Constructor<any>,
@@ -98,7 +112,7 @@ export class Validator {
             throw new InvalidValidationTarget();
         }
 
-        const joi = getJoi(options);
+        const [joi, joiOptions] = this.rectifyOptions(options);
         const classSchema = getJoiSchema(Class, joi);
 
         let result: Joi.ValidationResult<Partial<TInstance>>;
@@ -107,8 +121,8 @@ export class Validator {
             throw new NoValidationSchemaForClassError(Class);
         }
 
-        result = options ?
-            joi.validate(target, classSchema, options) :
+        result = joiOptions ?
+            joi.validate(target, classSchema, joiOptions) :
             joi.validate(target, classSchema);
 
         return {
@@ -121,7 +135,7 @@ export class Validator {
      * Validates an array of plain old javascript objects against a decorated class.
      * @param target Objects to validate.
      * @param clz Decorated class to validate against.
-     * @param options Optional validation options to use.
+     * @param options Optional validation options to use. These override any default options.
      */
     validateArrayAsClass = <
         TClass extends Constructor<any>,
@@ -135,15 +149,15 @@ export class Validator {
             throw new InvalidValidationTarget();
         }
 
-        const joi = getJoi(options);
+        const [joi, joiOptions] = this.rectifyOptions(options);
         const classSchema = getJoiSchema(Class, joi);
         if (!classSchema) {
             throw new NoValidationSchemaForClassError(Class);
         }
         const arraySchema = joi.array().items(classSchema);
 
-        const result = options ?
-            joi.validate(target, arraySchema, options) :
+        const result = joiOptions ?
+            joi.validate(target, arraySchema, joiOptions) :
             joi.validate(target, arraySchema);
 
         return {
