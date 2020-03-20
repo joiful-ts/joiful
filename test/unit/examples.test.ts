@@ -1,6 +1,6 @@
 import { getJoiSchema } from '../../src/core';
 import * as Joi from '@hapi/joi';
-import { joi, Joiful, lazy, object, string } from '../../src';
+import { joi, Joiful, lazy, object, string, Validator } from '../../src';
 import { testConstraint } from './testUtil';
 import { StringSchema } from '@hapi/joi';
 
@@ -225,20 +225,26 @@ describe('Examples', () => {
             }
         }
 
+        // Finally, we need to pass our custom Joi instance to our Validator instance.
+        const validator = new Validator({
+            joi: customJoi,
+        });
+
         // Execute & verify
         let instance = new ThingToValidate(
             'aBcDeFgH',
         );
-        expect(instance).toBeValid();
+        const assertionOptions = { validator };
+        expect(instance).toBeValid(assertionOptions);
 
         instance = new ThingToValidate(
             'AbCdEfGh',
         );
-        expect(instance).toBeValid();
+        expect(instance).toBeValid(assertionOptions);
 
         instance = new ThingToValidate(
             'abcdefgh',
         );
-        expect(instance).not.toBeValid();
+        expect(instance).not.toBeValid(assertionOptions);
     });
 });
