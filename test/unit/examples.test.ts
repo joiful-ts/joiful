@@ -139,8 +139,8 @@ describe('Examples', () => {
 
         // These are utility types you may find useful to replace the return of a function.
         // These types are derived from: https://stackoverflow.com/a/50014868
-        type ArgumentTypes<T> = T extends (...args: infer U ) => infer _R ? U: never;
-        type ReplaceReturnType<T, TNewReturn> = (...a: ArgumentTypes<T>) => TNewReturn;
+        type ReplaceReturnType<T extends (...args: unknown[]) => unknown, TNewReturn> =
+            (...a: Parameters<T>) => TNewReturn;
 
         // We are going to create a new instance of Joi, with our extended functionality: a custom validation
         //  function that checks if each character in a string has "alternating case" (that is, each character has a
@@ -153,11 +153,13 @@ describe('Examples', () => {
             alternatingCase(): this; // We're adding this method, only for string schemas.
         }
 
-        type IJoi = typeof Joi; // Need to alias this, because `interface Foo extends typeof Joi` doesn't work.
-        interface CustomJoi extends IJoi {
+        // Need to alias this, because `interface Foo extends typeof Joi` doesn't work.
+        type OriginalJoi = typeof Joi;
+
+        interface CustomJoi extends OriginalJoi {
             // This allows us to use our extended string schema, in place of Joi's original StringSchema.
             // E.g. instead of `Joi.string()` returning `StringSchema`, it now returns `ExtendedStringSchema`.
-            string: ReplaceReturnType<IJoi['string'], ExtendedStringSchema>;
+            string: ReplaceReturnType<OriginalJoi['string'], ExtendedStringSchema>;
         }
 
         // This is our where we define our custom rule. Please read the Joi documentation for more info.
