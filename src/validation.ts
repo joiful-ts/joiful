@@ -1,6 +1,12 @@
 import { getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
 import * as Joi from '@hapi/joi';
 
+/**
+ * The minimal implementation of Joi required for this module.
+ * (Do this for type safety in testing, without needing to mock the whole of Joi.)
+ */
+type JoiForValidator = Pick<typeof Joi, 'validate' | 'object' | 'array'>;
+
 export class NoValidationSchemaForClassError extends Error {
     constructor(Class: AnyClass) {
         const className = Class && Class.name || '';
@@ -59,7 +65,7 @@ export class InvalidValidationTarget extends Error {
 }
 
 export interface ValidationOptions extends Joi.ValidationOptions {
-    joi?: typeof Joi;
+    joi?: JoiForValidator;
 }
 
 export class Validator {
@@ -73,12 +79,20 @@ export class Validator {
      *  out.
      * @url https://github.com/joiful-ts/joiful/issues/117
      */
-    protected rectifyOptions(options: ValidationOptions | undefined): [typeof Joi, Joi.ValidationOptions?] {
+    protected extractOptions(options: ValidationOptions | undefined): {
+        joi: JoiForValidator;
+        joiOptions?: Joi.ValidationOptions;
+    } {
         if (!options) {
-            return [Joi, undefined];
+            return {
+                joi: Joi,
+            };
         } else {
             const { joi, ...rest } = options;
-            return [joi || Joi, rest];
+            return {
+                joi: joi || Joi,
+                joiOptions: rest,
+            };
         }
     }
 
@@ -112,7 +126,7 @@ export class Validator {
             throw new InvalidValidationTarget();
         }
 
-        const [joi, joiOptions] = this.rectifyOptions(options);
+        const {joi, joiOptions} = this.extractOptions(options);
         const classSchema = getJoiSchema(Class, joi);
 
         let result: Joi.ValidationResult<Partial<TInstance>>;
@@ -149,7 +163,7 @@ export class Validator {
             throw new InvalidValidationTarget();
         }
 
-        const [joi, joiOptions] = this.rectifyOptions(options);
+        const {joi, joiOptions} = this.extractOptions(options);
         const classSchema = getJoiSchema(Class, joi);
         if (!classSchema) {
             throw new NoValidationSchemaForClassError(Class);

@@ -94,7 +94,7 @@ export function getMergedWorkingSchemas(target: object): WorkingSchema | undefin
     return undefined;
 }
 
-export function getJoiSchema(Class: AnyClass, joi: typeof Joi): Joi.ObjectSchema | undefined {
+export function getJoiSchema(Class: AnyClass, joi: Pick<typeof Joi, 'object'>): Joi.ObjectSchema | undefined {
     const isSchemaDefined = Reflect.hasOwnMetadata(SCHEMA_KEY, Class.prototype);
     if (isSchemaDefined) {
         return Reflect.getOwnMetadata(SCHEMA_KEY, Class.prototype);
