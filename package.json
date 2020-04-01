@@ -63,7 +63,7 @@
         "flatted": "2.0.2",
         "fs-extra": "8.1.0",
         "get-root-path": "2.0.2",
-        "husky": "4.2.1",
+        "husky": "4.2.3",
         "jest": "24.9.0",
         "lodash": "4.17.15",
         "reflect-metadata": "0.1.13",
