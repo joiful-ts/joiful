@@ -1,7 +1,8 @@
 import { getJoiSchema } from '../../src/core';
 import * as Joi from '@hapi/joi';
-import { joi, lazy, object, string } from '../../src';
+import { joi, Joiful, lazy, object, string, Validator } from '../../src';
 import { testConstraint } from './testUtil';
+import { StringSchema } from '@hapi/joi';
 
 describe('Examples', () => {
     it('class with methods', () => {
@@ -128,5 +129,122 @@ describe('Examples', () => {
                 { password: 'Pass123' },
             ],
         );
+    });
+
+    /**
+     * @see https://hapi.dev/family/joi/api/?v=15.1.1#extendextension
+     */
+    it('Extending Joi for custom validation', () => {
+        // Custom validation functions must be added by using Joi's "extend" mechanism.
+
+        // These are utility types you may find useful to replace the return of a function.
+        // These types are derived from: https://stackoverflow.com/a/50014868
+        type ReplaceReturnType<T extends (...args: unknown[]) => unknown, TNewReturn> =
+            (...a: Parameters<T>) => TNewReturn;
+
+        // We are going to create a new instance of Joi, with our extended functionality: a custom validation
+        //  function that checks if each character in a string has "alternating case" (that is, each character has a
+        //  case different to those either side of it).
+
+        // For our own peace of mind, we're first going to update the type of the Joi instance to include our new
+        //  schema.
+
+        interface ExtendedStringSchema extends StringSchema {
+            alternatingCase(): this; // We're adding this method, only for string schemas.
+        }
+
+        // Need to alias this, because `interface Foo extends typeof Joi` doesn't work.
+        type OriginalJoi = typeof Joi;
+
+        interface CustomJoi extends OriginalJoi {
+            // This allows us to use our extended string schema, in place of Joi's original StringSchema.
+            // E.g. instead of `Joi.string()` returning `StringSchema`, it now returns `ExtendedStringSchema`.
+            string: ReplaceReturnType<OriginalJoi['string'], ExtendedStringSchema>;
+        }
+
+        // This is our where we define our custom rule. Please read the Joi documentation for more info.
+        // NOTE: we must explicitly provide the type annotation of `CustomJoi`.
+        const customJoi: CustomJoi = Joi.extend({
+            base: Joi.string(), // The base Joi schema
+            language: { // This defines the error message returned when a rule fails validation.
+                alternatingCase: 'must be in alternating case', // Used as 'string.alternatingCase'
+            },
+            name: 'string', // The type (can be an existing Joi type)
+            rules: [
+                {
+                    name: 'alternatingCase', // This is the name of the new validation function
+                    validate(
+                        _params: void,
+                        value: string,
+                        state,
+                        options,
+                    ) { // Your validation implementation would go here.
+                        if (value.length < 2) {
+                            return true;
+                        }
+                        let lastCase = null;
+                        for (let char of value) {
+                            const charIsUppercase = /[A-Z]/.test(char);
+                            if (charIsUppercase === lastCase) { // Not alternating case
+                                // Validation failures must return a Joi error.
+                                // You'll need to allow a suspicious use of "this" here, so that we can access the
+                                //  Joi instance's `createError()` method.
+                                // tslint:disable-next-line:no-invalid-this
+                                return this.createError('string.case', { v: value }, state, options);
+                            }
+                            lastCase = charIsUppercase;
+                        }
+                        return value;
+                    },
+                },
+            ],
+        });
+
+        // This function is how we're going to make use of our custom validator.
+        function alternatingCase(options: { schema: Joi.Schema, joi: typeof Joi }): Joi.Schema {
+            // (TODO: remove the `as CustomJoi` assertion. Requires making Joiful, JoifulOptions etc generic.)
+            return (options.joi as CustomJoi).string().alternatingCase();
+        }
+
+        const customJoiful = new Joiful({
+            joi: customJoi,
+        });
+
+        class ThingToValidate {
+            // Note that we must _always_ use our own `customJoiful` for all decorators, instead of importing them
+            //  directly from Joiful (e.g. `customJoiful.string()` vs `jf.string()`)
+            // Failing to do so means Joiful will use the default instance of Joi, which could cause inconsistent
+            //  behaviour, and prevent us from using our custom validator.
+            @customJoiful.string().custom(alternatingCase)
+            public propertyToValidate: string;
+
+            constructor(
+                propertyToValidate: string,
+            ) {
+                this.propertyToValidate = propertyToValidate;
+            }
+        }
+
+        // Finally, we need to pass our custom Joi instance to our Validator instance.
+        const validator = new Validator({
+            joi: customJoi,
+        });
+
+        // Execute & verify
+        let instance = new ThingToValidate(
+            'aBcDeFgH',
+        );
+        const assertionOptions = { validator };
+        expect(instance).toBeValid(assertionOptions);
+
+        instance = new ThingToValidate(
+            'AbCdEfGh',
+        );
+        expect(instance).toBeValid(assertionOptions);
+
+        instance = new ThingToValidate(
+            'abcdefgh',
+        );
+        expect(instance).not.toBeValid(assertionOptions);
     });
 });
