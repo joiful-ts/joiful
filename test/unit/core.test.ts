@@ -1,6 +1,7 @@
 import * as Joi from '@hapi/joi';
 import * as jf from '../../src';
 import {
+    getJoi,
     getJoiSchema,
     getJoiVersion,
     JOI_VERSION,
@@ -23,6 +24,30 @@ describe('checkJoiIsCompatible', () => {
 
     it('should not error if no joi instance is passed in', () => {
         checkJoiIsCompatible(undefined);
+    });
+});
+
+describe('getJoi', () => {
+    it('should return the default Joi instance when no options are passed', () => {
+        expect(getJoi()).toBe(Joi);
+    });
+
+    it('should return the default Joi instance when given undefined', () => {
+        expect(getJoi(undefined)).toBe(Joi);
+    });
+
+    it('should return the default Joi instance when given an empty object', () => {
+        expect(getJoi({})).toBe(Joi);
+    });
+
+    it('should return the given Joi instance', () => {
+        const customJoi = Joi.extend({
+            base: Joi.string(),
+            name: 'string',
+        });
+        const result = getJoi({ joi: customJoi });
+        expect(result).toBe(customJoi);
+        expect(result).not.toBe(Joi);
     });
 });
 

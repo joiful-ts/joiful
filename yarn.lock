@@ -2637,6 +2637,11 @@ jest-haste-map@^24.9.0:
   optionalDependencies:
     fsevents "^1.2.7"
 
+jest-helpers@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/jest-helpers/-/jest-helpers-3.1.1.tgz#916f34b9518178c321797b12c5bb3c58e11d8b9f"
+  integrity sha512-lQj7qTsYWSwOsZn2Uy9VkurzLpREluEf2dnXCT4d/K1oZt4jzLsGsVzb2nejW1FVJ0JvGeImcpVgERlXL0gvEw==
+
 jest-jasmine2@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/jest-jasmine2/-/jest-jasmine2-24.9.0.tgz#1f7b1bd3242c1774e62acabb3646d96afc3be6a0"
