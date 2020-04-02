@@ -1,3 +1,6 @@
+import * as Joi from '@hapi/joi';
+import { partialOf } from 'jest-helpers';
+import { mocked } from 'ts-jest/utils';
 import {
     string,
     validate,
@@ -68,54 +71,122 @@ describe('ValidationResult', () => {
 });
 
 describe('Validation', () => {
-    class Login {
-        @string()
-        emailAddress?: string;
+    type ValidatorLike = Pick<Validator, 'validate' | 'validateAsClass' | 'validateArrayAsClass'>;
 
-        @string()
-        password?: string;
+    function getLoginClass() {
+        // Define the class for each test, so that the schema is re-created every time.
+        class Login {
+            @string()
+            emailAddress?: string;
+
+            @string()
+            password?: string;
+        }
+        return Login;
     }
 
-    let login: Login;
+    let Login: ReturnType<typeof getLoginClass>;
+    let login: InstanceType<typeof Login>;
+    let joi: typeof Joi;
+    const dummyArrayItemSchema = Object.freeze({});
+    const dummySchema = Object.freeze({});
+
+    function mockJoiValidateSuccess<T>(value: T) {
+        mocked(joi).validate.mockReturnValueOnce({
+            error: null,
+            value,
+        });
+    }
+
+    function assertValidateInvocation<T>(value: T, expectedSchema: Readonly<{}> = dummySchema) {
+        expect(joi.validate).toHaveBeenCalledTimes(1);
+        expect(joi.validate).toHaveBeenCalledWith(value, expectedSchema, {});
+    }
+
+    function assertValidateSuccess<T>(result: ValidationResult<T>, expectedValue: T) {
+        expect(result.value).toEqual(expectedValue);
+        expect(result.error).toBe(null);
+    }
+
+    function assertValidateFailure<T>(result: ValidationResult<T>, expectedValue: T) {
+        expect(result.value).toEqual(expectedValue);
+        expect(result.error).toBeTruthy();
+    }
 
     beforeEach(() => {
+        Login = getLoginClass();
         login = new Login();
         login.emailAddress = 'joe@example.com';
+        joi = partialOf<typeof Joi>({
+            array: jest.fn().mockReturnValue({
+                // Required for `validateArrayAsClass()`
+                items: jest.fn().mockReturnValue(dummyArrayItemSchema),
+            }),
+            object: jest.fn().mockReturnValue({
+                // Required for `getJoiSchema()`
+                keys: jest.fn().mockReturnValue(dummySchema),
+            }),
+            validate: jest.fn(),
+        });
     });
 
-    describe('Validator', () => {
-        let validator: Validator;
-
-        beforeEach(() => {
-            validator = new Validator();
+    describe('Validator constructor', () => {
+        it('should use validation options of the Joi instance by default', () => {
+            const validator = new Validator();
+            const result = validator.validate(login);
+            assertValidateSuccess(result, login);
         });
 
-        describe('constructor', () => {
-            it('should use validation options of the Joi instance by default', () => {
-                const result = validator.validate(login);
-                expect(result.value).toEqual(login);
-                expect(result.error).toBe(null);
-            });
+        it('should optionally accept validation options to use', () => {
+            const validator = new Validator({ presence: 'required' });
+            const result = validator.validate(login);
+            assertValidateFailure(result, login);
+        });
 
-            it('should optionally accept validation options to use', () => {
-                validator = new Validator({ presence: 'required' });
-                const result = validator.validate(login);
-                expect(result.value).toEqual(login);
-                expect(result.error).toBeTruthy();
-            });
+        it('should support a custom instance of Joi', () => {
+            mockJoiValidateSuccess(login);
+            const validator = new Validator({ joi });
+            const result = validator.validate(login);
+            assertValidateSuccess(result, login);
+            assertValidateInvocation(login);
+        });
+    });
+
+    describe.each([
+        ['new instance', () => new Validator()],
+        ['default instance', () => ({
+            validate,
+            validateAsClass,
+            validateArrayAsClass,
+        })],
+    ] as [string, () => ValidatorLike][])(
+        'Validator - %s',
+        (
+            _testSuiteDescription: string,
+            validatorFactory: () => Pick<Validator, 'validate' | 'validateAsClass' | 'validateArrayAsClass'>,
+    ) => {
+        let validator: ValidatorLike;
+
+        beforeEach(() => {
+            validator = validatorFactory();
         });
 
         describe('validate', () => {
             it('should validate an instance of a decorated class', () => {
                 const result = validator.validate(login);
-                expect(result.value).toEqual(login);
-                expect(result.error).toBe(null);
+                assertValidateSuccess(result, login);
             });
 
             it('should optionally accept validation options to use', () => {
                 const result = validator.validate(login, { presence: 'required' });
-                expect(result.value).toEqual(login);
-                expect(result.error).toBeTruthy();
+                assertValidateFailure(result, login);
+            });
+
+            it('should support a custom instance of Joi', () => {
+                mockJoiValidateSuccess(login);
+                const result = validator.validate(login, { joi });
+                assertValidateSuccess(result, login);
+                assertValidateInvocation(login);
             });
 
             it('should error when trying to validate null', () => {
@@ -126,14 +197,20 @@ describe('Validation', () => {
         describe('validateAsClass', () => {
             it('should accept a plain old javascript object to validate', () => {
                 const result = validator.validateAsClass({ ...login }, Login);
-                expect(result.value).toEqual(login);
-                expect(result.error).toBe(null);
+                assertValidateSuccess(result, login);
             });
 
             it('should optionally accept validation options to use', () => {
                 const result = validator.validateAsClass({ ...login }, Login, { presence: 'required' });
-                expect(result.value).toEqual(login);
-                expect(result.error).toBeTruthy();
+                assertValidateFailure(result, login);
+            });
+
+            it('should support a custom instance of Joi', () => {
+                const inputValue = { ...login };
+                mockJoiValidateSuccess(inputValue);
+                const result = validator.validateAsClass(inputValue, Login, { joi });
+                assertValidateSuccess(result, login);
+                assertValidateInvocation(inputValue);
             });
 
             it('should error when trying to validate null', () => {
@@ -157,14 +234,20 @@ describe('Validation', () => {
         describe('validateArrayAsClass', () => {
             it('should accept an array of plain old javascript objects to validate', () => {
                 const result = validator.validateArrayAsClass([{ ...login }], Login);
-                expect(result.value).toEqual([login]);
-                expect(result.error).toBe(null);
+                assertValidateSuccess(result, [login]);
             });
 
             it('should optionally accept validation options to use', () => {
                 const result = validator.validateArrayAsClass([{ ...login }], Login, { presence: 'required' });
-                expect(result.value).toEqual([login]);
-                expect(result.error).toBeTruthy();
+                assertValidateFailure(result, [login]);
+            });
+
+            it('should support a custom instance of Joi', () => {
+                const inputValue = [{ ...login }];
+                mockJoiValidateSuccess(inputValue);
+                const result = validator.validateArrayAsClass(inputValue, Login, { joi });
+                assertValidateSuccess(result, [login]);
+                assertValidateInvocation(inputValue, dummyArrayItemSchema);
             });
 
             it('should error when trying to validate null', () => {
@@ -188,59 +271,44 @@ describe('Validation', () => {
         });
     });
 
-    describe('validate', () => {
-        it('should validate an instance of a decorated class', () => {
-            const result = validate(login);
-            expect(result.value).toEqual(login);
-            expect(result.error).toBe(null);
+    describe('On-demand schema generation', () => {
+        it('should only convert working schema to a final schema once - validate', () => {
+            expect(joi.object).not.toHaveBeenCalled();
+
+            mockJoiValidateSuccess(login);
+            validate(login, { joi });
+            expect(joi.object).toHaveBeenCalledTimes(1);
+
+            mockJoiValidateSuccess(login);
+            validate(login, { joi });
+            expect(joi.object).toHaveBeenCalledTimes(1);
         });
 
-        it('should optionally accept validation options to use', () => {
-            const result = validate(login, { presence: 'required' });
-            expect(result.value).toEqual(login);
-            expect(result.error).toBeTruthy();
+        it('should only convert working schema to a final schema once - validateAsClass', () => {
+            expect(joi.object).not.toHaveBeenCalled();
+
+            mockJoiValidateSuccess(login);
+            validateAsClass(login, Login, { joi });
+            expect(joi.object).toHaveBeenCalledTimes(1);
+
+            mockJoiValidateSuccess(login);
+            validateAsClass(login, Login, { joi });
+            expect(joi.object).toHaveBeenCalledTimes(1);
         });
 
-        it('should error when trying to validate null', () => {
-            expect(() => validate(null)).toThrowError(new InvalidValidationTarget());
-        });
-    });
+        it('should only convert working schema to a final schema once, and always creates a new array schema - validateArrayAsClass', () => {
+            expect(joi.object).not.toHaveBeenCalled();
+            expect(joi.array).not.toHaveBeenCalled();
 
-    describe('validateAsClass', () => {
-        it('should accept a plain old javascript object to validate', () => {
-            const result = validateAsClass({ ...login }, Login);
-            expect(result.value).toEqual(login);
-            expect(result.error).toBe(null);
-        });
+            mockJoiValidateSuccess([login]);
+            validateArrayAsClass([login], Login, { joi });
+            expect(joi.object).toHaveBeenCalledTimes(1);
+            expect(joi.array).toHaveBeenCalledTimes(1);
 
-        it('should optionally accept validation options to use', () => {
-            const result = validateAsClass({ ...login }, Login, { presence: 'required' });
-            expect(result.value).toEqual(login);
-            expect(result.error).toBeTruthy();
-        });
-
-        it('should error when trying to validate null', () => {
-            expect(() => validateAsClass(null, Login)).toThrowError(new InvalidValidationTarget());
-        });
-    });
-
-    describe('validateArrayAsClass', () => {
-        it('should accept an array of plain old javascript objects to validate', () => {
-            const result = validateArrayAsClass([{ ...login }], Login);
-            expect(result.value).toEqual([login]);
-            expect(result.error).toBe(null);
-        });
-
-        it('should optionally accept validation options to use', () => {
-            const result = validateArrayAsClass([{ ...login }], Login, { presence: 'required' });
-            expect(result.value).toEqual([login]);
-            expect(result.error).toBeTruthy();
-        });
-
-        it('should error when trying to validate null', () => {
-            expect(
-                () => validateArrayAsClass(null as any, Login),
-            ).toThrowError(new InvalidValidationTarget());
+            mockJoiValidateSuccess([login]);
+            validateArrayAsClass([login], Login, { joi });
+            expect(joi.object).toHaveBeenCalledTimes(1);
+            expect(joi.array).toHaveBeenCalledTimes(2);
         });
     });
 });
