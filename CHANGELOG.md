@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/joiful-ts/joiful/compare/v2.0.0...v2.0.1) (2020-04-27)
+
+
+### Bug Fixes
+
+* **validation:** issue 117: address feedback from code review ([76cdcaf](https://github.com/joiful-ts/joiful/commit/76cdcaf0d142d45c4e95068c2821b5669f1d504c))
+* **validation:** issue 117: validator now accepts custom joi ([505f9cd](https://github.com/joiful-ts/joiful/commit/505f9cdfed471e183dd39ccc916466248eaabb93))
+
 ## [2.0.0](https://github.com/joiful-ts/joiful/compare/v1.1.9...v2.0.0) (2020-03-05)
 
 
