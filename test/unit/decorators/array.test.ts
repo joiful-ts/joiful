@@ -1,5 +1,6 @@
 import { testConstraint } from '../testUtil';
 import { array, joi, string } from '../../../src';
+import { Validator } from '../../../src/validation';
 
 describe('array', () => {
     describe('without an element type', () => {
@@ -79,6 +80,37 @@ describe('array', () => {
                 },
             ],
         );
+    });
+
+    describe('with an element type without schema', () => {
+        it('should pass validation with an invalid object', () => {
+            class Actor {
+                name!: string;
+            }
+
+            class Movie {
+                @string().required()
+                name!: string;
+
+                @array({ elementClass: Actor }).required()
+                actors!: Actor[];
+            }
+
+            const movie = {
+                name: 'The Faketrix',
+                actors: [
+                    { name: 'Laurence Fishberg' },
+                    { boo: 'Carrie-Anne More' },
+                ],
+            };
+
+            const validator = new Validator();
+
+            const result = validator.validateAsClass(movie, Movie);
+
+            expect(result.error).toBeFalsy();
+
+        });
     });
 
     describe('items', () => {
