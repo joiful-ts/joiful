@@ -59,7 +59,7 @@
         "@types/node": "12.12.29",
         "@types/reflect-metadata": "0.1.0",
         "@types/rimraf": "2.0.3",
-        "case": "1.6.2",
+        "case": "1.6.3",
         "flatted": "2.0.2",
         "fs-extra": "8.1.0",
         "get-root-path": "2.0.2",
