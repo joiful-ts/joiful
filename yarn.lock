@@ -535,12 +535,10 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/hapi__joi@*", "@types/hapi__joi@15.0.3":
-  version "15.0.3"
-  resolved "https://registry.yarnpkg.com/@types/hapi__joi/-/hapi__joi-15.0.3.tgz#eeeca99e3829636975bf39532d6e8279409c78f2"
-  integrity sha512-kncvQstpAQSjQ+J+tL2oYerjOEepv+yJHKM/JD/NmFZyDcy3rYOBcMJhdHRDjBxuSZu3ipGECszhgtmug9VSuw==
-  dependencies:
-    "@types/hapi__joi" "*"
+"@types/hapi__joi@17.1.3":
+  version "17.1.3"
+  resolved "https://registry.yarnpkg.com/@types/hapi__joi/-/hapi__joi-17.1.3.tgz#1b400fcf819e400949a4b4ec7fec73216c4f7088"
+  integrity sha512-3+EUJ+haX1Ix/Lmn//qGE0l3dll7TouN+ukkorTroShhyQniOECd30psoxSUjcVE6vVjaS07mqhRkJ6lUZrrbw==
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.1"
