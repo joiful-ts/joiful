@@ -60,7 +60,7 @@
         "@types/reflect-metadata": "0.1.0",
         "@types/rimraf": "2.0.3",
         "case": "1.6.3",
-        "flatted": "2.0.2",
+        "flatted": "3.1.0",
         "fs-extra": "8.1.0",
         "get-root-path": "2.0.2",
         "husky": "4.2.5",
