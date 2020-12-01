@@ -41,9 +41,11 @@ describe('getJoi', () => {
     });
 
     it('should return the given Joi instance', () => {
-        const customJoi = Joi.extend({
-            base: Joi.string(),
-            name: 'string',
+        const customJoi = Joi.extend((joi) => {
+            return {
+                type: 'string',
+                base: joi.string(),
+            };
         });
         const result = getJoi({ joi: customJoi });
         expect(result).toBe(customJoi);
@@ -58,9 +60,11 @@ describe('getJoiSchema', () => {
             name!: string;
         }
 
-        expect(getJoiSchema(Cat, jf.joi)).toEqual(jf.joi.object().keys({
+        const expected = jf.joi.object().keys({
             name: jf.joi.string(),
-        }));
+        });
+        const schema = getJoiSchema(Cat, jf.joi);
+        expect(Object.keys(schema!)).toEqual(Object.keys(expected));
     });
 
     it('should return no schema when class is not decorated', () => {

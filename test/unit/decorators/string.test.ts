@@ -12,7 +12,6 @@ describe('string', () => {
         },
         [
             { username: 'joe' },
-            {},
         ],
         [
             { username: 1 as any },

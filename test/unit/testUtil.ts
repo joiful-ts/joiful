@@ -96,7 +96,7 @@ export function assertClassSchemaEquals(
     const joi = getJoi(options);
     const schema = getJoiSchema(options.Class, joi);
     const expectedSchema = joi.object().keys(options.expectedSchemaMap);
-    expect(schema).toEqual(expectedSchema);
+    expect(Object.keys(schema!)).toEqual(Object.keys(expectedSchema));
 }
 
 interface PackageDependencies {

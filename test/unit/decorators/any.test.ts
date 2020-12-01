@@ -105,10 +105,10 @@ describe('any', () => {
             }
 
             const metadata = getJoiSchema(PizzaOrder, jf.joi);
-            const expected = jf.joi.object().keys({
+            const expected = jf.joi.object({
                 pineapple: jf.joi.boolean().description(pineappleDescription),
             });
-            expect(metadata).toEqual(expected);
+            expect(Object.keys(metadata!)).toEqual(Object.keys(expected));
         });
     });
 
@@ -195,7 +195,7 @@ describe('any', () => {
             const expected = jf.joi.object().keys({
                 catName: jf.joi.string().example(exampleCatName),
             });
-            expect(metadata).toEqual(expected);
+            expect(Object.keys(metadata!)).toEqual(Object.keys(expected));
         });
     });
 
@@ -310,7 +310,7 @@ describe('any', () => {
 
     describe('notes', () => {
         class User {
-            @jf.string().notes('some notes')
+            @jf.string().note('some notes')
             name?: string;
         }
 
@@ -318,7 +318,7 @@ describe('any', () => {
             assertClassSchemaEquals({
                 Class: User,
                 expectedSchemaMap: {
-                    name: jf.joi.string().notes('some notes'),
+                    name: jf.joi.string().note('some notes'),
                 },
             });
         });
@@ -441,22 +441,22 @@ describe('any', () => {
     describe('tags', () => {
         it('should associate tags with the property', () => {
             class User {
-                @jf.string().tags('identity')
+                @jf.string().tag('identity')
                 id!: string;
 
-                @jf.string().tags('identity', 'authentication')
+                @jf.string().tag('identity', 'authentication')
                 emailAddress!: string;
 
-                @jf.string().tags(['authentication'])
+                @jf.string().tag(['authentication'])
                 password!: string;
             }
 
             assertClassSchemaEquals({
                 Class: User,
                 expectedSchemaMap: {
-                    id: jf.joi.string().tags('identity'),
-                    emailAddress: jf.joi.string().tags(['identity', 'authentication']),
-                    password: jf.joi.string().tags('authentication'),
+                    id: jf.joi.string().tag('identity'),
+                    emailAddress: jf.joi.string().tag('identity', 'authentication'),
+                    password: jf.joi.string().tag('authentication'),
                 },
             });
         });
@@ -478,54 +478,129 @@ describe('any', () => {
         });
     });
 
-    function describeValidTest(alias: 'valid' | 'only' | 'equal') {
-        describe(alias, () => {
-            const sauces = ['tomato', 'barbeque', 'bechamel'] as const;
-            type Sauce = typeof sauces[number];
+    describe('valid', () => {
+        const sauces = ['tomato', 'barbeque', 'bechamel'] as const;
+        type Sauce = typeof sauces[number];
+        testConstraint(
+            () => {
+                class PizzaSauceSelection {
+                    @jf.string().valid(sauces)
+                    sauce!: Sauce;
+                }
+                return PizzaSauceSelection;
+            },
+            [
+                {},
+                { sauce: 'tomato' },
+                { sauce: 'barbeque' },
+                { sauce: 'bechamel' },
+            ],
+            [
+                { sauce: 'mayonaise' },
+            ],
+        );
 
-            type Valid = ReturnType<typeof jf.string>['valid'];
+        testConstraint(
+            () => {
+                class PizzaSauceSelection {
+                    @jf.string().valid(...sauces)
+                    sauce!: Sauce;
+                }
+                return PizzaSauceSelection;
+            },
+            [
+                {},
+                { sauce: 'tomato' },
+                { sauce: 'barbeque' },
+                { sauce: 'bechamel' },
+            ],
+            [
+                { sauce: 'mayonaise' },
+            ],
+        );
+    });
 
-            testConstraint(
-                () => {
-                    class PizzaSauceSelection {
-                        @(jf.string()[alias] as Valid)(sauces)
-                        sauce!: Sauce;
-                    }
-                    return PizzaSauceSelection;
-                },
-                [
-                    {},
-                    { sauce: 'tomato' },
-                    { sauce: 'barbeque' },
-                    { sauce: 'bechamel' },
-                ],
-                [
-                    { sauce: 'mayonaise' },
-                ],
-            );
+    describe('only', () => {
+        const sauces = ['tomato', 'barbeque', 'bechamel'] as const;
+        type Sauce = typeof sauces[number];
+        testConstraint(
+            () => {
+                class PizzaSauceSelection {
+                    @jf.string().allow(sauces).only()
+                    sauce!: Sauce;
+                }
+                return PizzaSauceSelection;
+            },
+            [
+                {},
+                { sauce: 'tomato' },
+                { sauce: 'barbeque' },
+                { sauce: 'bechamel' },
+            ],
+            [
+                { sauce: 'mayonaise' },
+            ],
+        );
 
-            testConstraint(
-                () => {
-                    class PizzaSauceSelection {
-                        @(jf.string()[alias] as Valid)(...sauces)
-                        sauce!: Sauce;
-                    }
-                    return PizzaSauceSelection;
-                },
-                [
-                    {},
-                    { sauce: 'tomato' },
-                    { sauce: 'barbeque' },
-                    { sauce: 'bechamel' },
-                ],
-                [
-                    { sauce: 'mayonaise' },
-                ],
-            );
-        });
-    }
+        testConstraint(
+            () => {
+                class PizzaSauceSelection {
+                    @jf.string().allow(...sauces).only()
+                    sauce!: Sauce;
+                }
+                return PizzaSauceSelection;
+            },
+            [
+                {},
+                { sauce: 'tomato' },
+                { sauce: 'barbeque' },
+                { sauce: 'bechamel' },
+            ],
+            [
+                { sauce: 'mayonaise' },
+            ],
+        );
+    });
 
-    describeValidTest('valid');
-    describeValidTest('only');
-    describeValidTest('equal');
+    describe('equal', () => {
+        const sauces = ['tomato', 'barbeque', 'bechamel'] as const;
+        type Sauce = typeof sauces[number];
+        testConstraint(
+            () => {
+                class PizzaSauceSelection {
+                    @jf.string().equal(sauces)
+                    sauce!: Sauce;
+                }
+                return PizzaSauceSelection;
+            },
+            [
+                {},
+                { sauce: 'tomato' },
+                { sauce: 'barbeque' },
+                { sauce: 'bechamel' },
+            ],
+            [
+                { sauce: 'mayonaise' },
+            ],
+        );
+
+        testConstraint(
+            () => {
+                class PizzaSauceSelection {
+                    @jf.string().equal(...sauces)
+                    sauce!: Sauce;
+                }
+                return PizzaSauceSelection;
+            },
+            [
+                {},
+                { sauce: 'tomato' },
+                { sauce: 'barbeque' },
+                { sauce: 'bechamel' },
+            ],
+            [
+                { sauce: 'mayonaise' },
+            ],
+        );
+    });
 });

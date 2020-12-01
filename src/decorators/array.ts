@@ -77,7 +77,7 @@ export function getArraySchemaModifierProviders(getJoi: () => typeof Joi) {
                 itemSchemas.push(...args);
             }
 
-            return schema.items(itemSchemas);
+            return schema.items(...itemSchemas);
         },
 
         exactLength: (length: number) => ({ schema }) => schema.length(length),
@@ -99,7 +99,7 @@ export function getArraySchemaModifierProviders(getJoi: () => typeof Joi) {
                 itemSchemas.push(...args);
             }
 
-            return schema.ordered(itemSchemas);
+            return schema.ordered(...itemSchemas);
         },
 
         single: (enabled?: boolean | any) => ({ schema }) => schema.single(enabled),
