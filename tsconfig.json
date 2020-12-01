@@ -16,6 +16,7 @@
         "noUnusedParameters": true,
         "sourceMap": true,
         "strict": true,
+        "strictNullChecks": true,
         "target": "es6"
     },
     "exclude": [

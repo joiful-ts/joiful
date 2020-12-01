@@ -1,11 +1,12 @@
 import { getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
 import * as Joi from '@hapi/joi';
+import 'reflect-metadata';
 
 /**
  * The minimal implementation of Joi required for this module.
  * (Do this for type safety in testing, without needing to mock the whole of Joi.)
  */
-type JoiForValidator = Pick<typeof Joi, 'validate' | 'object' | 'array'>;
+type JoiForValidator = Pick<typeof Joi, 'object' | 'array'>;
 
 export class NoValidationSchemaForClassError extends Error {
     constructor(Class: AnyClass) {
@@ -129,18 +130,16 @@ export class Validator {
         const {joi, joiOptions} = this.extractOptions(options);
         const classSchema = getJoiSchema(Class, joi);
 
-        let result: Joi.ValidationResult<Partial<TInstance>>;
-
         if (!classSchema) {
             throw new NoValidationSchemaForClassError(Class);
         }
 
-        result = joiOptions ?
-            joi.validate(target, classSchema, joiOptions) :
-            joi.validate(target, classSchema);
+        const result = joiOptions ?
+            classSchema.validate(target, joiOptions) :
+            classSchema.validate(target);
 
         return {
-            ...result,
+            error: result.error ? result.error : null,
             value: result.value as TInstance,
         };
     }
@@ -171,11 +170,11 @@ export class Validator {
         const arraySchema = joi.array().items(classSchema);
 
         const result = joiOptions ?
-            joi.validate(target, arraySchema, joiOptions) :
-            joi.validate(target, arraySchema);
+            arraySchema.validate(target, joiOptions) :
+            arraySchema.validate(target);
 
         return {
-            ...result,
+            error: result.error ? result.error : null,
             value: result.value as TInstance[],
         };
     }

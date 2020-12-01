@@ -58,7 +58,7 @@ describe('boolean', () => {
         testConstraint(
             () => {
                 class MarketingOptIn {
-                    @boolean().truthy('y').falsy('n').insensitive()
+                    @boolean().truthy('y').falsy('n').sensitive(false)
                     joinMailingList?: boolean;
                 }
                 return MarketingOptIn;
@@ -77,7 +77,7 @@ describe('boolean', () => {
         testConstraint(
             () => {
                 class MarketingOptIn {
-                    @boolean().truthy('y').falsy('n').insensitive(false)
+                    @boolean().truthy('y').falsy('n').sensitive()
                     joinMailingList?: boolean;
                 }
                 return MarketingOptIn;

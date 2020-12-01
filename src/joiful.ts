@@ -5,7 +5,7 @@ import { createArrayPropertyDecorator, ArrayPropertyDecoratorOptions } from './d
 import { createBooleanPropertyDecorator } from './decorators/boolean';
 import { createDatePropertyDecorator } from './decorators/date';
 import { createFunctionPropertyDecorator } from './decorators/function';
-import { createLazyPropertyDecorator } from './decorators/lazy';
+import { createLinkPropertyDecorator } from './decorators/link';
 import { createNumberPropertyDecorator } from './decorators/number';
 import { createObjectPropertyDecorator, ObjectPropertyDecoratorOptions } from './decorators/object';
 import { createStringPropertyDecorator } from './decorators/string';
@@ -47,7 +47,7 @@ export class Joiful {
     func = () => createFunctionPropertyDecorator(this.options);
 
     /**
-     * Property decorator that constrains the property to a late bound schema.
+     * Property decorator that constrains the property to another schema.
      * This allows defining classes that reference themself. e.g.
      *
      * @example
@@ -55,12 +55,11 @@ export class Joiful {
      *   @jf.string().required()
      *   title: string;
      *
-     *   @jf.lazy((joi) => joi.array().items(getJoiSchema(TreeNode, joi)))
+     *   @jf.array().items((joi) => joi.link('...'))
      *   children: TreeNode[];
      * }
      */
-    lazy = (getSchema: ({ joi }: { joi: typeof Joi }) => Joi.Schema) =>
-        createLazyPropertyDecorator(getSchema, this.options)
+    link = (ref?: string) => createLinkPropertyDecorator(ref, this.options);
 
     /**
      * Property decorator that constrains the property to be a number.

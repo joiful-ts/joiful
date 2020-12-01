@@ -22,10 +22,8 @@ export interface AnySchemaModifiers {
     /**
      * Adds the provided values into the allowed whitelist for property
      * and marks them as the only valid values allowed.
-     * @param values The only valid values this property can accept.
      */
-    only(value: any, ...values: any[]): this;
-    only(values: any[]): this;
+    only(): this;
 
     /**
      * Adds the provided values into the allowed whitelist for property
@@ -85,13 +83,13 @@ export interface AnySchemaModifiers {
     /**
      * Annotates the key
      */
-    notes(notes: string | string[]): this;
+    note(notes: string | string[]): this;
 
     /**
      * Annotates the key
      */
-    tags(tag: string, ...tags: string[]): this;
-    tags(tags: string | string[]): this;
+    tag(tag: string | string[], ...tags: string[]): this;
+    //tag(tags: string[]): this;
 
     /**
      * Attaches metadata to the key.
@@ -170,10 +168,13 @@ export interface AnySchemaModifiers {
 
 export function getAnySchemaModifierProviders<TSchema extends Joi.Schema>(getJoi: () => typeof Joi) {
     const result: ModifierProviders<TSchema, AnySchemaModifiers> = {
-        allow: (value: any, ...values: any[]) => ({ schema }) => schema.allow(value, ...values) as TSchema,
-        valid: (value: any, ...values: any[]) => ({ schema }) => schema.valid(value, ...values) as TSchema,
-        only: (value: any, ...values: any[]) => ({ schema }) => schema.only(value, ...values) as TSchema,
-        equal: (value: any, ...values: any[]) => ({ schema }) => schema.equal(value, ...values) as TSchema,
+        allow: (value: any, ...values: any[]) => ({ schema }) =>
+            schema.allow(...(value instanceof Array ? [...value, ...values] : [value, ...values])) as TSchema,
+        valid: (value: any, ...values: any[]) => ({ schema }) =>
+            schema.valid(...(value instanceof Array ? [...value, ...values] : [value, ...values])) as TSchema,
+        only: () => ({ schema }) => schema.only() as TSchema,
+        equal: (value: any, ...values: any[]) => ({ schema }) =>
+            schema.equal(...(value instanceof Array ? [...value, ...values] : [value, ...values])) as TSchema,
 
         required: () => ({ schema }) => schema.required() as TSchema,
         optional: () => ({ schema }) => schema.optional() as TSchema,
@@ -188,10 +189,10 @@ export function getAnySchemaModifierProviders<TSchema extends Joi.Schema>(getJoi
 
         description: (description: string) => ({ schema }) => schema.description(description) as TSchema,
 
-        notes: (notes: string | string[]) => ({ schema }) => schema.notes(notes as any) as TSchema,
+        note: (notes: string | string[]) => ({ schema }) => schema.note(notes as any) as TSchema,
 
-        tags: (tag: string | string[], ...tags: string[]) => ({ schema }) =>
-            schema.tags(tag instanceof Array ? [...tag, ...tags] : [tag, ...tags]) as TSchema,
+        tag: (tag: string | string[], ...tags: string[]) => ({ schema }) =>
+            schema.tag(...(tag instanceof Array ? [...tag, ...tags] : [tag, ...tags])) as TSchema,
 
         meta: (meta: Object) => ({ schema }) => schema.meta(meta) as TSchema,
 

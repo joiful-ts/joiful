@@ -1,6 +1,6 @@
-import { getJoiSchema } from '../../src/core';
+//import { getJoiSchema } from '../../src/core';
 import * as Joi from '@hapi/joi';
-import { joi, Joiful, lazy, object, string, Validator } from '../../src';
+import { Joiful, array, object, string, Validator } from '../../src';
 import { testConstraint } from './testUtil';
 import { StringSchema } from '@hapi/joi';
 
@@ -75,12 +75,15 @@ describe('Examples', () => {
         expect(instance).not.toBeValid();
     });
 
-    it('lazy evaluation (for recursive data structures)', () => {
+    it('link for recursive data structures', () => {
         class TreeNode {
             @string().required()
             tagName!: string;
 
-            @lazy(() => Joi.array().items(getJoiSchema(TreeNode, joi)!))
+            // . - the link
+            // .. - the children array
+            // ... - the TreeNode class
+            @array().items((joi) => joi.link('...'))
             children!: TreeNode[];
         }
 
@@ -164,40 +167,35 @@ describe('Examples', () => {
 
         // This is our where we define our custom rule. Please read the Joi documentation for more info.
         // NOTE: we must explicitly provide the type annotation of `CustomJoi`.
-        const customJoi: CustomJoi = Joi.extend({
-            base: Joi.string(), // The base Joi schema
-            language: { // This defines the error message returned when a rule fails validation.
-                alternatingCase: 'must be in alternating case', // Used as 'string.alternatingCase'
-            },
-            name: 'string', // The type (can be an existing Joi type)
-            rules: [
-                {
-                    name: 'alternatingCase', // This is the name of the new validation function
-                    validate(
-                        _params: void,
-                        value: string,
-                        state,
-                        options,
-                    ) { // Your validation implementation would go here.
-                        if (value.length < 2) {
-                            return true;
-                        }
-                        let lastCase = null;
-                        for (let char of value) {
-                            const charIsUppercase = /[A-Z]/.test(char);
-                            if (charIsUppercase === lastCase) { // Not alternating case
-                                // Validation failures must return a Joi error.
-                                // You'll need to allow a suspicious use of "this" here, so that we can access the
-                                //  Joi instance's `createError()` method.
-                                // tslint:disable-next-line:no-invalid-this
-                                return this.createError('string.case', { v: value }, state, options);
+        const customJoi: CustomJoi = Joi.extend((joi) => {
+            return {
+                base: joi.string(), // The base Joi schema
+                type: 'string',
+
+                rules: {
+                    alternatingCase: {
+                        validate(value: string, helpers) {
+                            // Your validation implementation would go here.
+                            if (value.length < 2) {
+                                return true;
                             }
-                            lastCase = charIsUppercase;
-                        }
-                        return value;
+                            let lastCase = null;
+                            for (let char of value) {
+                                const charIsUppercase = /[A-Z]/.test(char);
+                                if (charIsUppercase === lastCase) { // Not alternating case
+                                    // Validation failures must return a Joi error.
+                                    // You'll need to allow a suspicious use of "this" here, so that we can access the
+                                    //  Joi instance's `createError()` method.
+                                    // tslint:disable-next-line:no-invalid-this
+                                    return helpers.error('string.case');
+                                }
+                                lastCase = charIsUppercase;
+                            }
+                            return value;
+                        },
                     },
                 },
-            ],
+            };
         });
 
         // This function is how we're going to make use of our custom validator.
