@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { JoifulOptions } from './decorators/common';
 import { createAnyPropertyDecorator } from './decorators/any';
 import { createArrayPropertyDecorator, ArrayPropertyDecoratorOptions } from './decorators/array';

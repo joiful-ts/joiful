@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { createPropertyDecorator, JoifulOptions, ModifierProviders, NotImplemented } from './common';
 import { TypedPropertyDecorator } from '../core';
 
@@ -88,8 +88,8 @@ export interface AnySchemaModifiers {
     /**
      * Annotates the key
      */
-    tag(tag: string | string[], ...tags: string[]): this;
-    //tag(tags: string[]): this;
+    tag(tag: string, ...tags: string[]): this;
+    tag(tags: string | string[]): this;
 
     /**
      * Attaches metadata to the key.

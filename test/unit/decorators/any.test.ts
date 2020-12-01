@@ -1,5 +1,5 @@
-import * as Joi from '@hapi/joi';
-import { testConstraint, assertClassSchemaEquals } from '../testUtil';
+import * as Joi from 'joi';
+import { testConstraint } from '../testUtil';
 import * as jf from '../../../src';
 import { getJoiSchema } from '../../../src/core';
 import { Validator, isValidationPass } from '../../../src/validation';
@@ -281,13 +281,15 @@ describe('any', () => {
         }
 
         it('should associate a label with the property', () => {
-            assertClassSchemaEquals({
-                Class: LoginForm,
-                expectedSchemaMap: {
-                    username: jf.joi.string().label('Username'),
-                    password: jf.joi.string().label('Password'),
-                    rememberMe: jf.joi.boolean().label('Keep me logged in'),
-                },
+            expect(LoginForm).toMatchSchemaMap({
+                username: jf.joi.string().label('Username'),
+                password: jf.joi.string().label('Password'),
+                rememberMe: jf.joi.boolean().label('Keep me logged in'),
+            });
+            expect(LoginForm).not.toMatchSchemaMap({
+                username: jf.joi.string(),
+                password: jf.joi.string(),
+                rememberMe: jf.joi.boolean(),
             });
         });
     });
@@ -299,11 +301,11 @@ describe('any', () => {
         }
 
         it('should associate a label with the property', () => {
-            assertClassSchemaEquals({
-                Class: User,
-                expectedSchemaMap: {
-                    name: jf.joi.string().meta({ value: 'some metadata' }),
-                },
+            expect(User).toMatchSchemaMap({
+                name: jf.joi.string().meta({ value: 'some metadata' }),
+            });
+            expect(User).not.toMatchSchemaMap({
+                name: jf.joi.string(),
             });
         });
     });
@@ -315,11 +317,11 @@ describe('any', () => {
         }
 
         it('should associate notes with the property', () => {
-            assertClassSchemaEquals({
-                Class: User,
-                expectedSchemaMap: {
-                    name: jf.joi.string().note('some notes'),
-                },
+            expect(User).toMatchSchemaMap({
+                name: jf.joi.string().note('some notes'),
+            });
+            expect(User).not.toMatchSchemaMap({
+                name: jf.joi.string(),
             });
         });
     });
@@ -353,11 +355,11 @@ describe('any', () => {
         }
 
         it('should override validation options for the property', () => {
-            assertClassSchemaEquals({
-                Class: User,
-                expectedSchemaMap: {
-                    name: jf.joi.string().options({ presence: 'required' }),
-                },
+            expect(User).toMatchSchemaMap({
+                name: jf.joi.string().options({ presence: 'required' }),
+            });
+            expect(User).not.toMatchSchemaMap({
+                name: jf.joi.string(),
             });
         });
     });
@@ -451,13 +453,15 @@ describe('any', () => {
                 password!: string;
             }
 
-            assertClassSchemaEquals({
-                Class: User,
-                expectedSchemaMap: {
-                    id: jf.joi.string().tag('identity'),
-                    emailAddress: jf.joi.string().tag('identity', 'authentication'),
-                    password: jf.joi.string().tag('authentication'),
-                },
+            expect(User).toMatchSchemaMap({
+                id: jf.joi.string().tag('identity'),
+                emailAddress: jf.joi.string().tag('identity', 'authentication'),
+                password: jf.joi.string().tag('authentication'),
+            });
+            expect(User).not.toMatchSchemaMap({
+                id: jf.joi.string(),
+                emailAddress: jf.joi.string(),
+                password: jf.joi.string(),
             });
         });
     });
@@ -469,11 +473,11 @@ describe('any', () => {
                 radius!: number;
             }
 
-            assertClassSchemaEquals({
-                Class: Circle,
-                expectedSchemaMap: {
-                    radius: jf.joi.number().unit('millimetres'),
-                },
+            expect(Circle).toMatchSchemaMap({
+                radius: jf.joi.number().unit('millimetres'),
+            });
+            expect(Circle).not.toMatchSchemaMap({
+                radius: jf.joi.number(),
             });
         });
     });

@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { getJoi, TypedPropertyDecorator, MapAllowUnions, StringOrSymbolKey, updateWorkingSchema } from '../core';
 
 export class NotImplemented extends Error {

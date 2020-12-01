@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import * as jf from '../../src';
 import {
     getJoi,
@@ -141,7 +141,7 @@ describe('getJoiVersion', () => {
 
 describe('JOI_VERSION', () => {
     it('should match the version of joi referenced in Joifuls package dependencies', async () => {
-        const expectedJoiVersion = await getJoifulDependencyVersion('@hapi/joi');
+        const expectedJoiVersion = await getJoifulDependencyVersion('joi');
         expect(expectedJoiVersion.major).toBeTruthy();
 
         const actualJoiVersion = JOI_VERSION;
