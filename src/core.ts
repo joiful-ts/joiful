@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 
 export const getJoi = (options: { joi?: typeof Joi } | undefined = {}) => options.joi || Joi;
 

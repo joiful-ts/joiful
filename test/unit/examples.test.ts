@@ -1,8 +1,8 @@
 //import { getJoiSchema } from '../../src/core';
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { Joiful, array, object, string, Validator } from '../../src';
 import { testConstraint } from './testUtil';
-import { StringSchema } from '@hapi/joi';
+import { StringSchema } from 'joi';
 
 describe('Examples', () => {
     it('class with methods', () => {

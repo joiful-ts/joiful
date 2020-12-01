@@ -1,9 +1,9 @@
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { rootPath } from 'get-root-path';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Validator } from '../../src/validation';
-import { AnyClass, getJoiSchema, getJoi, parseVersionString } from '../../src/core';
+import { parseVersionString } from '../../src/core';
 
 export function notNil<T>(value: T): Exclude<T, null | undefined> {
     if (value === null || value === undefined) {
@@ -88,15 +88,6 @@ export function testConversion<T>(options: TestConversionOptions<T>) {
             });
         });
     }
-}
-
-export function assertClassSchemaEquals(
-    options: { Class: AnyClass, expectedSchemaMap: Joi.SchemaMap, joi?: typeof Joi },
-) {
-    const joi = getJoi(options);
-    const schema = getJoiSchema(options.Class, joi);
-    const expectedSchema = joi.object().keys(options.expectedSchemaMap);
-    expect(Object.keys(schema!)).toEqual(Object.keys(expectedSchema));
 }
 
 interface PackageDependencies {

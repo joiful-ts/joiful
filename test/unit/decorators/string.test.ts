@@ -135,7 +135,7 @@ describe('string', () => {
             [
                 { hostName: 'https://www.thisisnotarealdomainnameoratleastihopeitsnot.com.au' },
                 { hostName: 'www.zxcv.ninja/hello' },
-                { hostName: 'www.zxcv.ninja?query=meow' },
+                { hostName: 'https://zxcv.ninja?query=meow' },
             ],
         );
     });

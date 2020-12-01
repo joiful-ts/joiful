@@ -1,5 +1,5 @@
 import { getJoiSchema, AnyClass, WORKING_SCHEMA_KEY, Constructor } from './core';
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import 'reflect-metadata';
 
 /**
@@ -29,11 +29,18 @@ export class MultipleValidationError extends Error {
 
 export interface ValidationResultPass<T> {
     error: null;
+    errors: null;
+    warning: null;
     value: T;
 }
 
 export interface ValidationResultFail<T> {
     error: Joi.ValidationError;
+    errors: null;
+    /* TODO implements `warning()`
+        https://github.com/sideway/joi/blob/v17.3.0/API.md#anywarningcode-context
+    */
+    warning: null;
     value: T;
 }
 
@@ -139,9 +146,11 @@ export class Validator {
             classSchema.validate(target);
 
         return {
-            error: result.error ? result.error : null,
+            error: (result.error ? result.error : null),
+            errors: null,
+            warning: null,
             value: result.value as TInstance,
-        };
+        } as ValidationResult<TInstance>;
     }
 
     /**
@@ -172,11 +181,12 @@ export class Validator {
         const result = joiOptions ?
             arraySchema.validate(target, joiOptions) :
             arraySchema.validate(target);
-
         return {
-            error: result.error ? result.error : null,
+            error: (result.error ? result.error : null),
+            errors: null,
+            warning: null,
             value: result.value as TInstance[],
-        };
+        } as ValidationResult<TInstance[]>;
     }
 }
 

@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { testConstraint } from './testUtil';
 import { Joiful, string, boolean } from '../../src';
 import { Validator, MultipleValidationError } from '../../src/validation';
@@ -236,6 +236,8 @@ describe('validate', () => {
         const validator = new Validator();
         jest.spyOn(validator, 'validateAsClass').mockImplementation((value: any) => ({
             error: null,
+            errors: null,
+            warning: null,
             value,
         }));
 
