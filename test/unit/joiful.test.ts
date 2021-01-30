@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 import { testConstraint } from './testUtil';
 import { Joiful, string, boolean } from '../../src';
-import { Validator, MultipleValidationError } from '../../src/validation';
+import { Validator, MultipleValidationError } from '../../src';
 import * as Case from 'case';
 import { IncompatibleJoiVersion } from '../../src/core';
 
