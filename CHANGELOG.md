@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/joiful-ts/joiful/compare/v2.0.1...v3.0.0) (2021-01-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* **core:** https://github.com/sideway/joi/issues/2262
+
+Co-authored-by: Benji <codeandcats@gmail.com>
+
+### Features
+
+* **core:** upgrade to @hapi/joi 16.0.0 ([edbd4b2](https://github.com/joiful-ts/joiful/commit/edbd4b28d9314f1189705a7495fee8b4d718f26e))
+* **core:** upgrade to sideway/joi 17.3.0 ([e3def02](https://github.com/joiful-ts/joiful/commit/e3def026d7a0b87c4431118c5cad6d993d95fdbd))
+
 ### [2.0.1](https://github.com/joiful-ts/joiful/compare/v2.0.0...v2.0.1) (2020-04-27)
 
 
