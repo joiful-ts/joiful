@@ -54,7 +54,7 @@
         "@commitlint/prompt-cli": "11.0.0",
         "@types/fs-extra": "9.0.6",
         "@types/jest": "26.0.20",
-        "@types/lodash": "4.14.149",
+        "@types/lodash": "4.14.168",
         "@types/node": "12.12.29",
         "@types/reflect-metadata": "0.1.0",
         "@types/rimraf": "3.0.0",
