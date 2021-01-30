@@ -57,7 +57,7 @@
         "@types/lodash": "4.14.149",
         "@types/node": "12.12.29",
         "@types/reflect-metadata": "0.1.0",
-        "@types/rimraf": "2.0.3",
+        "@types/rimraf": "3.0.0",
         "case": "1.6.3",
         "flatted": "2.0.2",
         "fs-extra": "9.1.0",
