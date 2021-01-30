@@ -17,14 +17,14 @@ interface PackageJson {
     license: string;
     main: string;
     types: string;
-    private: boolean;
-    scripts: Scripts;
-    dependencies: Dependencies;
-    devDependencies: Dependencies;
-    peerDependencies: Dependencies;
-    repository: string;
-    author: string;
-    tags: string;
+    private?: boolean;
+    scripts?: Scripts;
+    dependencies?: Dependencies;
+    devDependencies?: Dependencies;
+    peerDependencies?: Dependencies;
+    repository?: string;
+    author?: string;
+    tags?: string;
 }
 
 async function readRootPackageJson(): Promise<PackageJson> {
