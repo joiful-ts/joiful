@@ -36,6 +36,7 @@ describe('any', () => {
     describe('allow', () => {
         testConstraint(
             () => {
+                /* tslint:disable: no-useless-cast */
                 const allowedValues = [
                     true,
                     false,
@@ -47,6 +48,7 @@ describe('any', () => {
                     'N',
                     'yeppers',
                 ] as const;
+                /* tslint:enable: no-useless-cast */
 
                 type Booleany = typeof allowedValues[number];
 
@@ -483,6 +485,7 @@ describe('any', () => {
     });
 
     describe('valid', () => {
+        // tslint:disable-next-line: no-useless-cast
         const sauces = ['tomato', 'barbeque', 'bechamel'] as const;
         type Sauce = typeof sauces[number];
         testConstraint(
@@ -525,6 +528,7 @@ describe('any', () => {
     });
 
     describe('only', () => {
+        // tslint:disable-next-line: no-useless-cast
         const sauces = ['tomato', 'barbeque', 'bechamel'] as const;
         type Sauce = typeof sauces[number];
         testConstraint(
@@ -567,6 +571,7 @@ describe('any', () => {
     });
 
     describe('equal', () => {
+        // tslint:disable-next-line: no-useless-cast
         const sauces = ['tomato', 'barbeque', 'bechamel'] as const;
         type Sauce = typeof sauces[number];
         testConstraint(
