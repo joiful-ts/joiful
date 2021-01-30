@@ -50,7 +50,7 @@
         "joi": "17.3.0"
     },
     "devDependencies": {
-        "@commitlint/cli": "8.3.5",
+        "@commitlint/cli": "11.0.0",
         "@commitlint/prompt-cli": "11.0.0",
         "@types/fs-extra": "9.0.6",
         "@types/jest": "24.0.18",
