@@ -72,7 +72,7 @@
         "ts-jest": "26.5.2",
         "ts-node": "9.1.1",
         "tslint": "6.1.3",
-        "typescript": "4.1.3",
+        "typescript": "4.2.4",
         "typestrict": "1.0.2"
     },
     "peerDependencies": {
