@@ -22,11 +22,11 @@ Calling `Validator.validateAsClass()` allows you to validate any object as if it
 
 ## Installation
 
-`npm add joiful`
+`npm add joiful reflect-metadata`
 
 Or
 
-`yarn add joiful`.
+`yarn add joiful reflect-metadata`.
 
 You must enable experimental decorators and metadata in your TypeScript configuration.
 
@@ -42,6 +42,18 @@ You must enable experimental decorators and metadata in your TypeScript configur
 ```
 
 ## Basic Usage
+
+Ensure you import `reflect-metadata` as the first import in your application's entry point.
+
+`index.ts`
+
+```typescript
+import 'reflect-metadata';
+
+...
+```
+
+Then you can start using joiful like this.
 
 ```typescript
 import * as jf from 'joiful';
