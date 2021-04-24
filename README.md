@@ -8,6 +8,7 @@
 <br />
 
 [![npm version](https://badge.fury.io/js/joiful.svg)](https://badge.fury.io/js/joiful)
+[![GitHub Actions Build Status](https://github.com/joiful-ts/joiful/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/joiful-ts/joiful/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/joiful-ts/joiful/branch/master/graph/badge.svg)](https://codecov.io/gh/joiful-ts/joiful)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=joiful-ts/joiful)](https://dependabot.com)
 
