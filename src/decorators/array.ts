@@ -124,7 +124,7 @@ export interface ArrayPropertyDecoratorOptions {
 export const createArrayPropertyDecorator = (
     options: ArrayPropertyDecoratorOptions | undefined,
     joifulOptions: JoifulOptions,
-) => {
+): ArraySchemaDecorator => {
     return createPropertyDecorator<Array<any>, ArraySchemaModifiers>()(
         ({ joi }) => {
             let schema = joi.array();

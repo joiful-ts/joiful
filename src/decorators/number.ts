@@ -77,7 +77,7 @@ export interface NumberSchemaDecorator extends
     TypedPropertyDecorator<number> {
 }
 
-export const createNumberPropertyDecorator = (joifulOptions: JoifulOptions) => (
+export const createNumberPropertyDecorator = (joifulOptions: JoifulOptions): NumberSchemaDecorator => (
     createPropertyDecorator<number, NumberSchemaModifiers>()(
         ({ joi }) => joi.number(),
         getNumberSchemaModifierProviders,

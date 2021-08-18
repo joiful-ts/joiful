@@ -21,7 +21,7 @@ export function getObjectSchemaModifierProviders(getJoi: () => typeof Joi) {
 
 export interface ObjectSchemaDecorator extends
     ObjectSchemaModifiers,
-    TypedPropertyDecorator<boolean> {
+    TypedPropertyDecorator<object> {
 }
 
 export interface ObjectPropertyDecoratorOptions {
@@ -31,7 +31,7 @@ export interface ObjectPropertyDecoratorOptions {
 export const createObjectPropertyDecorator = (
     options: ObjectPropertyDecoratorOptions | undefined,
     joifulOptions: JoifulOptions,
-) => (
+): ObjectSchemaDecorator => (
         createPropertyDecorator<object, ObjectSchemaModifiers>()(
             ({ joi, target, propertyKey }) => {
                 const elementType = (options && options.objectClass) ?
