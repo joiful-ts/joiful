@@ -171,7 +171,7 @@ export interface StringSchemaDecorator extends
     TypedPropertyDecorator<string> {
 }
 
-export const createStringPropertyDecorator = (joifulOptions: JoifulOptions) => (
+export const createStringPropertyDecorator = (joifulOptions: JoifulOptions): StringSchemaDecorator => (
     createPropertyDecorator<string, StringSchemaModifiers>()(
         ({ joi }) => joi.string(),
         getStringSchemaModifierProviders,

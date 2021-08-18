@@ -229,7 +229,7 @@ export interface AnySchemaDecorator extends
     TypedPropertyDecorator<any> {
 }
 
-export const createAnyPropertyDecorator = (joifulOptions: JoifulOptions) => (
+export const createAnyPropertyDecorator = (joifulOptions: JoifulOptions): AnySchemaDecorator => (
     createPropertyDecorator<any, AnySchemaModifiers>()(
         ({ joi }) => joi.any(),
         getAnySchemaModifierProviders,

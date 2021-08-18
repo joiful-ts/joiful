@@ -22,7 +22,7 @@ export interface LinkSchemaDecorator extends
 export const createLinkPropertyDecorator = (
     reference: string | undefined,
     joifulOptions: JoifulOptions,
-) => {
+): LinkSchemaDecorator => {
     return createPropertyDecorator<any, LinkSchemaModifiers>()(
         ({ joi }) => joi.link(reference),
         getLinkSchemaModifierProviders,

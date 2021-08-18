@@ -38,7 +38,7 @@ export interface FunctionSchemaDecorator extends
     TypedPropertyDecorator<Function> {
 }
 
-export const createFunctionPropertyDecorator = (joifulOptions: JoifulOptions) => (
+export const createFunctionPropertyDecorator = (joifulOptions: JoifulOptions): FunctionSchemaDecorator => (
     createPropertyDecorator<Function, FunctionSchemaModifiers>()(
         ({ joi }) => joi.func(),
         getFunctionSchemaModifierProviders,

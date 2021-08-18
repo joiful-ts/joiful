@@ -44,7 +44,7 @@ export interface DateSchemaDecorator extends
     TypedPropertyDecorator<Date> {
 }
 
-export const createDatePropertyDecorator = (joifulOptions: JoifulOptions) => (
+export const createDatePropertyDecorator = (joifulOptions: JoifulOptions): DateSchemaDecorator => (
     createPropertyDecorator<Date, DateSchemaModifiers>()(
         ({ joi }) => joi.date(),
         getDateSchemaModifierProviders,

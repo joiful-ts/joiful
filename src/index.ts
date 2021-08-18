@@ -1,6 +1,16 @@
 import { Joiful } from './joiful';
 import { Validator } from './validation';
 
+export { AnySchemaDecorator } from './decorators/any';
+export { ArrayPropertyDecoratorOptions, ArraySchemaDecorator } from './decorators/array';
+export { BooleanSchemaDecorator } from './decorators/boolean';
+export { DateSchemaDecorator } from './decorators/date';
+export { FunctionSchemaDecorator } from './decorators/function';
+export { LinkSchemaDecorator } from './decorators/link';
+export { NumberSchemaDecorator } from './decorators/number';
+export { ObjectSchemaDecorator } from './decorators/object';
+export { StringSchemaDecorator } from './decorators/string';
+
 export { Validator, MultipleValidationError, ValidationResult, isValidationPass, isValidationFail } from './validation';
 export { Joiful } from './joiful';
 

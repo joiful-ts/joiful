@@ -44,8 +44,8 @@ export interface BooleanSchemaDecorator extends
     TypedPropertyDecorator<boolean> {
 }
 
-export const createBooleanPropertyDecorator = (joifulOptions: JoifulOptions) => (
-    createPropertyDecorator<Boolean, BooleanSchemaModifiers>()(
+export const createBooleanPropertyDecorator = (joifulOptions: JoifulOptions): BooleanSchemaDecorator => (
+    createPropertyDecorator<boolean, BooleanSchemaModifiers>()(
         ({ joi }) => joi.boolean(),
         getBooleanSchemaModifierProviders,
         joifulOptions,
