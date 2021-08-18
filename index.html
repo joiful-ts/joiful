@@ -1,0 +1,373 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>joiful</title>
+	<meta name="description" content="Documentation for joiful">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">joiful</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>joiful</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<br />
+				<p align="center">
+					<img width="500" src="https://raw.githubusercontent.com/joiful-ts/joiful/master/img/logo-icon-with-text-800x245.png">
+					<h3 align="center" style="margin-top: 0px; padding-top: 0">TypeScript Declarative Validation for Joi</h3>
+				</p>
+				<br />
+				<p><a href="https://badge.fury.io/js/joiful"><img src="https://badge.fury.io/js/joiful.svg" alt="npm version"></a>
+					<a href="https://github.com/joiful-ts/joiful/actions/workflows/build.yml"><img src="https://github.com/joiful-ts/joiful/actions/workflows/build.yml/badge.svg?branch=master" alt="GitHub Actions Build Status"></a>
+					<a href="https://codecov.io/gh/joiful-ts/joiful"><img src="https://codecov.io/gh/joiful-ts/joiful/branch/master/graph/badge.svg" alt="codecov"></a>
+				<a href="https://dependabot.com"><img src="https://api.dependabot.com/badges/status?host=github&repo=joiful-ts/joiful" alt="Dependabot Status"></a></p>
+				<a href="#why-joiful" id="why-joiful" style="color: inherit; text-decoration: none;">
+					<h2>Why Joiful?</h2>
+				</a>
+				<p>This lib allows you to apply Joi validation constraints on class properties, by using decorators.</p>
+				<p>This means you can combine your type schema and your validation schema in one go!</p>
+				<p>Calling <code>Validator.validateAsClass()</code> allows you to validate any object as if it were an instance of a given class.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<p><code>npm add joiful reflect-metadata</code></p>
+				<p>Or</p>
+				<p><code>yarn add joiful reflect-metadata</code>.</p>
+				<p>You must enable experimental decorators and metadata in your TypeScript configuration.</p>
+				<p><code>tsconfig.json</code></p>
+				<pre><code class="language-json"><span style="color: #000000">{</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;compilerOptions&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;emitDecoratorMetadata&quot;</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;experimentalDecorators&quot;</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#basic-usage" id="basic-usage" style="color: inherit; text-decoration: none;">
+					<h2>Basic Usage</h2>
+				</a>
+				<p>Ensure you import <code>reflect-metadata</code> as the first import in your application&#39;s entry point.</p>
+				<p><code>index.ts</code></p>
+				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;reflect-metadata&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">...</span>
+</code></pre>
+				<p>Then you can start using joiful like this.</p>
+				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">jf</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;joiful&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">SignUp</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  @</span><span style="color: #001080">jf</span><span style="color: #000000">.</span><span style="color: #795E26">string</span><span style="color: #000000">().</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">username</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #001080">jf</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">string</span><span style="color: #000000">()</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">min</span><span style="color: #000000">(</span><span style="color: #098658">8</span><span style="color: #000000">)</span>
+<span style="color: #000000">  </span><span style="color: #001080">password</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #001080">jf</span><span style="color: #000000">.</span><span style="color: #795E26">date</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">dateOfBirth</span><span style="color: #000000">: </span><span style="color: #267F99">Date</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #001080">jf</span><span style="color: #000000">.</span><span style="color: #795E26">boolean</span><span style="color: #000000">().</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">subscribedToNewsletter</span><span style="color: #000000">: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">signUp</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">SignUp</span><span style="color: #000000">();</span>
+<span style="color: #001080">signUp</span><span style="color: #000000">.</span><span style="color: #001080">username</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;rick.sanchez&#039;</span><span style="color: #000000">;</span>
+<span style="color: #001080">signUp</span><span style="color: #000000">.</span><span style="color: #001080">password</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;wubbalubbadubdub&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">error</span><span style="color: #000000"> } = </span><span style="color: #001080">jf</span><span style="color: #000000">.</span><span style="color: #795E26">validate</span><span style="color: #000000">(</span><span style="color: #001080">signUp</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">error</span><span style="color: #000000">); </span><span style="color: #008000">// Error will either be undefined or a standard joi validation error</span>
+</code></pre>
+				<a href="#validate-plain-old-javascript-objects" id="validate-plain-old-javascript-objects" style="color: inherit; text-decoration: none;">
+					<h2>Validate plain old javascript objects</h2>
+				</a>
+				<p>Don&#39;t like creating instances of classes? Don&#39;t worry, you don&#39;t have to. You can validate a plain old javascript object as if it were an instance of a class.</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">signUp</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">  </span><span style="color: #001080">username:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;rick.sanchez&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">password:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;wubbalubbadubdub&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">};</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">result</span><span style="color: #000000"> = </span><span style="color: #001080">jf</span><span style="color: #000000">.</span><span style="color: #795E26">validateAsClass</span><span style="color: #000000">(</span><span style="color: #001080">signUp</span><span style="color: #000000">, </span><span style="color: #001080">SignUp</span><span style="color: #000000">);</span>
+</code></pre>
+				<a href="#custom-decorator-constraints" id="custom-decorator-constraints" style="color: inherit; text-decoration: none;">
+					<h2>Custom decorator constraints</h2>
+				</a>
+				<p>Want to create your own shorthand versions of decorators? Simply create a function like below.</p>
+				<p><code>customDecorators.ts</code></p>
+				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">jf</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;joiful&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">password</span><span style="color: #000000"> = () </span><span style="color: #0000FF">=&gt;</span>
+<span style="color: #000000">  </span><span style="color: #001080">jf</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">string</span><span style="color: #000000">()</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">min</span><span style="color: #000000">(</span><span style="color: #098658">8</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">regex</span><span style="color: #000000">(</span><span style="color: #811F3F">/</span><span style="color: #D16969">[</span><span style="color: #811F3F">a-z</span><span style="color: #D16969">]</span><span style="color: #811F3F">/</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">regex</span><span style="color: #000000">(</span><span style="color: #811F3F">/</span><span style="color: #D16969">[</span><span style="color: #811F3F">A-Z</span><span style="color: #D16969">]</span><span style="color: #811F3F">/</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">regex</span><span style="color: #000000">(</span><span style="color: #811F3F">/</span><span style="color: #D16969">[</span><span style="color: #811F3F">0-9</span><span style="color: #D16969">]</span><span style="color: #811F3F">/</span><span style="color: #000000">)</span>
+<span style="color: #000000">    .</span><span style="color: #795E26">required</span><span style="color: #000000">();</span>
+</code></pre>
+				<p><code>changePassword.ts</code></p>
+				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">password</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./customDecorators&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">ChangePassword</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  @</span><span style="color: #795E26">password</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">newPassword</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#validating-array-properties" id="validating-array-properties" style="color: inherit; text-decoration: none;">
+					<h2>Validating array properties</h2>
+				</a>
+				<pre><code class="language-typescript"><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">SimpleTodoList</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  @</span><span style="color: #001080">jf</span><span style="color: #000000">.</span><span style="color: #795E26">array</span><span style="color: #000000">().</span><span style="color: #795E26">items</span><span style="color: #000000">(</span><span style="color: #001080">joi</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">joi</span><span style="color: #000000">.</span><span style="color: #795E26">string</span><span style="color: #000000">())</span>
+<span style="color: #000000">  </span><span style="color: #001080">todos</span><span style="color: #000000">?: </span><span style="color: #267F99">string</span><span style="color: #000000">[];</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>To validate an array of objects that have their own joiful validation:</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Actor</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  @</span><span style="color: #795E26">string</span><span style="color: #000000">().</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">name</span><span style="color: #000000">!: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Movie</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  @</span><span style="color: #795E26">string</span><span style="color: #000000">().</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">name</span><span style="color: #000000">!: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">array</span><span style="color: #000000">({ </span><span style="color: #001080">elementClass:</span><span style="color: #000000"> </span><span style="color: #001080">Actor</span><span style="color: #000000"> }).</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">actors</span><span style="color: #000000">!: </span><span style="color: #267F99">Actor</span><span style="color: #000000">[];</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#validating-object-properties" id="validating-object-properties" style="color: inherit; text-decoration: none;">
+					<h2>Validating object properties</h2>
+				</a>
+				<p>To validate an object subproperty that has its own joiful validation:</p>
+				<pre><code class="language-typescript"><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Address</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  @</span><span style="color: #795E26">string</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">line1</span><span style="color: #000000">?: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">string</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">line2</span><span style="color: #000000">?: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">string</span><span style="color: #000000">().</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">city</span><span style="color: #000000">!: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">string</span><span style="color: #000000">().</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">state</span><span style="color: #000000">!: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">string</span><span style="color: #000000">().</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">country</span><span style="color: #000000">!: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Contact</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  @</span><span style="color: #795E26">string</span><span style="color: #000000">().</span><span style="color: #795E26">required</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">name</span><span style="color: #000000">!: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">object</span><span style="color: #000000">().</span><span style="color: #795E26">optional</span><span style="color: #000000">()</span>
+<span style="color: #000000">  </span><span style="color: #001080">address</span><span style="color: #000000">?: </span><span style="color: #267F99">Address</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#got-a-question" id="got-a-question" style="color: inherit; text-decoration: none;">
+					<h2>Got a question?</h2>
+				</a>
+				<p>The joiful API is designed to closely match the joi API. One exception is validating the length of a <code>string</code>, <code>array</code>, etc, which is performed using <code>.exactLength(n)</code> rather than <code>.length(n)</code>. If you&#39;re familiar with the joi API, you should find joiful very easy to pickup.</p>
+				<p>If there&#39;s something you&#39;re not sure of you can see how it&#39;s done by looking at the unit tests. There is 100% coverage so most likely you&#39;ll find your scenario there. Otherwise feel free to <a href="https://github.com/joiful-ts/joiful/issues">open an issue</a>.</p>
+				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
+					<h2>Contributing</h2>
+				</a>
+				<p>Got an issue or a feature request? <a href="https://github.com/joiful-ts/joiful/issues">Log it</a>.</p>
+				<p><a href="https://github.com/joiful-ts/joiful/pulls">Pull-requests</a> are also very welcome.</p>
+				<a href="#alternatives" id="alternatives" style="color: inherit; text-decoration: none;">
+					<h2>Alternatives</h2>
+				</a>
+				<ul>
+					<li><a href="https://github.com/typestack/class-validator">class-validator</a>: usable in both Node.js and the browser. Mostly designed for validating string values. Can&#39;t validate plain objects, only class instances.</li>
+					<li><a href="https://github.com/TCMiranda/joi-extract-type">joi-extract-type</a>: provides native type extraction from Joi Schemas. Augments the Joi type definitions.</li>
+					<li><a href="https://github.com/hjkcai/typesafe-joi">typesafe-joi</a>: automatically infers type information of validated objects, via the standard Joi schema API.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/Joiful.html" class="tsd-kind-icon">Joiful</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/MultipleValidationError.html" class="tsd-kind-icon">Multiple<wbr>Validation<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/Validator.html" class="tsd-kind-icon">Validator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/AnySchemaDecorator.html" class="tsd-kind-icon">Any<wbr>Schema<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ArrayPropertyDecoratorOptions.html" class="tsd-kind-icon">Array<wbr>Property<wbr>Decorator<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/ArraySchemaDecorator.html" class="tsd-kind-icon">Array<wbr>Schema<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/BooleanSchemaDecorator.html" class="tsd-kind-icon">Boolean<wbr>Schema<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/DateSchemaDecorator.html" class="tsd-kind-icon">Date<wbr>Schema<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/FunctionSchemaDecorator.html" class="tsd-kind-icon">Function<wbr>Schema<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/LinkSchemaDecorator.html" class="tsd-kind-icon">Link<wbr>Schema<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/NumberSchemaDecorator.html" class="tsd-kind-icon">Number<wbr>Schema<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/ObjectSchemaDecorator.html" class="tsd-kind-icon">Object<wbr>Schema<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/StringSchemaDecorator.html" class="tsd-kind-icon">String<wbr>Schema<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#ValidationResult" class="tsd-kind-icon">Validation<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#DEFAULT_INSTANCE" class="tsd-kind-icon">DEFAULT_<wbr>INSTANCE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#joi" class="tsd-kind-icon">joi</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#any" class="tsd-kind-icon">any</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#array" class="tsd-kind-icon">array</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#boolean" class="tsd-kind-icon">boolean</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#date" class="tsd-kind-icon">date</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#func" class="tsd-kind-icon">func</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getSchema" class="tsd-kind-icon">get<wbr>Schema</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#hasSchema" class="tsd-kind-icon">has<wbr>Schema</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#isValidationFail" class="tsd-kind-icon">is<wbr>Validation<wbr>Fail</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#isValidationPass" class="tsd-kind-icon">is<wbr>Validation<wbr>Pass</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#link" class="tsd-kind-icon">link</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#number" class="tsd-kind-icon">number</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#object" class="tsd-kind-icon">object</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#string" class="tsd-kind-icon">string</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#validate" class="tsd-kind-icon">validate</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#validateArrayAsClass" class="tsd-kind-icon">validate<wbr>Array<wbr>AsClass</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#validateAsClass" class="tsd-kind-icon">validate<wbr>AsClass</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#validateParams" class="tsd-kind-icon">validate<wbr>Params</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
