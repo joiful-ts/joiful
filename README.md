@@ -12,6 +12,8 @@
 [![codecov](https://codecov.io/gh/joiful-ts/joiful/branch/master/graph/badge.svg)](https://codecov.io/gh/joiful-ts/joiful)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=joiful-ts/joiful)](https://dependabot.com)
 
+[API Docs](https://joiful-ts.github.io/joiful/)
+
 ## Why Joiful?
 
 This lib allows you to apply Joi validation constraints on class properties, by using decorators.
@@ -183,6 +185,12 @@ class Contact {
   address?: Address;
 }
 ```
+
+## API Docs
+
+joiful has extensive JSDoc / TSDoc comments.
+
+[You can browse the generated API docs online.](https://joiful-ts.github.io/joiful/)
 
 ## Got a question?
 
