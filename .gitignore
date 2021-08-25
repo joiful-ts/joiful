@@ -42,4 +42,4 @@ typings/
 dist/
 /publish/
 *.orig
-docs/
+docs/dist/

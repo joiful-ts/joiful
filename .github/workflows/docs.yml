@@ -39,16 +39,17 @@ jobs:
         key: ${{ runner.os }}_node-${{ steps.get-node-version.outputs.node-version }}_yarn-${{ hashFiles('**/yarn.lock') }}
 
     - name: 📦 Install Dependencies
-      run: yarn install --frozen-lockfile
-
-    - name: 🔨 Build
-      run: yarn build
+      run: |
+        yarn install --frozen-lockfile
+        cd docs
+        yarn install --frozen-lockfile
 
     - name: 📚 Docs - 🔨 Build
+      working-directory: docs
       run: yarn typedoc
 
     - name: 📚 Docs - 🚀 Publish
       uses: JamesIves/github-pages-deploy-action@4.1.4
       with:
         branch: gh-pages # The branch the action should deploy to.
-        folder: docs # The folder the action should deploy.
+        folder: docs/dist # The folder the action should deploy.

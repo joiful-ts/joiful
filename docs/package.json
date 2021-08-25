@@ -1,0 +1,13 @@
+{
+    "name": "joiful-docs",
+    "version": "1.0.0",
+    "description": "API Docs for joiful",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "typedoc": "typedoc --out dist/ ../src/index.ts"
+    },
+    "dependencies": {
+        "typedoc": "0.21.6"
+    }
+}
