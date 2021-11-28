@@ -7,7 +7,7 @@ export { Joiful } from './joiful';
 export const DEFAULT_INSTANCE = new Joiful();
 
 const DEFAULT_VALIDATOR = new Validator();
-const { validate, validateAsClass, validateArrayAsClass } = DEFAULT_VALIDATOR;
+const { validate, validateAsClass, validateArrayAsClass, validateAsClassAsync, validateAsync } = DEFAULT_VALIDATOR;
 
 const {
     any,
@@ -37,7 +37,9 @@ export {
     object,
     string,
     validate,
+    validateAsync,
     validateAsClass,
+    validateAsClassAsync,
     validateArrayAsClass,
     validateParams,
     getSchema,
