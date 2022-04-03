@@ -117,6 +117,19 @@ export class Validator {
     }
 
     /**
+     * Validates an instance of a decorated class asynchronously.
+     * @param target Instance of decorated class to validate.
+     * @param options Optional validation options to use. These override any default options.
+     */
+    validateAsync = <T extends {} | null | undefined>(target: T, options?: ValidationOptions)
+        : Promise<ValidationResult<T>> => {
+        if (target === null || target === undefined) {
+            throw new InvalidValidationTarget();
+        }
+        return this.validateAsClassAsync(target, target.constructor as AnyClass, options);
+    }
+
+    /**
      * Validates a plain old javascript object against a decorated class.
      * @param target Object to validate.
      * @param clz Decorated class to validate against.
@@ -144,6 +157,43 @@ export class Validator {
         const result = joiOptions ?
             classSchema.validate(target, joiOptions) :
             classSchema.validate(target);
+
+        return {
+            error: (result.error ? result.error : null),
+            errors: null,
+            warning: null,
+            value: result.value as TInstance,
+        } as ValidationResult<TInstance>;
+    }
+
+    /**
+     * Validates a plain old javascript object against a decorated class asynchronously.
+     * @param target Object to validate.
+     * @param clz Decorated class to validate against.
+     * @param options Optional validation options to use. These override any default options.
+     */
+    validateAsClassAsync = async <
+        TClass extends Constructor<any>,
+        TInstance = TClass extends Constructor<infer TInstance> ? TInstance : never
+    >(
+        target: Partial<TInstance> | null | undefined,
+        Class: TClass,
+        options: ValidationOptions | undefined = this.defaultOptions,
+    ): Promise<ValidationResult<TInstance>> => {
+        if (target === null || target === undefined) {
+            throw new InvalidValidationTarget();
+        }
+
+        const {joi, joiOptions} = this.extractOptions(options);
+        const classSchema = getJoiSchema(Class, joi);
+
+        if (!classSchema) {
+            throw new NoValidationSchemaForClassError(Class);
+        }
+
+        const result = joiOptions ?
+            await classSchema.validateAsync(target, joiOptions) :
+            await classSchema.validateAsync(target);
 
         return {
             error: (result.error ? result.error : null),
