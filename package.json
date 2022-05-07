@@ -52,7 +52,7 @@
     "devDependencies": {
         "@commitlint/cli": "11.0.0",
         "@commitlint/prompt-cli": "11.0.0",
-        "@types/fs-extra": "9.0.7",
+        "@types/fs-extra": "9.0.11",
         "@types/jest": "26.0.20",
         "@types/lodash": "4.14.168",
         "@types/node": "12.12.29",
